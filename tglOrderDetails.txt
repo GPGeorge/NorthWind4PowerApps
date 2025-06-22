@@ -1,0 +1,54 @@
+Set(
+    gvCRUDProductID,
+    Coalesce(
+        Value(cboPOLineItemsProductEditAdd.Selected.ProductID),
+        0
+    )
+);
+Set(
+    gvCRUDProductName,
+    Coalesce(
+        Text(cboPOLineItemsProductEditAdd.Selected.ProductName),
+        ""
+    )
+);
+Set(
+    gvCurrentOrderQty,
+    Coalesce(
+        Value(inpPOLineItemQuantityEditAdd.Text),
+        0
+    )
+);
+If(
+    Coalesce(
+        gvCRUDProductID,
+        0
+    ) > 0,
+    Set(
+        gvTGLReorderQuantity,
+        !gvTGLReorderQuantity
+    );
+    UpdateContext ({lvDefaultReorderQuantity: gvDefaultReorder.OutputParameters.ProductReorderQuantity});
+    UpdateContext ({lvProductAvailable: gvDefaultReorder.OutputParameters.ProductAvailableToSell});
+    UpdateContext ({lvProductMinReorder: gvDefaultReorder.OutputParameters.MinReOrder});
+    UpdateContext({lvProductTargetLevel: gvDefaultReorder.OutputParameters.ProductTargetLevel});
+    Notify(
+        If(
+            lvDefaultReorderQuantity = 0,
+            lvProductAvailable & " Available, which is greater than " & gvCRUDProductName & " Target Level of " & lvProductTargetLevel & ". Reorder not required at this time.",
+            " Suggested Reorder quantity, " & Text(lvDefaultReorderQuantity) & ", will bring " & gvCRUDProductName & " to Target Level of " & lvProductTargetLevel & ". (" & lvProductMinReorder & " is the Minimum Reorder quantity)."
+        ),
+        NotificationType.Information,
+        fMagicNo.gvNotifyTimeout
+    );
+    
+);
+UpdateContext(
+    {
+        lvDefaultUnitCost: LookUp(
+            fProducts,
+            ProductID = gvCRUDProductID,
+            StandardUnitCost
+        )
+    }
+);
