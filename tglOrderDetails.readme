@@ -1,3 +1,6 @@
 The code in tglOrderDetails.txt should be placed in the OnSelect action of a command button.
 It assumes the existence of input controls on the screen matching the controls in the OnSelect.
-It assumes the existance of a hidden control with 
+It assumes the existance of a hidden control that has the Text property: gvTGLReorderQuantity  
+gvTGLReorderQuantity is a boolean that toggles between true and false.
+When gvTGLReorderQuantity changes, the toggle button for which it is the Default value reacts by invoking its OnChange event.
+That, in turn, triggers the code to execute the stored procedure and receive the response.
