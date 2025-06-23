@@ -1,0 +1,3 @@
+The code in tglOrderDetails.txt should be placed in the OnSelect action of a command button.
+It assumes the existence of input controls on the screen matching the controls in the OnSelect.
+It assumes the existance of a hidden control with 
