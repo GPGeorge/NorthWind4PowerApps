@@ -1,0 +1,187 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+App:
+  Properties:
+    Formulas: |-
+      =fAppTitle = "Northwind ";
+      fStatuses = Statuses.dboStatuses().ResultSets.Table1;
+      fCompaniesFieldNames = CompaniesFieldNames.dboCompaniesFieldName().ResultSets.Table1;
+      fCompanyTypes = CompanyTypes.dboCompanyTypesList().ResultSets.Table1;
+      fStates = StatesList.dboStatesList().ResultSets.Table1;
+      fTaxStatus = TaxStatus.dboTaxStatusList().ResultSets.Table1;
+      fTitle = Titles.dboTitleList().ResultSets.Table1;
+      fAppColors = {
+          gvBodyFill: Color.White,
+          gvlblFill: RGBA(
+              39,
+              67,
+              125,
+              1
+          ),
+          gvlblFillFade: RGBA(
+              65,
+              105,
+              225,
+              .1
+          ),
+          gvAppTitleColor: RGBA(
+              39,
+              67,
+              125,
+              1
+          ),
+          gvlblColor: Color.Black,
+          //*Fade has to be implemented on the RGCBA value
+
+          gvlblColorFade: RGBA(
+              0,
+              0,
+              0,
+              .25
+          ),
+          gvSelectedHighlight: Color.LightGray,
+          gvOptionalField: Color.LightYellow,
+          gvWarningFill: Color.LightGoldenRodYellow,
+          gvDisabledColor: Color.Black
+      };
+      fMagicNo = {
+          gvShipper: 2,
+          gvVendor: 3,
+          gvCustomer: 1,
+          gvNW: 4,
+          gvCRUDC: 1,
+          gvCRUDR: 2,
+          gvCRUDU: 3,
+          gvCRUDD: 4,
+          gvCRUDRO: 22,
+          gvDefaultOrderStatus: 3,
+          gvDefaultOrderDetailStatus: 1,
+          gvDefaultPOStatus: 3,
+          gvDefaultQuantity: 1,
+          gvOrderStatusNEW: 3,
+          gvOrderStatusINV: 2,
+          gvOrderStatusCLO: 1,
+          gvOrderStatusSHP: 4,
+          gvOrderStatusPAY: 5,
+          gvDefaultTaxRate: 1,
+          gvDefaultNWTaxRate:6,
+          gvOrderDetailStatusALL: 1,
+          //*Allocated
+
+          gvOrderDetailStatusINV: 2,
+          //*Invoiced
+
+          gvOrderDetailStatusNEW: 3,
+          //*New
+
+          gvOrderDetailStatusNOS: 4,
+          //*No Stock
+
+          gvOrderDetailStatusONO: 5,
+          //*On Order
+
+          gvOrderDetailStatusSHP: 6,
+          //*Shipped
+
+          gvOrderDetailStatusLIT: 7,
+          //*Lost in Transit
+
+          gvPOStatusAPRV: 1,
+          //*Approved
+
+          gvPOStatusCLSD: 2,
+          //*Closed
+
+          gvPOStatusNEW: 3,
+          //*New
+
+          gvPOStatusSBM: 4,
+          //*Submitted
+
+          gvPOStatusRCVD: 5,
+          //*Received
+
+          gvPOStatusCNCL: 6,
+          //*Cancelled
+
+          gvNotifyTimeout: 4000
+      };
+      fShowHideColumns = Table(
+          {
+              ItemKey: "File",
+              ItemIconName: "save",
+              ItemDisplayName: "Save",
+              ItemOverflow: true
+          },
+          {
+              ItemKey: "Delete",
+              ItemIconName: "Delete",
+              ItemDisplayName: "Delete",
+              ItemOverflow: true
+          }
+      );
+    OnStart: |-
+      =ClearCollect
+      (
+          colNWDevMenu,
+      {Title:"Orders",ID:1,ScreenName:'scrOrderList',Icon:Icon.Currency},{Title:"POs",ID:2,ScreenName:scrPOList,Icon:Icon.Items},{Title:"Products",ID:3,ScreenName:'scrProductList',Icon:Icon.ForkKnife},{Title:"Companies",ID:4,ScreenName:'scrCompanyList',Icon:Icon.Globe},{Title:"Employees",ID:5,ScreenName:'scrEmployeeList',Icon:Icon.Person},{Title:"StockTake",ID:6,ScreenName:'scrStockTake',Icon:Icon.Scan},{Title:"System Admin",ID:7,ScreenName:'scrSysAdmin',Icon:Icon.ListScrollWatchlist}
+      );
+
+      //*Leading Space is automatically added by fAppTitle
+      ClearCollect
+      (
+          colNWDevAppTitle,
+      {Title:fAppTitle&"Order List",ID:1,ScreenName:"scrOrderList",Icon:icoNWDev},{Title:fAppTitle&"Order Detail",ID:3,ScreenName:"scrOrderAdd",Icon:icoNWDev},{Title:fAppTitle&"POs",ID:4,ScreenName:"scrPOList",Icon:icoNWDev},{Title:fAppTitle&"PO Detail",ID:6,ScreenName:"scrPOAdd",Icon:icoNWDev},{Title:fAppTitle&"Products",ID:7,ScreenName:"scrProductList",Icon:icoNWDev},{Title:fAppTitle&"Product",ID:8,ScreenName:"scrProductAdd",Icon:icoNWDev},{Title:fAppTitle&"Add Vendors",ID:9,ScreenName:"scrVendorAdd",Icon:icoNWDev},{Title:fAppTitle&"Employees",ID:10,ScreenName:"scrEmployeeList",Icon:icoNWDev},{Title:fAppTitle&"List Companies",ID:11,ScreenName:"scrCompanyList",Icon:icoNWDev},{Title:fAppTitle&"Stock Take",ID:12,ScreenName:"scrStockTake",Icon:icoNWDev},{Title:fAppTitle&"Invoice",ID:13,ScreenName:"scrNWDevInvoice",Icon:icoNWDev},{Title:fAppTitle&"System Admin",ID:14,ScreenName:"scrSysAdmin",Icon:icoNWDev},{Title:fAppTitle&"Welcome",ID:15,ScreenName:"scrWelcome",Icon:icoNWDev},{Title:fAppTitle&"App Code",ID:16,ScreenName:"scrAppCode",Icon:icoNWDev},{Title:fAppTitle&"Company Mailing Labels",ID:17,ScreenName:"scrCompanyMailingLabels",Icon:icoNWDev}
+      );
+      Set(gvOrderShipFields,Color.White);
+      Set(gvCRUDOrderDetail,Blank());
+      Set(gvCRUDOrderDetailID,0);
+      //*
+      //* The named formulas for data
+      //*
+      Set(fWelcome,Welcome.dboSelectWelcome().ResultSets.Table1;);
+      Set(fCompanies,CRUDCompanies.dboCRUDCompany({CrudType:fMagicNo.gvCRUDR,CompanyID:0,CompanyTypeID:0,StateAbbrev:Blank(),StandardTaxStatusID:-1}).ResultSets.Table1;);
+      Set(fEmployees,CRUDEmployees.dboCRUDEmployee({CrudType:fMagicNo.gvCRUDR,EmployeeID:0,SupervisorID:0}).ResultSets.Table1;);
+      Set(fOrders,CRUDOrders.dboCRUDOrder({CRUDType:fMagicNo.gvCRUDR,CustomerID:0,OrderID:0,EmployeeID:0,OrderStatusID:0}).ResultSets.Table1;);
+      Set(fOrderDetails,Table(CRUDOrderDetails.dboCRUDOrderDetail({CRUDType:fMagicNo.gvCRUDR,OrderDetailID:0,OrderID:0,ProductID:0,Quantity:0,UnitPrice:0,Discount:0,OrderDetailStatusID:0}).ResultSets.Table1;));
+      Set(fPurchaseOrders,CRUDPurchaseOrders.dboCRUDPurchaseOrder({CRUDType:fMagicNo.gvCRUDR,PurchaseOrderID:0}).ResultSets.Table1);
+      Set(fPurchaseOrderDetails,Table(CRUDPurchaseOrderDetails.dboCRUDPurchaseOrderDetail({CRUDType:fMagicNo.gvCRUDR}).ResultSets.Table1;));
+      Set(fApprovers,SubmitterApprover.dboSelectEmployeeforApprove().ResultSets.Table1;);
+      Set(fSubmitters,SubmitterApprover.dboSelectEmployeeforSubmit().ResultSets.Table1;);
+      Set(fEmployeesforList,EmployeeList.dboSelectEmployeesforList().ResultSets.Table1;);
+      Set(fProducts,CRUDProducts.dboCRUDProduct({CRUDType:fMagicNo.gvCRUDR,ProductID:0,StandardUnitCost:0,UnitPrice:0,ReorderLevel:0,TargetLevel:0,QuantityPerUnit:Blank(),Discontinued:Blank(),MinimumReorderQuantity:0,ProductCategoryID:0}).ResultSets.Table1;);
+      Set(fPODetailsAllPOS,PODetailsAllPOs.dboPODetailsAllPOs().ResultSets.Table1;);
+      Set(fProductList,ProductList.dboProductList().ResultSets.Table1;);
+      Set(fPurchaseOrderList,PurchaseOrderList.dboPurchaseOrderList().ResultSets.Table1;);
+      Set(fEmployeeOrders,EmployeeOrders.dboEmployeeOrders().ResultSets.Table1;);
+      Set(fCompanyContacts,CompanyContacts.dboCompanyContacts().ResultSets.Table1;);
+      Set(fProductCategories,ProductCategories.dboProductCategoryList().ResultSets.Table1;);
+      Set(fStockTake,CRUDStockTakes.dboCRUDStockTake({CRUDType:fMagicNo.gvCRUDR,StockTakeID:0}).ResultSets.Table1;);
+      Set(fMRU,CRUDMRU.dboCRUDMRU({CRUDType:fMagicNo.gvCRUDR}).ResultSets.Table1;);
+      Set(fSystemSettings,CRUDSettings.dboCRUDSystemSettings({CRUDType:fMagicNo.gvCRUDR}).ResultSets.Table1;);
+      Set(fUserSettings,CRUDSettings.dboCRUDUserSettings({CRUDType:fMagicNo.gvCRUDR}).ResultSets.Table1;);
+      Set(fSSErrors, SSErrorList.dboSSEErrorList().ResultSets.Table1;);
+      //* User, System and MRU Settings
+      Set(gvUserSettingID,0);
+      Set(gvUserSettingName,"");
+      Set(gvUserSettingValue,"");
+      Set(gvSystemSettingID,0);
+      Set(gvSystemSettingName,"");
+      Set(gvSystemSettingValue,"");
+      Set(gvMRUEmployeeID,0);
+      Set(gvMRUID,0);
+      Set(gvPKValue,0);
+      Set(gvTableName,"");
+
+
+
+      //*For dev only disable in production
+      //ClearCollect(AuditTriggers,Filter(NWPATriggers,NWPATriggersID>0));Set(gvTGLCRUDOrder, true );Set(gvTGLCRUDOrderDetail, true );Set(gvTGLCRUDPO, true );Set(gvTGLCRUDPODetail, true );Set(gvTGLCheckProductAvailable, true );Set(gvTGLCRUDCompany, true );Set(gvTGLCRUDEmployee, true );Set(gvTGLCRUDProduct, true );Set(gvCRUDProductID,0);Set(gvTGLProductInventory, true );Set(gvTGLPOStatus, true );Set(gvTGLOrderStatus, true );
+    StartScreen: =scrStart
+    Theme: =PowerAppsTheme

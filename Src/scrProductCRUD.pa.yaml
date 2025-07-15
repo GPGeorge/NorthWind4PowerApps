@@ -1,0 +1,1605 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrProductCRUD:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |+
+        =Set(gvDiscontinued ,gvCRUDProduct.Discontinued);
+        Set(gvTGLPOByProduct,!gvTGLPOByProduct); 
+        Set(gvTGLProductInventory,!gvTGLProductInventory);
+        If(gvCRUDProductIDReturn <> gvCRUDProductID,
+        Set(gvCRUDProductID,gvCRUDProductIDReturn));
+    Children:
+      - conProductAddMain:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(245, 245, 245, 1)
+            Height: =Parent.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =1
+            PaddingBottom: =16
+            PaddingLeft: =16
+            PaddingRight: =16
+            PaddingTop: =16
+            Width: =Parent.Width
+          Children:
+            - lblTGLProductReorderDetail_hdn:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Font: =Font.'Open Sans'
+                  Height: =10
+                  Text: =tglProductReorderQuantity.Value
+                  Visible: =false
+                  Width: =10
+            - compAppTitleProductAdd:
+                Control: CanvasComponent
+                ComponentName: compAppTitle
+                Properties:
+                  Height: =36
+                  Width: =App.Width
+                  ciAppTitle: ="Text"
+            - compNWDevMenuProductAdd:
+                Control: CanvasComponent
+                ComponentName: compNWDevMenu
+                Properties:
+                  Height: =30
+                  Width: =App.Width
+                  cpiMenuText: |-
+                    =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+            - conProductsCRUDBonus:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  Fill: =fAppColors.gvlblFill
+                  FillPortions: =0.02
+                  Height: =24
+                  LayoutMinHeight: =24
+                  Width: =Parent.Width
+                Children:
+                  - btnProductsCRUDAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |-
+                          =Set(
+                              gvCRUDProduct,
+                              Blank()
+                          );Set(
+                              gvCRUDProductID,
+                              0
+                          );
+                          Set(
+                              gvCRUDType,
+                              fMagicNo.gvCRUDC
+                          );
+                          Set(
+                              gvTGLProductInventory,
+                              !gvTGLProductInventory
+                          );
+                          Set(
+                              gvDiscontinued,
+                              false
+                          );
+
+                          Reset(inpProductCRUDProductID);
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: ="➕ Add Product"
+                        Width: =150
+                        X: =btnProductCRUDReorder.X-btnProductCRUDReorder.Width
+                  - btnProductsCRUDGoToProduct:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: "=Notify(\"Under Development\");\n\n \n"
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: ="Go To Product"
+                        Width: =150
+                        X: =100
+                  - btnProductCRUDReorder:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =Set(
+                              gvCRUDProductID,
+                              gvCRUDProduct.ProductID
+                          );
+                          Set(
+                              gvCRUDPO,
+                              Blank()
+                          );
+                          Set(
+                              gvCRUDType,
+                              fMagicNo.gvCRUDC//* Create a new PO
+                          );
+                          Navigate(scrPOAdd);
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: "=\"\U0001F4ABReorder Product\""
+                        Width: =150
+                        X: =btnProductCRUDDelete.X-Self.Width
+                  - btnProductCRUDDelete:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =Set(
+                          gvCRUDProductID,
+                              Value(inpProductCRUDProductID.Value)
+                          );
+                          Set(
+                              gvCRUDType,
+                              fMagicNo.gvCRUDD
+                          );
+
+
+                          Set(
+                              gvTGLCRUDProduct,
+                              !gvTGLCRUDProduct
+                          );
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: ="❌ Delete Product"
+                        Width: =150
+                        X: =Parent.Width-Self.Width
+            - conProductCRUD:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  LayoutDirection: =LayoutDirection.Horizontal
+                Children:
+                  - conProductDetails:
+                      Control: GroupContainer@1.3.0
+                      Variant: ManualLayout
+                      Properties:
+                        FillPortions: =0.5
+                      Children:
+                        - btnSaveProduct:
+                            Control: Button@0.0.45
+                            Properties:
+                              OnSelect: "=Set(\n    gvCRUDProductID,\n    Value(inpProductCRUDProductID.Value)\n);\nSet(\n    gvProductName,\n    Text(inpProductCRUDProductName.Value);\n    \n);\nSet(\n    gvProductDescription,\n    Text(inpProductCRUDProductDescriptionHTML.HtmlText);\n    \n);\nSet(\n    gvStandardUnitCost,\n    Value(inpProductCRUDUnitCost.Value);\n    \n);\nSet(\n    gvUnitPrice,\n    Value(inpProductCRUDUnitPrice.Value)\n);\nSet(\n    gvReorderLevel,\n    Value(inpProductCRUDReorderLevel.Value);\n    \n);\nSet(\n    gvTargetLevel,\n    Value(inpProductCRUDTargetLevel.Value);\n    \n);\nSet(\n    gvQuantityPerUnit,\n    Text(inpProductCRUDQtyPerUnit.Value)\n);\nSet(\n    gvMinimumReorderQuantity,\n    Value(inpProductCRUDMinReorderQty.Value);\n    \n);\nSet(\n    gvProductCategoryID,\n    Value(cboProductCRUDProductCategory.Selected.ProductCategoryID);\n    \n);\nSet(\n    gvCRUDType,\n    If(\n        Coalesce(\n            gvCRUDProductID,\n            0\n        ) = 0,\n        fMagicNo.gvCRUDC,\n        fMagicNo.gvCRUDU\n    );\n    \n);\nSet(gvTGLCRUDProduct, !gvTGLCRUDProduct);\nSet(gvTGLProductInventory,!gvTGLProductInventory);\nSet(\n    fProductList,\n    ProductList.dboProductList().ResultSets.Table1\n);\nSet(\n    gvClearProductDescription,\n    0\n);\nSet(\n    fProductOrdersByProduct,\n    ProductDetails.dboProductOrdersByProduct({ProductID: gvCRUDProductID}).ResultSets.Table1\n);\n"
+                              Text: "=\"\U0001F4BE Save\""
+                              X: =Parent.Width-Self.Width
+                              Y: =lblProductCRUDMinReorderQty.Y+lblProductCRUDMinReorderQty.Height+12
+                        - lblProductCRUDProductID:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Product ID"
+                              Width: =120
+                              Y: |+
+                                =20
+                        - lblProductCRUDProductName:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Product Name"
+                              Width: =120
+                              Y: =lblProductCRUDProductCode.Y+lblProductCRUDProductCode.Height+8
+                        - lblProductCRUDProductCategory:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Product Category"
+                              Width: =120
+                              Y: =lblProductCRUDProductName.Y+lblProductCRUDProductName.Height+8
+                        - lblProductCRUDProductDescription:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Product Description"
+                              Width: =120
+                              Y: =lblProductCRUDProductCategory.Y+lblProductCRUDProductCategory.Height+8
+                        - lblProductCRUDProductCode:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Product Code"
+                              Width: =120
+                              Y: =lblProductCRUDProductID.Y+lblProductCRUDProductID.Height+8
+                        - inpProductCRUDProductID:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              DisplayMode: =DisplayMode.Disabled
+                              Height: =lblProductCRUDProductID.Height+8
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: =gvCRUDProductID
+                              Width: =100
+                              X: =lblProductCRUDProductID.X+lblProductCRUDProductID.Width
+                              Y: =lblProductCRUDProductID.Y
+                        - inpProductCRUDProductCode:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              DisplayMode: =DisplayMode.Disabled
+                              Height: =lblProductCRUDProductID.Height+8
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '=LookUp(fProducts,ProductID = gvCRUDProductID,ProductCode) '
+                              Width: =Parent.Width-lblProductCRUDProductID.Width
+                              X: =lblProductCRUDProductID.X+lblProductCRUDProductID.Width
+                              Y: =lblProductCRUDProductCode.Y
+                        - inpProductCRUDProductName:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =lblProductCRUDProductID.Height+8
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '=LookUp(fProducts,ProductID= gvCRUDProductID,ProductName) '
+                              Width: =Parent.Width-lblProductCRUDProductID.Width
+                              X: =lblProductCRUDProductID.X+lblProductCRUDProductID.Width
+                              Y: =lblProductCRUDProductName.Y
+                        - cboProductCRUDProductCategory:
+                            Control: ComboBox@0.0.51
+                            Properties:
+                              Appearance: ='ComboboxCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              DefaultSelectedItems: |-
+                                =
+                                LookUp(
+                                    fProductCategories,
+                                    ProductCategoryID = LookUp(
+                                        fProducts,
+                                        ProductID = gvCRUDProductID,
+                                        ProductCategoryID
+                                    ) 
+                                )
+                              InputTextPlaceholder: ="Select Category"
+                              Items: =fProductCategories
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Width: =Parent.Width-lblProductCRUDProductCategory.Width
+                              X: =lblProductCRUDProductCategory.X+lblProductCRUDProductCategory.Width
+                              Y: =lblProductCRUDProductCategory.Y
+                            Children:
+                              - ProductCategoryID1:
+                                  Control: ComboBoxDataField@1.5.0
+                                  Variant: textualColumn
+                                  IsLocked: true
+                                  Properties:
+                                    FieldDisplayName: ="ProductCategoryID"
+                                    FieldName: ="ProductCategoryID"
+                                    FieldType: ="n"
+                                    Order: =2
+                              - ProductCategoryName1:
+                                  Control: ComboBoxDataField@1.5.0
+                                  Variant: textualColumn
+                                  IsLocked: true
+                                  Properties:
+                                    FieldDisplayName: ="ProductCategoryName"
+                                    FieldName: ="ProductCategoryName"
+                                    FieldType: ="s"
+                                    Order: =1
+                        - chkProductCRUDDiscontinued:
+                            Control: CheckBox@0.0.30
+                            Properties:
+                              Checked: =LookUp(fProducts,ProductID=gvCRUDProductID,Discontinued)
+                              Label: ="Discontinued"
+                              OnCheck: =Set(gvDiscontinued,true);
+                              OnUncheck: =Set(gvDiscontinued,false);
+                              Width: =140
+                              X: =inpProductCRUDProductID.X+inpProductCRUDProductID.Width+8
+                              Y: =inpProductCRUDProductID.Y
+                        - lblProductCRUDQtyPerUnit:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Qty Per Unit"
+                              Width: =120
+                              Y: =inpProductCRUDProductDescriptionHTML.Y+inpProductCRUDProductDescriptionHTML.Height
+                        - inpProductCRUDQtyPerUnit:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =lblProductCRUDProductID.Height+8
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '=LookUp(fProducts,ProductID= gvCRUDProductID,QuantityPerUnit) '
+                              Width: =Parent.Width-lblProductCRUDProductID.Width
+                              X: =lblProductCRUDProductID.X+lblProductCRUDProductID.Width
+                              Y: =lblProductCRUDQtyPerUnit.Y
+                        - lblProductCRUDUnitPrice:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Unit Price"
+                              Width: =120
+                              Y: =lblProductCRUDQtyPerUnit.Y+lblProductCRUDQtyPerUnit.Height+8
+                        - inpProductCRUDUnitPrice:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Align: =Align.Right
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =lblProductCRUDProductID.Height+8
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: =Text(LookUp(fProducts,ProductID= gvCRUDProductID,UnitPrice) ,"$#,##0.00")
+                              Width: =(Parent.Width/2)-lblProductCRUDProductID.Width-10
+                              X: =lblProductCRUDProductID.X+lblProductCRUDProductID.Width
+                              Y: =lblProductCRUDUnitPrice.Y
+                        - lblProductCRUDUnitCost:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Unit Cost"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDUnitPrice.X
+                              Y: =lblProductCRUDUnitPrice.Y+lblProductCRUDUnitPrice.Height+8
+                        - inpProductCRUDUnitCost:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Align: =Align.Right
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: =Text(LookUp(fProducts,ProductID= gvCRUDProductID,StandardUnitCost) ,"$#,##0.00")
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDUnitCost.X+lblProductCRUDUnitCost.Width
+                              Y: =lblProductCRUDUnitCost.Y
+                        - lblProductCRUDReorderLevel:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Reorder Level"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDUnitPrice.X
+                              Y: =lblProductCRUDUnitCost.Y+lblProductCRUDUnitCost.Height+8
+                        - inpProductCRUDReorderLevel:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Align: =Align.Right
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '= LookUp(fProducts,ProductID= gvCRUDProductID,ReorderLevel)   '
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDReorderLevel.X+lblProductCRUDReorderLevel.Width
+                              Y: =lblProductCRUDReorderLevel.Y
+                        - lblProductCRUDTargetLevel:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Target Level"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDUnitPrice.X
+                              Y: =lblProductCRUDReorderLevel.Y+lblProductCRUDReorderLevel.Height+8
+                        - inpProductCRUDTargetLevel:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Align: =Align.Right
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '= LookUp(fProducts,ProductID= gvCRUDProductID,TargetLevel)   '
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDTargetLevel.X+lblProductCRUDTargetLevel.Width
+                              Y: =lblProductCRUDTargetLevel.Y
+                        - lblProductCRUDMinReorderQty:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              Size: =10
+                              Text: ="Min Reorder Qty"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDUnitPrice.X
+                              Y: =lblProductCRUDTargetLevel.Y+lblProductCRUDTargetLevel.Height+8
+                        - inpProductCRUDMinReorderQty:
+                            Control: TextInput@0.0.54
+                            Properties:
+                              Align: =Align.Right
+                              Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                              BorderColor: =RGBA(39, 113, 194, 1)
+                              BorderThickness: =1
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Mode: ='TextInputCanvas.Mode'.SingleLine
+                              PaddingBottom: =1
+                              PaddingLeft: =1
+                              PaddingRight: =1
+                              PaddingTop: =1
+                              Value: '= LookUp(fProducts,ProductID= gvCRUDProductID,MinimumReorderQuantity)   '
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =lblProductCRUDMinReorderQty.X+lblProductCRUDMinReorderQty.Width
+                              Y: =lblProductCRUDMinReorderQty.Y
+                        - inpProductCRUDProductDescriptionHTML:
+                            Control: RichTextEditor@2.7.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: =LookUp(fProducts,ProductID= gvCRUDProductID,ProductDescription)
+                              Height: =240
+                              Width: =Parent.Width-lblProductCRUDProductDescription.Width
+                              X: =lblProductCRUDProductDescription.X+lblProductCRUDProductDescription.Width
+                              Y: =lblProductCRUDProductDescription.Y
+                        - lblQuantityAvailableToSell:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =10
+                              Text: ="Qty Avail. to Sell"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =inpProductCRUDUnitPrice.X+inpProductCRUDUnitPrice.Width+2
+                              Y: =lblProductCRUDUnitPrice.Y
+                        - lblQuantityNoStock:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =10
+                              Text: ="Qty No Stock"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblQuantityAvailableToSell.X
+                              Y: =lblProductCRUDUnitCost.Y
+                        - lblQuantityOnOrder:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =10
+                              Text: ="Qty On Order"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblQuantityAvailableToSell.X
+                              Y: =lblProductCRUDTargetLevel.Y
+                        - lblQuantityAllocated:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =10
+                              Text: ="Qty Allocated"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblQuantityAvailableToSell.X
+                              Y: =lblProductCRUDReorderLevel.Y
+                        - lblQuantityToReorder:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.Red
+                              Font: =Font.'Open Sans'
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =10
+                              Text: ="Qty To Reorder"
+                              Width: =lblProductCRUDUnitPrice.Width
+                              X: =lblQuantityAvailableToSell.X
+                              Y: =inpProductCRUDMinReorderQty.Y
+                        - btnDeleteProduct:
+                            Control: Button@0.0.45
+                            Properties:
+                              OnSelect: |
+                                =Set(
+                                gvCRUDProductID,
+                                    Value(inpProductCRUDProductID.Value)
+                                );
+                                Set(
+                                    gvCRUDType,
+                                    fMagicNo.gvCRUDD
+                                );
+                                Set(
+                                    gvTGLCRUDProduct,
+                                    !gvTGLCRUDProduct
+                                );
+                              Text: ="❌Delete"
+                              X: =Parent.Width-(Self.Width*2)
+                              Y: =lblProductCRUDMinReorderQty.Y+lblProductCRUDMinReorderQty.Height+12
+                        - btnClearProductDescription:
+                            Control: Button@0.0.45
+                            Properties:
+                              FontSize: =9
+                              OnSelect: "=Set(\n    gvClearProductDescription,\n    1\n);\nSet(\n    gvCRUDProductID,\n    Value(inpProductCRUDProductID.Value)\n);\nSet(\n    gvProductDescription,\n    Blank();\n    \n);\nSet(\n    gvCRUDType,\n    If(\n        Coalesce(\n            gvCRUDProductID,\n            0\n        ) = 0,\n        fMagicNo.gvCRUDC,\n        fMagicNo.gvCRUDU\n    );\n    \n);\nSet(\n    gvTGLCRUDProduct,\n    !gvTGLCRUDProduct\n);\nSet(\n    fProductList,\n    ProductList.dboProductList().ResultSets.Table1\n);\nSet(\n    gvClearProductDescription,\n    0\n);\n"
+                              Text: ="❌ Clear Description"
+                              X: =24
+                              Y: =335
+                        - inpQtyAvailable:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisabledColor: =RGBA(0, 0, 0, 1)
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =inpProductCRUDUnitPrice.Height
+                              OnSelect: |
+                                =SetFocus(inpProductCRUDUnitCost);
+                              Size: =12
+                              Text: =Coalesce(gvDefaultReorder.OutputParameters.ProductAvailableToSell,0)
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =lblQuantityAvailableToSell.X+lblQuantityAvailableToSell.Width
+                              Y: =inpProductCRUDUnitPrice.Y
+                        - inpQtyNoStock:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisabledColor: =RGBA(0, 0, 0, 1)
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =12
+                              Text: |+
+                                =Coalesce(gvDefaultReorder.OutputParameters.ProductNoStock,0)
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =inpQtyAvailable.X
+                              Y: =lblProductCRUDUnitCost.Y
+                        - inpQtyAllocated:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisabledColor: =RGBA(0, 0, 0, 1)
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =12
+                              Text: |
+                                =Coalesce(gvDefaultReorder.OutputParameters.ProductAllocated,0)
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =inpQtyAvailable.X
+                              Y: =lblProductCRUDReorderLevel.Y
+                        - inpQtyOnOrder:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisabledColor: =RGBA(0, 0, 0, 1)
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =12
+                              Text: |
+                                =Coalesce(gvDefaultReorder.OutputParameters.ProductOnOrder,0)
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =inpQtyAvailable.X
+                              Y: =lblProductCRUDTargetLevel.Y
+                        - inpQtytoReorder:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =RGBA(215, 58, 60, 1)
+                              DisabledColor: =Color.Red
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =inpProductCRUDUnitPrice.Height
+                              Size: =12
+                              Text: |
+                                =Coalesce(gvDefaultReorder.OutputParameters.ProductReorderQuantity,0)
+                              Width: =inpProductCRUDUnitPrice.Width
+                              X: =inpQtyAvailable.X
+                              Y: =inpProductCRUDMinReorderQty.Y
+                  - conProductTransactions:
+                      Control: GroupContainer@1.3.0
+                      Variant: ManualLayout
+                      Properties:
+                        Width: =300
+                        X: =40
+                        Y: =40
+                      Children:
+                        - lblProductCRUDVendors:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              BorderThickness: =2
+                              Fill: =If(lvProductDetailView=1,fAppColors.gvSelectedHighlight,RGBA(0, 0, 0, 0))
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              OnSelect: |
+                                =UpdateContext({lvProductDetailView: 1});
+                              Size: =10
+                              Text: ="Product Vendors"
+                              Width: =120
+                        - lblProductCRUDCustomerOrders:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              BorderThickness: =2
+                              Fill: =If(lvProductDetailView=2,fAppColors.gvSelectedHighlight,RGBA(0, 0, 0, 0))
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              OnSelect: =UpdateContext({lvProductDetailView:2});
+                              Size: =10
+                              Text: ="Customer Orders"
+                              Width: =120
+                              X: =lblProductCRUDVendors.X+lblProductCRUDVendors.Width
+                              Y: =lblProductCRUDVendors.Y
+                        - lblProductCRUDPOs:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              BorderThickness: =2
+                              Fill: =If(lvProductDetailView=3,fAppColors.gvSelectedHighlight,RGBA(0, 0, 0, 0))
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              OnSelect: |-
+                                =Set(gvTGLPOByProduct,!gvTGLPOByProduct);
+                                UpdateContext({lvProductDetailView:3});
+                              Size: =10
+                              Text: ="Purchase Order"
+                              Width: =120
+                              X: =lblProductCRUDCustomerOrders.X+lblProductCRUDCustomerOrders.Width
+                              Y: =lblProductCRUDVendors.Y
+                        - lblProductCRUDStockTakes:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              BorderThickness: =2
+                              Fill: =If(lvProductDetailView=4,fAppColors.gvSelectedHighlight,RGBA(0, 0, 0, 0))
+                              Font: =Font.'Open Sans'
+                              Height: =24
+                              OnSelect: =UpdateContext({lvProductDetailView:4});
+                              Size: =10
+                              Text: ="Stock Takes"
+                              Width: =120
+                              X: =lblProductCRUDPOs.X+lblProductCRUDPOs.Width
+                              Y: =lblProductCRUDVendors.Y
+                        - glryProductCRUDVendors:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Fill: =Color.White
+                              Items: |-
+                                = ProductDetails.dboProductVendorsByProduct({ProductID: gvCRUDProductID}).ResultSets.Table1
+                              TemplateSize: =Min(22, Self.Height - 60)
+                              Visible: =lvProductDetailView=1
+                              Width: =Parent.Width
+                              Y: =conProductCRUDTransactionsHeadersST.Y+conProductCRUDTransactionsHeadersST.Height
+                            Children:
+                              - lblProductsCRUDVendorID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Color: =RGBA(50, 49, 48, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =20
+                                    OnSelect: |
+                                      =Select(Parent);
+                                      Set(
+                                          gvCRUDCompany,
+                                          LookUp(
+                                              fCompanies,
+                                              CompanyID = ThisItem.VendorID
+                                          )
+                                      );
+                                      Set(
+                                          gvCRUDType,
+                                          fMagicNo.gvCRUDU
+                                      );
+                                      Navigate(scrCompanyEdit);
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: ="✏️" & ThisItem.VendorID
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersVendorID.Width
+                              - lblProductsCRUDVendorName:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =20
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =ThisItem.CompanyName
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersVendorName.Width
+                                    X: =lblProductsCRUDVendorID.X+lblProductsCRUDVendorID.Width
+                        - glryProductCRUDCustomerOrders:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Fill: =Color.White
+                              Items: '= fProductOrdersByProduct  '
+                              TemplateSize: =Min(22, Self.Height - 60)
+                              Visible: =lvProductDetailView=2
+                              Width: =Parent.Width
+                              Y: =glryProductCRUDVendors.Y
+                            Children:
+                              - lblProductsCRUDOrderID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Color: =RGBA(50, 49, 48, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: |
+                                      =Select(Parent);
+                                      Set(
+                                          gvCRUDOrder,LookUp(fOrders,OrderID=
+                                          ThisItem.OrderID)
+                                      );
+                                      Set(
+                                          gvCRUDOrderID,
+                                          gvCRUDOrder.OrderID
+                                      );
+                                      Navigate(scrOrderAdd);
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: ="✏️" & ThisItem.OrderID
+                                    Underline: =true
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersOrderID.Width
+                              - lblProductsCRUDOrderDate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =DateValue(ThisItem.OrderDate)
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersOrderDate.Width
+                                    X: =lblProductsCRUDOrderID.X + lblProductsCRUDOrderID.Width
+                              - lblProductsCRUDOrderQty:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =20
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =ThisItem.Quantity
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersOrderQty.Width
+                                    X: =lblProductsCRUDOrderDate.X+lblProductsCRUDOrderDate.Width
+                                    Y: =2
+                              - lblProductsCRUDOrderUnitPrice:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =26
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =Text(ThisItem.UnitPrice,"$#,##0.00")
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =100
+                                    X: =lblProductsCRUDOrderQty.X+lblProductsCRUDOrderQty.Width
+                                    Y: =2
+                              - lblProductsCRUDOrderExtendedPrice:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =16
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =Text(ThisItem.ExtendedPrice,"$#,##0.00")
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =100
+                                    X: =lblProductsCRUDOrderUnitPrice.X+lblProductsCRUDOrderUnitPrice.Width
+                              - lblProductsCRUDOrderStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: '=ThisItem.OrderStatusName '
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =100
+                                    X: =lblProductsCRUDOrderExtendedPrice.X+lblProductsCRUDOrderExtendedPrice.Width
+                              - lblProductsCRUDProductStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: '=ThisItem.OrderDetailStatusName '
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =100
+                                    X: =lblProductsCRUDOrderStatus.X+lblProductsCRUDOrderStatus.Width
+                        - glryProductCRUDPurchaseOrders:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Fill: =Color.White
+                              Items: |-
+                                = fPOByProduct//ProductDetails.dboPurchaseOrdersByProduct({ProductID: gvCRUDProductID}).ResultSets.Table1
+                              TemplateSize: =Min(22, Self.Height - 60)
+                              Visible: =lvProductDetailView=3
+                              Width: =Parent.Width
+                              Y: =glryProductCRUDVendors.Y
+                            Children:
+                              - lblProductsCRUDPOID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Color: =RGBA(50, 49, 48, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: |
+                                      =Select(Parent);
+                                      Set(
+                                          gvCRUDPO,
+                                          LookUp(
+                                              fPurchaseOrders,
+                                              PurchaseOrderID = ThisItem.PurchaseOrderID
+                                          )
+                                      );
+                                      Navigate(scrPOAdd);
+                                      Set(gvCRUDProductIDReturn,gvCRUDProductID);
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: ="✏️" & ThisItem.PurchaseOrderID
+                                    Underline: =true
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =80
+                              - lblProductsCRUDPOVendor:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =ThisItem.Vendor
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOVendor.Width
+                                    X: =lblProductsCRUDPOID.X + lblProductsCRUDPOID.Width
+                              - lblProductsCRUDPOQty:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =26
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =ThisItem.Quantity
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOQty.Width
+                                    X: =lblProductsCRUDPOStatus.X+lblProductsCRUDPOStatus.Width
+                                    Y: =2
+                              - lblProductsCRUDPOUnitCost:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =24
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =Text(ThisItem.UnitCost,"$#,##0.00")
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOUnitCost.Width
+                                    X: =lblProductsCRUDPOQty.X+lblProductsCRUDPOQty.Width
+                                    Y: =2
+                              - lblProductsCRUDPOExtendedCost:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Right
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =16
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =Text(ThisItem.ExtendedCost,"$#,##0.00")
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOExtendedCost.Width
+                                    X: =lblProductsCRUDPOUnitCost.X+lblProductsCRUDPOUnitCost.Width
+                              - lblProductsCRUDPODate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =DateValue(ThisItem.SubmittedDate)
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPODate.Width
+                                    X: =lblProductsCRUDPOVendor.X+lblProductsCRUDPOVendor.Width
+                              - lblProductsCRUDPOStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =10
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =ThisItem.StatusName
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOStatus.Width
+                                    X: =lblProductsCRUDPODate.X+lblProductsCRUDPODate.Width
+                              - lblProductsCRUDPODateReceived:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    AutoHeight: =true
+                                    BorderColor: =RGBA(0, 0, 0, 1)
+                                    Font: =Font.'Open Sans'
+                                    FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                    Height: =24
+                                    OnSelect: =Select(Parent)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    Size: =10
+                                    Text: =DateValue(ThisItem.ReceivedDate)
+                                    VerticalAlign: =VerticalAlign.Top
+                                    Width: =lblProductCRUDHeadersPOReceivedDate.Width
+                                    X: =lblProductsCRUDPOExtendedCost.X+lblProductsCRUDPOExtendedCost.Width
+                        - conStockTakes:
+                            Control: GroupContainer@1.3.0
+                            Variant: AutoLayout
+                            Properties:
+                              Height: =Parent.Height-Self.Y
+                              LayoutDirection: =LayoutDirection.Vertical
+                              Visible: =lvProductDetailView=4
+                              Width: =Parent.Width
+                              Y: =conProductCRUDTransactionsHeadersST.Y+conProductCRUDTransactionsHeadersST.Height
+                            Children:
+                              - glryProductCRUDStockTakes:
+                                  Control: Gallery@2.15.0
+                                  Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Fill: =Color.White
+                                    FillPortions: =18
+                                    Height: =200
+                                    Items: =SortByColumns( Filter(fStockTake,ProductID =gvCRUDProductID),"StockTakeDate",SortOrder.Descending)
+                                    LayoutMinHeight: |+
+                                      =24
+                                    MaxTemplateSize: =40
+                                    TemplatePadding: =1
+                                    TemplateSize: =24
+                                    Visible: =lvProductDetailView=4
+                                    Width: =Parent.Width
+                                    Y: =glryProductCRUDVendors.Y
+                                  Children:
+                                    - lblProductsCRUDStockTakeQOH:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Right
+                                          BorderColor: =RGBA(39, 113, 194, 1)
+                                          BorderThickness: =2
+                                          Color: =RGBA(50, 49, 48, 1)
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                          Height: =Parent.TemplateHeight
+                                          OnSelect: =Select(Parent)
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =16
+                                          PaddingTop: =0
+                                          Size: =10
+                                          Text: =ThisItem.QuantityOnHand
+                                          VerticalAlign: =VerticalAlign.Top
+                                          Width: =lblProductCRUDHeadersQOH.Width
+                                    - lblProductsCRUDStockTakeExpectedQty:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Right
+                                          BorderColor: =RGBA(39, 113, 194, 1)
+                                          BorderThickness: =2
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                          Height: =Parent.TemplateHeight
+                                          OnSelect: =Select(Parent)
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =16
+                                          PaddingTop: =0
+                                          Size: =10
+                                          Text: =ThisItem.ExpectedQuantity
+                                          VerticalAlign: =VerticalAlign.Top
+                                          Width: =lblProductCRUDHeadersExpectedQty.Width
+                                          X: =lblProductCRUDHeadersExpectedQty.X
+                                          Y: =lblProductsCRUDStockTakeQOH.Y
+                                    - lblProductsCRUDStockTakeDate:
+                                        Control: Label@2.5.1
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =RGBA(39, 113, 194, 1)
+                                          BorderThickness: =2
+                                          Font: =Font.'Open Sans'
+                                          FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                                          Height: =Parent.TemplateHeight
+                                          OnSelect: =Select(Parent)
+                                          PaddingBottom: =0
+                                          PaddingLeft: =10
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Size: =10
+                                          Text: =DateValue(ThisItem.StockTakeDate)
+                                          VerticalAlign: =VerticalAlign.Top
+                                          Width: =lblProductCRUDHeadersStockTakeDate.Width
+                                          X: =lblProductCRUDHeadersStockTakeDate.X
+                                          Y: =lblProductsCRUDStockTakeQOH.Y
+                                    - btnDeleteStockTake:
+                                        Control: Button@0.0.45
+                                        Properties:
+                                          Height: =lblProductsCRUDStockTakeDate.Height
+                                          OnSelect: |-
+                                            =Set(gvCRUDType,fMagicNo.gvCRUDD);
+                                            Set(gvStockTakeDate,lblProductsCRUDStockTakeDate.Text); 
+                                            Set(gvStockTakeID ,ThisItem.StockTakeID);
+                                            Set(gvTGLStockTake,!gvTGLStockTake);
+                                          Text: ="❌ Delete"
+                                          X: =lblProductsCRUDStockTakeDate.X+lblProductsCRUDStockTakeDate.Width
+                              - conAddStockTakes:
+                                  Control: GroupContainer@1.3.0
+                                  Variant: AutoLayout
+                                  Properties:
+                                    LayoutDirection: =LayoutDirection.Horizontal
+                                    LayoutMinHeight: =30
+                                    Width: =Parent.Width
+                                    Y: =glryProductCRUDStockTakes.Y+glryProductCRUDStockTakes.Height
+                                  Children:
+                                    - inpStockTakeQOH:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          Align: =Align.Right
+                                          BorderColor: =Color.Black
+                                          BorderThickness: =2
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Placeholder: ="Enter New QOH "
+                                          Width: =lblProductsCRUDStockTakeQOH.Width
+                                    - inpStockTakeExpectedQty:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          Align: =Align.Right
+                                          BorderColor: =Color.Black
+                                          BorderThickness: =2
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Placeholder: ="Enter Expected Qty "
+                                          Width: =lblProductsCRUDStockTakeQOH.Width
+                                    - inpStockTakeDate:
+                                        Control: TextInput@0.0.54
+                                        Properties:
+                                          Align: =Align.Center
+                                          BorderColor: =Color.Black
+                                          BorderThickness: =2
+                                          PaddingBottom: =0
+                                          PaddingLeft: =0
+                                          PaddingRight: =0
+                                          PaddingTop: =0
+                                          Placeholder: ="Enter Stocktake Date"
+                                          Width: =lblProductsCRUDStockTakeQOH.Width
+                                    - btnStockTakeAdd:
+                                        Control: Button@0.0.45
+                                        Properties:
+                                          OnSelect: |+
+                                            =Set(gvCRUDType,fMagicNo.gvCRUDC);
+
+                                            Set(gvStockTakeDate,inpStockTakeDate.Value);
+                                            Set(gvStockTakeExpectedQty,inpStockTakeExpectedQty.Value);
+                                            Set( gvStockTakeQOH,inpStockTakeQOH.Value);
+                                            Set(gvTGLStockTake,!gvTGLStockTake);
+                                            Reset(inpStockTakeDate);
+                                            Reset(inpStockTakeQOH);
+                                            Reset(inpStockTakeExpectedQty);
+                                          Text: ="➕ Add StockTake"
+                                          Width: =lblProductCRUDHeadersQOH.Width
+                        - conProductCRUDTransactionsHeadersST:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              Fill: =RGBA(174, 208, 221, 1)
+                              Height: =24
+                              Visible: =lvProductDetailView=4
+                              Width: =Parent.Width
+                              Y: =lblProductCRUDVendors.Y+lblProductCRUDVendors.Height
+                            Children:
+                              - lblProductCRUDHeadersQOH:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Quantity On Hand"
+                              - lblProductCRUDHeadersExpectedQty:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Expected Quantity"
+                                    Width: =lblProductCRUDHeadersQOH.Width
+                                    X: =lblProductCRUDHeadersQOH.X+lblProductCRUDHeadersQOH.Width
+                              - lblProductCRUDHeadersStockTakeDate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="StockTake Date"
+                                    Width: =lblProductCRUDHeadersQOH.Width
+                                    X: =lblProductCRUDHeadersExpectedQty.X+lblProductCRUDHeadersExpectedQty.Width
+                        - conProductCRUDTransactionsHeadersPO:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              Fill: =RGBA(174, 208, 221, 1)
+                              Height: =24
+                              Visible: =lvProductDetailView=3
+                              Width: =Parent.Width
+                              Y: =lblProductCRUDVendors.Y+lblProductCRUDVendors.Height
+                            Children:
+                              - lblProductCRUDHeadersPOID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="PO ID"
+                                    Width: =80
+                              - lblProductCRUDHeadersPOVendor:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Vendor"
+                                    Width: =130
+                                    X: =lblProductCRUDHeadersPOID.X+lblProductCRUDHeadersPOID.Width
+                              - lblProductCRUDHeadersPODate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="PO Date"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersPOVendor.X+lblProductCRUDHeadersPOVendor.Width
+                              - lblProductCRUDHeadersPOStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="PO Status"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersPODate.X+lblProductCRUDHeadersPODate.Width
+                              - lblProductCRUDHeadersPOQty:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Quantity"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersPOStatus.X+lblProductCRUDHeadersPOStatus.Width
+                              - lblProductCRUDHeadersPOUnitCost:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Unit Cost"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersPOQty.X+lblProductCRUDHeadersPOQty.Width
+                              - lblProductCRUDHeadersPOExtendedCost:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Extended Cost"
+                                    Width: =110
+                                    X: =lblProductCRUDHeadersPOUnitCost.X+lblProductCRUDHeadersPOUnitCost.Width
+                              - lblProductCRUDHeadersPOReceivedDate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Received Date"
+                                    Width: =110
+                                    X: =lblProductCRUDHeadersPOExtendedCost.X+lblProductCRUDHeadersPOExtendedCost.Width
+                        - conProductCRUDTransactionsHeadersOrders:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              Fill: =RGBA(174, 208, 221, 1)
+                              Height: =24
+                              Visible: =lvProductDetailView=2
+                              Width: =Parent.Width
+                              Y: =lblProductCRUDVendors.Y+lblProductCRUDVendors.Height
+                            Children:
+                              - lblProductCRUDHeadersOrderID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Order ID"
+                                    Width: =80
+                              - lblProductCRUDHeadersOrderDate:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Order Date"
+                                    Width: =100
+                                    X: =lblProductCRUDHeadersOrderID.X+lblProductCRUDHeadersOrderID.Width
+                              - lblProductCRUDHeadersOrderQty:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Quantity"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersOrderDate.X+lblProductCRUDHeadersOrderDate.Width
+                              - lblProductCRUDHeadersOrderUnitPrice:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Unit Price"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersOrderQty.X+lblProductCRUDHeadersOrderQty.Width
+                              - lblProductCRUDHeadersOrderExtendedPrice:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Extended Price"
+                                    Width: =110
+                                    X: =lblProductCRUDHeadersOrderUnitPrice.X+lblProductCRUDHeadersOrderUnitPrice.Width
+                              - lblProductCRUDHeadersOrderStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Order Status"
+                                    Width: =90
+                                    X: =lblProductCRUDHeadersOrderExtendedPrice.X+lblProductCRUDHeadersOrderExtendedPrice.Width
+                              - lblProductCRUDHeadersOrderProductStatus:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Product Status"
+                                    Width: =110
+                                    X: =lblProductCRUDHeadersOrderStatus.X+lblProductCRUDHeadersOrderStatus.Width
+                        - conProductCRUDTransactionsHeadersVendors:
+                            Control: GroupContainer@1.3.0
+                            Variant: ManualLayout
+                            Properties:
+                              Fill: =RGBA(174, 208, 221, 1)
+                              Height: =24
+                              Visible: =lvProductDetailView=1
+                              Width: =Parent.Width
+                              Y: =lblProductCRUDVendors.Y+lblProductCRUDVendors.Height
+                            Children:
+                              - lblProductCRUDHeadersVendorID:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Vendor ID"
+                                    Width: =80
+                              - lblProductCRUDHeadersVendorName:
+                                  Control: Label@2.5.1
+                                  Properties:
+                                    Align: =Align.Center
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =24
+                                    Size: =10
+                                    Text: ="Vendor"
+                                    Width: =160
+                                    X: =lblProductCRUDHeadersVendorID.X+lblProductCRUDHeadersVendorID.Width

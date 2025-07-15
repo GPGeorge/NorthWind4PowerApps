@@ -1,0 +1,553 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrProductList:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: =Set(fProductList,ProductList.dboProductList().ResultSets.Table1;);
+    Children:
+      - compAppTitleProductList:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - compNWDevMenuProductList:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleProductList.Y+compAppTitleProductList.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - conProductList:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Height: =Parent.Height-(compNWDevMenuProductList.Height+compAppTitleProductList.Height)
+            Width: =Parent.Width
+            Y: =compNWDevMenuProductList.Y+compNWDevMenuProductList.Height
+          Children:
+            - conProductCaptionList:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  Height: =40
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  Width: =Parent.Width
+                  Y: =conProductsListBonus.Y+conProductsListBonus.Height
+                Children:
+                  - lblProductProductIDCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Product ID"
+                        Width: =80
+                        X: =compAppTitleProductList.X
+                        Y: =compAppTitleProductList.Y+compAppTitleProductList.Height+45
+                  - lblProductCodeCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Product Code"
+                        Width: =110
+                        X: =lblProductProductIDCaptionList.X+lblProductProductIDCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductProductNameCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Product"
+                        Width: =190
+                        X: =lblProductCodeCaptionList.X+lblProductCodeCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductNoStockCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="No Stock"
+                        Width: =80
+                        X: =lblProductProductNameCaptionList.X+lblProductProductNameCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductAllocatedCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Allocated"
+                        Width: =80
+                        X: =lblProductNoStockCaptionList.X+lblProductNoStockCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductAvailtoSellCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Size: =10
+                        Text: ="Avail. To Sell"
+                        Width: =96
+                        X: =40
+                        Y: =40
+                  - lblProductQtyOnOrderCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Qty On Order"
+                        Width: =96
+                        X: =lblProductAllocatedCaptionList.X+lblProductAllocatedCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductReorderLvlCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Reorder Level"
+                        Width: =100
+                        X: =lblProductQtyOnOrderCaptionList.X+lblProductQtyOnOrderCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductTargetLvlCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Target Level"
+                        Width: =100
+                        X: =lblProductReorderLvlCaptionList.X+lblProductReorderLvlCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductMinReorderQtyCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Min. Reorder Qty"
+                        Width: =118
+                        X: =lblProductReorderLvlCaptionList.X+lblProductReorderLvlCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+                  - lblProductDiscontinuedCaptionList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        Height: =lblProductProductIDCaptionList.Height
+                        PaddingBottom: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="Discontinued"
+                        Width: =120
+                        X: =lblProductReorderLvlCaptionList.X+lblProductReorderLvlCaptionList.Width
+                        Y: =lblProductProductIDCaptionList.Y
+            - glryProductsList:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: |+
+                    =fAppColors.gvlblColorFade
+                  Height: =660
+                  Items: |-
+                    =SortByColumns(
+                        With(
+                            {records: 'fProductList'},
+                            ForAll(
+                                Sequence(CountRows(records)),
+                                Patch(
+                                    Last(
+                                        FirstN(
+                                            records,
+                                            Value
+                                        )
+                                    ),
+                                    {rowNumber: Value}
+                                )
+                            )
+                        ),
+                        "ProductCategoryID",
+                        SortOrder.Ascending,
+                        "ProductName",
+                        SortOrder.Ascending,
+                        "rowNumber",
+                        SortOrder.Descending
+                    )
+                  OnSelect: =
+                  TemplateFill: |-
+                    =If(
+                        Mod(
+                            ThisItem.rowNumber,
+                            2
+                        ) = 0,
+                        fAppColors.gvBodyFill,
+                        fAppColors.gvlblFillFade
+                    )
+                  TemplatePadding: =0
+                  TemplateSize: =30
+                  Width: =compAppTitleProductList.Width
+                  X: =compAppTitleProductList.X
+                  Y: =conProductCaptionList.Y+conProductCaptionList.Height
+                Children:
+                  - lblProductProductIDList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        BorderThickness: =2
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: |
+                          =Select(Parent);
+                          Set(
+                              gvCRUDProductID,
+                              Parent.Selected.ProductID
+                          );
+                          Set(
+                              gvCRUDProductIDReturn,
+                              gvCRUDProductID
+                          );
+                          Set(
+                              gvDiscontinued,
+                              false
+                          );
+                          Set(
+                              gvCRUDType,
+                              fMagicNo.gvCRUDU
+                          );
+                          Set(
+                              gvClearProductDescription,
+                              0
+                          );
+                          Set(
+                              gvTGLProductInventory,
+                              !gvTGLProductInventory
+                          );
+                          Set(
+                              fProductOrdersByProduct,
+                              ProductDetails.dboProductOrdersByProduct({ProductID: gvCRUDProductID}).ResultSets.Table1
+                          );
+                          Navigate(scrProductCRUD);
+                        Size: =11
+                        Text: ="✏️ " & ThisItem.ProductID
+                        Tooltip: ="Click to See Order Detail"
+                        Width: =lblProductProductIDCaptionList.Width
+                        X: =compAppTitleProductList.X
+                  - lblProductNameList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.Arial
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =ThisItem.ProductName
+                        Width: =lblProductProductNameCaptionList.Width
+                        X: =lblProductCodeList.X+lblProductCodeList.Width
+                  - lblProductCodeList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =10
+                        Text: =ThisItem.ProductCode
+                        Width: =lblProductCodeCaptionList.Width
+                        X: =lblProductProductIDList.X+lblProductProductIDList.Width
+                  - tblProductAvailableToSellList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Fill: |-
+                          =If(
+                              ThisItem.ToSell < ThisItem.TargetLevel,
+                              fAppColors.gvWarningFill,
+                              RGBA(
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                              )
+                          )
+                        Font: =Font.'Open Sans'
+                        Height: =glryProductsList.TemplateHeight
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =8
+                        PaddingRight: =34
+                        PaddingTop: =8
+                        Size: =10
+                        Text: =ThisItem.ToSell
+                        Width: =lblProductAvailtoSellCaptionList.Width
+                        X: =lblProductAllocatedList.X+lblProductAllocatedList.Width
+                  - lblProductQtyOnOrderList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingRight: =34
+                        Size: =10
+                        Text: =ThisItem.QuantityOnOrder
+                        Width: =lblProductQtyOnOrderCaptionList.Width
+                        X: =tblProductAvailableToSellList.X+tblProductAvailableToSellList.Width
+                  - lblProductReorderLevelList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Fill: |-
+                          =If(
+                              ThisItem.ToSell < ThisItem.TargetLevel,
+                              fAppColors.gvWarningFill,
+                              RGBA(
+                                  0,
+                                  0,
+                                  0,
+                                  0
+                              )
+                          )
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =8
+                        PaddingRight: =30
+                        PaddingTop: =8
+                        Size: =10
+                        Text: =ThisItem.ReorderLevel
+                        Width: =lblProductReorderLvlCaptionList.Width
+                        X: =lblProductQtyOnOrderList.X+lblProductQtyOnOrderList.Width
+                  - lblProductTargetLevelList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingRight: =36
+                        Size: =10
+                        Text: =ThisItem.TargetLevel
+                        Width: =115
+                        X: =lblProductReorderLevelList.X+lblProductReorderLevelList.Width
+                  - lblProductReorderQtyList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingRight: =40
+                        Size: =10
+                        Text: '=Coalesce(ThisItem.MinimumReorderQuantity,0) '
+                        Width: =115
+                        X: =lblProductTargetLevelList.X+lblProductTargetLevelList.Width
+                  - lblProductRowNumberhdnList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =29
+                        OnSelect: =Select(Parent)
+                        Size: =10
+                        Text: =ThisItem.rowNumber
+                        Visible: =false
+                        X: =1197
+                  - lblProductNoStockList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingRight: =34
+                        Size: =10
+                        Text: =ThisItem.NoStock
+                        Width: =lblProductNoStockCaptionList.Width
+                        X: =lblProductNameList.X+lblProductNameList.Width
+                  - lblProductAllocatedList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        PaddingRight: =34
+                        Size: =10
+                        Text: =ThisItem.Allocated
+                        Width: =lblProductAllocatedCaptionList.Width
+                        X: =lblProductNoStockList.X+lblProductNoStockList.Width
+                  - lblProductDiscontinuedList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =10
+                        Text: ="❌"
+                        Visible: =If(ThisItem.Discontinued,true,false)
+                        Width: =30
+                        X: =chkProductListDiscontinued.X+3
+                  - chkProductListDiscontinued:
+                      Control: CheckBox@0.0.30
+                      Properties:
+                        Checked: =ThisItem.Discontinued
+                        DisplayMode: =DisplayMode.View
+                        Height: =30
+                        Label: =
+                        OnSelect: =Select(Parent)
+                        Width: =30
+                        X: =lblProductReorderQtyList.X+lblProductReorderQtyList.Width+30
+            - conProductsListBonus:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  Fill: =fAppColors.gvlblFill
+                  Height: =24
+                  Width: =Parent.Width
+                Children:
+                  - btnProductAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: "=Set(\n    gvCRUDProduct,\n    Blank()\n);Set(\n    gvCRUDProductID,\n    0\n);\nSet(\n    fProductOrdersByProduct,\n    ProductDetails.dboProductOrdersByProduct({ProductID: gvCRUDProductID}).ResultSets.Table1\n);\nSet(\n    gvCRUDType,\n    fMagicNo.gvCRUDC\n);\nSet(\n    gvTGLProductInventory,\n    !gvTGLProductInventory\n);\nSet(\n    gvDiscontinued,\n    false\n);\nNavigate(scrProductCRUD);\n "
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: ="➕ Add Product"
+                        Width: =150
+                        X: =Parent.Width-Self.Width
+                  - btnExportProductsToExcel:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        Fill: =fAppColors.gvlblColorFade
+                        Font: =Font.'Open Sans'
+                        Height: =24
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: "=Notify(\"Under Development\");\n\n \n"
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =10
+                        Text: ="Export To Excel"
+                        Width: =150
+                        X: =100
+      - lblTGLProductReorderList:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =10

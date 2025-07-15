@@ -1,0 +1,95 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  compAppTitleBackup:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      ciAppTitle:
+        PropertyKind: Input
+        DisplayName: ciAppTitle
+        Description: A custom property
+        DataType: Text
+        Default: ="Text"
+    Properties:
+      Height: =70
+      Width: =App.Width
+    Children:
+      - recTitleFillMaster:
+          Control: Rectangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            DisplayMode: =DisplayMode.Disabled
+            Fill: =fAppColors.gvAppTitleColor
+            Height: =compAppTitleBackup.Height
+            Width: =App.Width
+      - glryAppTitlesMaster:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =compAppTitleBackup.Height
+            Items: =colNWDevAppTitle
+            ShowScrollbar: =false
+            TemplateSize: =Parent.Width
+            Width: =Parent.Width
+            X: =imgAppIconMaster.X+imgAppIconMaster.Width
+          Children:
+            - lblAppTitleMaster:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =fAppColors.gvBodyFill
+                  Font: =Font.'Open Sans'
+                  Height: =70
+                  OnSelect: =Select(Parent)
+                  Size: '=30  '
+                  Text: '=LookUp(colNWDevAppTitle, ScreenName = App.ActiveScreen.Name, Title) '
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.Width
+            - icoBackMaster:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =RGBA(39, 67, 125, 1)
+                  Height: |
+                    =lblAppTitleMaster.Height-6
+                  Icon: =Icon.BackArrow
+                  OnSelect: =Back();
+                  PaddingBottom: =6
+                  PaddingLeft: =2
+                  PaddingRight: =2
+                  Width: =lblAppTitleMaster.Height-6
+                  X: '=lblAppTitleMaster.X '
+      - imgAppIconMaster:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =70
+            Image: ='Northwind Traders Developer Edition Thumbnail'
+            OnSelect: =
+            Width: =70
+      - icoOrderQuitAppMaster:
+          Control: Classic/Icon@2.5.0
+          Properties:
+            BorderColor: =RGBA(255, 0, 0, 1)
+            BorderThickness: =4
+            Color: =RGBA(255, 0, 0, 1)
+            Height: =Parent.Height
+            Icon: =Icon.Cancel
+            OnSelect: =Exit();
+            PaddingBottom: =4
+            PaddingLeft: =4
+            PaddingRight: =4
+            PaddingTop: =4
+            Visible: =App.ActiveScreen.Name ="scrOrderList"
+            Width: =Self.Height
+            X: =App.Width-Self.Width

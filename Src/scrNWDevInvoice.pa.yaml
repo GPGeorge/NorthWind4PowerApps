@@ -1,0 +1,485 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrNWDevInvoice:
+    Properties:
+      Height: =1056
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      Width: =816
+    Children:
+      - conPrintInvoice:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =30
+            LayoutAlignItems: =LayoutAlignItems.Center
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutJustifyContent: =LayoutJustifyContent.End
+            PaddingRight: =20
+            Width: =Parent.Width
+            Y: =compAppTitleInvoice.Y+compAppTitleInvoice.Height
+          Children:
+            - btnPrintInvoice:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =ColorFade(Self.Fill, -15%)
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                  Fill: =RGBA(56, 96, 178, 1)
+                  Font: =Font.'Open Sans'
+                  Height: =20
+                  HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                  HoverColor: =RGBA(255, 255, 255, 1)
+                  HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                  OnSelect: |
+                    =//*assume that printing the invoice automatically means it will be sent to the customer
+                    //*a more advanced logic would wait until the print is completed
+                    //*and manually update the invoice date and status.
+                    //*Notify(Value(fMagicNo.gvOrderStatusINV) & " " & First(gvInvoice.ResultSets.Table1).OrderID & " " & Now());
+                    //*UpdateContext(    {        lvSuccess: UpdateOrderStatus.dboUpdateOrderStatus(            {                OrderID: First(gvInvoice.ResultSets.Table1).OrderID ,                OrderStatusID: ValuefMagicNo.gvOrderStatusINV),                StatusDate: DateTimeValue(Now())            }        )    });
+                    //Notify(lvSuccess.OutputParameters.Success);
+                    Print();
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  PressedBorderColor: =Self.Fill
+                  PressedColor: =Self.Fill
+                  PressedFill: =Self.Color
+                  Size: =13
+                  Text: ="Print"
+                  Visible: =Not scrNWDevInvoice.Printing
+            - Label2:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Font: =Font.'Open Sans'
+                  Text: =//lvSuccess.OutputParameters.Success
+      - compAppTitleInvoice:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =Parent.Width
+            ciAppTitle: ="Text"
+      - imgNWDevInvoice:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Image: ='Northwind Traders Developer Edition Thumbnail'
+            X: =20
+            Y: =conPrintInvoice.Y+conPrintInvoice.Height
+      - lblNWInvoiceAddressInvoice:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            Font: =Font.'Open Sans'
+            Height: =imgNWDevInvoice.Height
+            HtmlText: ="<b>Northwind Traders </b><br/>One Portals Way<br/>Twin Points WA 12345"
+            Width: =298
+            X: =imgNWDevInvoice.X + imgNWDevInvoice.Width
+            Y: =imgNWDevInvoice.Y
+      - lblInvoiceDateInvoice:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Height: =30
+            Size: =12
+            Text: ="Invoice Date " & Today()
+            Width: =234
+            X: =Parent.Width-Self.Width-20
+            Y: =imgNWDevInvoice.Y
+      - glryCustomerShipToInvoice:
+          Control: Gallery@2.15.0
+          Variant: VariableHeight
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =100
+            Items: =First(gvInvoice )
+            ShowScrollbar: =false
+            TemplatePadding: =2
+            TemplateSize: =100
+            Width: =Parent.Width/2
+            Y: |+
+              =imgNWDevInvoice.Y+imgNWDevInvoice.Height+30
+          Children:
+            - CustomerShipToInvoice:
+                Control: HtmlViewer@2.1.0
+                Properties:
+                  AutoHeight: =true
+                  Font: =Font.'Open Sans'
+                  Height: =Parent.Height
+                  HtmlText: ="Ship To <b>" & ThisItem.CompanyName & "</b> <br/> " & ThisItem.Address & " <br/> " & ThisItem.City & ", " & ThisItem.StateAbbrev & " " & ThisItem.Zip
+                  OnSelect: =Select(Parent)
+                  Width: =463
+                  X: =55
+                  Y: |+
+                    =0
+      - glryCustomerBillToInvoice:
+          Control: Gallery@2.15.0
+          Variant: VariableHeight
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =100
+            Items: =First(gvInvoice)
+            ShowScrollbar: =false
+            TemplatePadding: =2
+            TemplateSize: =100
+            Width: =Parent.Width/2
+            X: =glryCustomerShipToInvoice.X+glryCustomerShipToInvoice.Width
+            Y: =glryCustomerShipToInvoice.Y
+          Children:
+            - CustomerBillToInvoice:
+                Control: HtmlViewer@2.1.0
+                Properties:
+                  Font: =Font.'Open Sans'
+                  Height: =Parent.Height
+                  HtmlText: ="Bill To <b>" & ThisItem.CompanyName & "</b> <br/> " & ThisItem.Address & " <br/> " & ThisItem.City & ", " & ThisItem.StateAbbrev & " " & ThisItem.Zip
+                  OnSelect: =Select(Parent)
+                  Width: =349
+                  X: =55
+      - dtLineItemsInvoice:
+          Control: DataTable@1.0.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            HeadingColor: =RGBA(255, 255, 255, 1)
+            HeadingFill: =RGBA(56, 96, 178, 1)
+            HeadingFont: =Font.'Open Sans'
+            Height: =44
+            HoverFill: =RGBA(186, 202, 226, .2)
+            Items: =gvInvoice
+            SelectedFill: =RGBA(56, 96, 178, .2)
+            Width: =Parent.Width
+            Y: =glryCustomerShipToInvoice.Y+glryCustomerShipToInvoice.Height+40
+          Children:
+            - ProductCodeHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="#"
+                  FieldName: ="ProductID"
+                  Order: =1
+                  Text: =ThisItem.ProductID
+                  Width: =120
+            - ProductNameHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="Product Name"
+                  FieldName: ="ProductName"
+                  Order: =2
+                  Text: =ThisItem.ProductName
+                  Width: =260
+            - QuantityHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="Quantity"
+                  FieldName: ="Quantity"
+                  Order: =3
+                  Text: =ThisItem.Quantity
+            - UnitPriceHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="Unit Price"
+                  FieldName: ="UnitPrice"
+                  Order: =4
+                  Text: =Text(ThisItem.UnitPrice,"$#,#00.00")
+            - DiscountHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                IsLocked: true
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="Discount"
+                  FieldName: ="Discount"
+                  Order: =5
+                  Text: = Text(ThisItem.Discount,"#0.0#%")
+            - ExtendedPriceHeaderInvoice:
+                Control: DataTableColumn@1.0.1
+                Variant: Textual
+                Properties:
+                  AutoWidth: =false
+                  FieldDisplayName: ="Price"
+                  FieldName: ="ExtendedPrice"
+                  Order: =6
+                  Text: =Text(ThisItem.ExtendedPrice,"$#,##0.00")
+                  Width: =200
+      - glryOrderTotalsInvoice:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =200
+            Items: =gvInvoice
+            ShowScrollbar: =false
+            TemplateSize: =182
+            Width: =Parent.Width
+            Y: =glryLineItemsInvoice.Y+glryLineItemsInvoice.Height
+          Children:
+            - inpSubtotalInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =20
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =Text(ThisItem.SubTotal,"$#,##0.00")
+                  Width: =ExtendedPriceHeaderInvoice.Width *.67
+                  X: =lblSubtotalInvoice.X+lblSubtotalInvoice.Width
+                  Y: =lblSubtotalInvoice.Y
+            - inpShippingInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =20
+                  PaddingTop: =0
+                  Size: =14
+                  Text: |-
+                    =Text(
+                        If(
+                            IsBlank(ThisItem.ShippingFee),
+                            0,
+                            ThisItem.ShippingFee
+                        ),
+                        "$#,##0.00"
+                    )
+                  Width: =ExtendedPriceHeaderInvoice.Width *.67
+                  X: =inpSubtotalInvoice.X
+                  Y: =inpTaxAmountInvoice.Y+inpTaxAmountInvoice.Height
+            - inpTaxAmountInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =20
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =Text(ThisItem.TaxAmount,"$#,##0.00")
+                  Width: =ExtendedPriceHeaderInvoice.Width *.67
+                  X: =inpSubtotalInvoice.X
+                  Y: =inpSubtotalInvoice.Y+inpSubtotalInvoice.Height
+            - lblSubtotalInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Text: ="SubTotal"
+                  X: =ExtendedPriceHeaderInvoice.X-(Self.Width*1.2)
+                  Y: =20
+            - LlblTaxInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  Text: ="Tax"
+                  Width: =lblSubtotalInvoice.Width
+                  X: =lblSubtotalInvoice.X
+                  Y: =lblSubtotalInvoice.Y+LblShippingInvoice.Height
+            - LblShippingInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  Text: ="Shipping"
+                  Width: =lblSubtotalInvoice.Width
+                  X: =lblSubtotalInvoice.X
+                  Y: =LlblTaxInvoice.Y+LlblTaxInvoice.Height
+            - inpTotalInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =20
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =Text(ThisItem.SubTotal + ThisItem.ShippingFee +ThisItem.TaxAmount,"$#,##0.00")
+                  Width: '=ExtendedPriceHeaderInvoice.Width*.67 '
+                  X: =inpSubtotalInvoice.X
+                  Y: =inpShippingInvoice.Y+inpShippingInvoice.Height
+            - lblTotalInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblSubtotalInvoice.Height
+                  OnSelect: =Select(Parent)
+                  Text: ="Total Price"
+                  X: =lblSubtotalInvoice.X
+                  Y: =LblShippingInvoice.Y+LblShippingInvoice.Height
+      - glryLineItemsInvoice:
+          Control: Gallery@2.15.0
+          Variant: VariableHeight
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =Min(Sum(Self.AllItemsCount *Self.MaxTemplateSize+Self.TemplatePadding),495)
+            Items: =gvInvoice
+            MaxTemplateSize: =40
+            ShowScrollbar: =false
+            TemplateSize: =40
+            Width: =Parent.Width
+            Y: =dtLineItemsInvoice.Y+dtLineItemsInvoice.Height
+          Children:
+            - lblProductCodeInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Text: =ThisItem.ProductCode
+                  Width: =ProductCodeHeaderInvoice.Width
+            - lblProductNameInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblProductCodeInvoice.Height
+                  OnSelect: =Select(Parent)
+                  Text: =ThisItem.ProductName
+                  Width: =ProductNameHeaderInvoice.Width
+                  X: =ProductNameHeaderInvoice.X
+                  Y: =lblProductCodeInvoice.Y
+            - lblQuantityInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblProductCodeInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingRight: =15
+                  Text: =ThisItem.ProductID
+                  Width: =90
+                  X: =QuantityHeaderInvoice.X
+                  Y: =lblProductCodeInvoice.Y
+            - lblDiscountInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblProductCodeInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingRight: =15
+                  Text: =Text(ThisItem.Discount,"#0.0#%")
+                  Width: =DiscountHeaderInvoice.Width
+                  X: '=DiscountHeaderInvoice.X '
+                  Y: =lblProductCodeInvoice.Y
+            - lblExtendedPriceInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblProductCodeInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingRight: =50
+                  Text: =Text(ThisItem.ExtendedPrice, "$#,##0.00")
+                  Width: =ExtendedPriceHeaderInvoice.Width *.67
+                  X: '=ExtendedPriceHeaderInvoice.X '
+                  Y: =lblProductCodeInvoice.Y
+            - lblUnitPriceInvoice:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblProductCodeInvoice.Height
+                  OnSelect: =Select(Parent)
+                  PaddingRight: =15
+                  Text: =Text(ThisItem.UnitPrice,"$#,##0.00")
+                  Width: =90
+                  X: =UnitPriceHeaderInvoice.X
+                  Y: =lblProductCodeInvoice.Y
+      - lblInvoiceInvoiceNoInvoice:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Height: =30
+            Size: =15
+            Text: |-
+              ="Invoice # " & First(gvInvoice).OrderID
+            Width: =234
+            X: =lblInvoiceDateInvoice.X
+            Y: =lblInvoiceDateInvoice.Y+lblInvoiceDateInvoice.Height
+      - lblInvoiceSalesPerson:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Right
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Height: =30
+            Size: =12
+            Text: ="Sales Person "   & First(gvInvoice).SalesPerson
+            Width: =275
+            X: =Parent.Width-Self.Width-20
+            Y: =160

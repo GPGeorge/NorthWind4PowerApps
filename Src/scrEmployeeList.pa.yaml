@@ -1,0 +1,1147 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrEmployeeList:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: =Set(gvCanSave,true);
+    Children:
+      - compAppTitleEmployee:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - compNWDevMenuEmployeeList:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleEmployee.X+compAppTitleEmployee.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - glryEmployeeList:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =342
+            Items: |-
+              =SortByColumns(
+                  fEmployeesforList,
+                  "NameLF"
+              )
+            OnSelect: |
+              =UpdateContext({lvEmployee: glryEmployeeList.Selected});
+              UpdateContext(
+                  {
+                      lvSupervisorID: Coalesce(
+                          glryEmployeeList.Selected.SupervisorID,
+                          0
+                      )
+                  }
+              );
+              Reset(cboEmployeeSupervisorAddEdit);
+            TemplateFill: |-
+              =If(
+                  Mod(
+                      ThisItem.EmployeeID,
+                      2
+                  ) = 0,
+                  fAppColors.gvBodyFill,
+                  fAppColors.gvlblFillFade
+              )
+            TemplatePadding: =1
+            TemplateSize: =Min(870, Self.Height - 40)
+            Width: =compNWDevMenuEmployeeList.Width
+            X: =compNWDevMenuEmployeeList.X
+            Y: '=conEmployeeCaptionList.Y+conEmployeeCaptionList.Height '
+          Children:
+            - lblEmployeeEmployeeIDList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  OnSelect: |
+                    =Select(Parent);
+                    UpdateContext({lvFirstNameRequired: Blank()});
+                    UpdateContext({lvLastNameRequired: Blank()});
+                    UpdateContext({lvJobTitleRequired: Blank()});
+                    Set(
+                        gvEditgvEditEmployee,
+                        ThisItem
+                    );
+                  Size: =8
+                  Text: ="✏️ " & ThisItem.EmployeeID
+                  Tooltip: ="Click to See Order Detail"
+                  Width: =40
+                  X: =compAppTitleEmployee.X
+            - lblEmployeeNotesList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Overflow: =Overflow.Scroll
+                  Size: =10
+                  Text: =ThisItem.Notes
+                  Width: =270
+                  X: =lblEmployeeSupervisorList.X+lblEmployeeSupervisorList.Width
+            - lblEmployeeLastNameList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.LastName
+                  X: =lblEmployeeEmployeeIDList.X+lblEmployeeEmployeeIDList.Width
+            - lblEmployeeFirstNameList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  PaddingLeft: =1
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.FirstName
+                  Width: =120
+                  X: =lblEmployeeLastNameList.X+lblEmployeeLastNameList.Width
+            - lblEmployeeEmailList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  PaddingLeft: =1
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.EmailAddress
+                  Width: =230
+                  X: =lblEmployeeFirstNameList.X+lblEmployeeFirstNameList.Width
+            - lblEmployeeJobTitleList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Overflow: =Overflow.Scroll
+                  PaddingLeft: =1
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.JobTitle
+                  Width: =160
+                  X: =lblEmployeeEmailList.X+lblEmployeeEmailList.Width
+            - lblEmployeePrimaryPhoneList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  PaddingLeft: =1
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.PrimaryPhone
+                  Width: =100
+                  X: =lblEmployeeJobTitleList.X+lblEmployeeJobTitleList.Width+2
+            - lblEmployeeSecondPhoneList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  PaddingLeft: =1
+                  PaddingRight: =1
+                  Size: =10
+                  Text: =ThisItem.SecondaryPhone
+                  Width: =100
+                  X: =lblEmployeePrimaryPhoneList.X+lblEmployeePrimaryPhoneList.Width
+            - lblEmployeeSupervisorList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Size: =10
+                  Text: =ThisItem.Supervisor
+                  Width: =115
+                  X: =lblEmployeeTitleList.X+lblEmployeeTitleList.Width
+            - lblEmployeeSupervisorIDhdnList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Size: =10
+                  Text: =ThisItem.SupervisorID
+                  Visible: =false
+                  Width: =200
+                  X: =1145
+            - lblEmployeeTitleList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  OnSelect: =Select(Parent)
+                  Size: =10
+                  Text: =ThisItem.Title
+                  Width: =60
+                  X: =lblEmployeeSecondPhoneList.X+lblEmployeeSecondPhoneList.Width
+      - conEmployeeCaptionList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =40
+            LayoutDirection: =LayoutDirection.Horizontal
+            Width: =Parent.Width
+            Y: =conEmployeeAddedit.Y+conEmployeeAddedit.Height
+          Children:
+            - lblEmoloyeeIDCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="#"
+                  Width: =40
+                  X: =compAppTitleEmployee.X
+                  Y: =compAppTitleEmployee.Y+compAppTitleEmployee.Height+45
+            - lblEmployeeLastCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Last Name"
+                  X: =lblEmoloyeeIDCaptionList.X+lblEmoloyeeIDCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblPEmployeeFirstrCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="First Name"
+                  Width: =120
+                  X: =lblEmployeeLastCaptionList.X+lblEmployeeLastCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeeEmailCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Email Address"
+                  Width: =230
+                  X: =lblPEmployeeFirstrCaptionList.X+lblPEmployeeFirstrCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeeJobTitleCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Job Title"
+                  Width: =160
+                  X: =lblEmployeeEmailCaptionList.X+lblEmployeeEmailCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeePrimaryPhoneCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Size: =10
+                  Text: ="Primary Phone"
+                  Width: =100
+                  X: =40
+                  Y: =40
+            - lblEmployeeSecondaryPhoneCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Secondary Phone"
+                  Width: =100
+                  X: =lblEmployeeJobTitleCaptionList.X+lblEmployeeJobTitleCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeeTitleCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Title"
+                  Width: =60
+                  X: =lblEmployeeSecondaryPhoneCaptionList.X+lblEmployeeSecondaryPhoneCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeeSuperVisorCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Supervisor"
+                  Width: =115
+                  X: =lblEmployeeTitleCaptionList.X+lblEmployeeTitleCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+            - lblEmployeesNotesCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  FillPortions: =1
+                  Font: =Font.'Open Sans'
+                  Height: =lblEmoloyeeIDCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: ="Notes"
+                  Width: =200
+                  X: =lblEmployeeTitleCaptionList.X+lblEmployeeTitleCaptionList.Width
+                  Y: =lblEmoloyeeIDCaptionList.Y
+      - conEmployeeAddedit:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            DropShadow: =DropShadow.None
+            Height: =300
+            Width: =Parent.Width/2.5
+            Y: =compNWDevMenuEmployeeList.Y+compNWDevMenuEmployeeList.Height
+          Children:
+            - btnAddImage:
+                Control: Button@0.0.45
+                Group: grpEmployeeImage
+                Properties:
+                  BorderThickness: =2
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  Icon: ="Person"
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |
+                    =//Manage Triggers locally because it only applies to the image, not other attributes of an employee
+                    UpdateContext({lvEmployeeID: glryEmployeeList.Selected.EmployeeID});
+                    Set (
+                        gvCRUDType,
+                        fMagicNo.gvCRUDU
+                    );
+                    NWPATriggersOnOff.dboAuditTriggers(
+                        {
+                            OnOff: "disable",
+                            TableName: "Employees",
+                            TriggerName: "AuditEmployees"
+                        }
+                    );
+                    Set(
+                        gvEmployeeImageName,
+                        glryEmployeeList.Selected.FirstName & Left(
+                            glryEmployeeList.Selected.LastName,
+                            1
+                        ) & ".jpg"
+                    );
+                    Set(
+                        gvEmployeeImage,
+                        UploadedEmployeePicture.Image
+                    );
+                    Set(
+                        gvTGLCRUDEmployee,
+                        !gvTGLCRUDEmployee
+                    );
+                    NWPATriggersOnOff.dboAuditTriggers(
+                        {
+                            OnOff: "enable",
+                            TableName: "Employees",
+                            TriggerName: "AuditEmployees"
+                        }
+                    );
+                    Select(glryEmployeeList);
+                  Text: ="Save Image"
+                  Width: =imgEmployeeImage.Width
+                  X: =inpEmployeeFirstAddEdit.X+inpEmployeeFirstAddEdit.Width+20
+                  Y: =imgEmployeeImage.Y+imgEmployeeImage.Height
+            - UploadedEmployeePicture:
+                Control: Image@2.2.3
+                Group: grpEmployeeImage
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  Height: =29
+                  Image: =If(IsBlank(AddEmployeeImage.Media), 'Northwind Traders Developer Edition Thumbnail', AddEmployeeImage.Media)
+                  Transparency: =100
+                  Width: =80
+                  X: =inpEmployeeFirstAddEdit.X+inpEmployeeFirstAddEdit.Width+20
+                  Y: =lblEmployeeIDAddEdit.Y
+            - imgEmployeeImage:
+                Control: Image@2.2.3
+                Group: grpEmployeeImage
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  Height: =80
+                  Image: =lvEmployee.EmployeeImagePA
+                  Width: =80
+                  X: =inpEmployeeFirstAddEdit.X+inpEmployeeFirstAddEdit.Width+20
+                  Y: =AddEmployeeImage.Y+AddEmployeeImage.Height
+            - lblEmployeeIDAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =24
+                  PaddingRight: =5
+                  Text: ="Employee ID"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =120
+                  X: =5
+                  Y: =10
+            - inpEmployeeIDAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Align: =Align.Right
+                  Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                  BorderRadius: =3
+                  DisplayMode: =DisplayMode.View
+                  FontColor: =RGBA(0, 0, 0, 1)
+                  Height: =lblEmployeeIDAddEdit.Height
+                  Placeholder: ="(New Employee)"
+                  Value: =lvEmployee.EmployeeID
+                  Visible: =false
+                  Width: =63
+                  X: =lblEmployeeIDAddEdit.X+lblEmployeeIDAddEdit.Width
+                  Y: =lblEmployeeIDAddEdit.Y
+            - inpEmployeeFirstAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                  Fill: =If(gvCanSave,fAppColors.gvlblFillFade,fAppColors.gvWarningFill)
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: |
+                    =UpdateContext(
+                        {
+                            lvCanSaveFN: If(
+                                IsBlank(inpEmployeeFirstAddEdit.Value),
+                                false,
+                                true
+                            )
+                        }
+                    );
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Value: =lvEmployee.FirstName
+                  Width: =240
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeeIDAddEdit.Y+inpEmployeeIDAddEdit.Height
+            - inpEmployeeLastAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                  Fill: =If(gvCanSave,fAppColors.gvlblFillFade,fAppColors.gvWarningFill)
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: |
+                    = 
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Value: =lvEmployee.LastName
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeeFirstAddEdit.Y+inpEmployeeFirstAddEdit.Height
+            - inpEmployeeEmailAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: =
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Value: =lvEmployee.EmailAddress
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =    inpEmployeeLastAddEdit.X
+                  Y: =inpEmployeeLastAddEdit.Y+inpEmployeeLastAddEdit.Height
+            - inpEmployeeJobTitleAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Appearance: ='TextInputCanvas.Appearance'.FilledLighter
+                  Fill: =If(gvCanSave,fAppColors.gvlblFillFade,fAppColors.gvWarningFill)
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: |
+                    =UpdateContext(
+                        {
+                            lvCanSaveJT: If(
+                                IsBlank(inpEmployeeJobTitleAddEdit.Value),
+                                false,
+                                true
+                            )
+                        }
+                    );
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Value: =lvEmployee.JobTitle
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeeEmailAddEdit.Y+inpEmployeeEmailAddEdit.Height
+            - inpEmployeePrimaryPhoneAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: =
+                  Value: =lvEmployee.PrimaryPhone
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeeJobTitleAddEdit.Y+inpEmployeeJobTitleAddEdit.Height
+            - inpEmployeeSecondaryPhoneAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Height: =lblEmployeeIDAddEdit.Height
+                  OnChange: =
+                  Value: =lvEmployee.SecondaryPhone
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeePrimaryPhoneAddEdit.Y+inpEmployeePrimaryPhoneAddEdit.Height
+            - cboEmployeeTitleAddEdit:
+                Control: ComboBox@0.0.51
+                Properties:
+                  DefaultSelectedItems: =LookUp(fTitle,Title=lvEmployee.Title)
+                  Height: =lblEmployeeIDAddEdit.Height
+                  InputTextPlaceholder: ="Select Title"
+                  Items: =ShowColumns(fTitle,Title)
+                  OnChange: =
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =inpEmployeeSecondaryPhoneAddEdit.Y+inpEmployeeSecondaryPhoneAddEdit.Height
+                Children:
+                  - Title1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="Title"
+                        FieldName: ="Title"
+                        FieldType: ="s"
+                        Order: =1
+            - lblEmployeeFirstAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="First Name"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =38
+            - lblEmployeeLastAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Last Name"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeeFirstAddEdit.Y+lblEmployeeFirstAddEdit.Height
+            - lblEmployeeEmailAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Email Address"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeeLastAddEdit.Y+lblEmployeeLastAddEdit.Height
+            - lblEmployeePrimaryPhoneAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Primary Phone"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeeJobTitleAddEdit.Y+lblEmployeeJobTitleAddEdit.Height
+            - lblEmployeeSecondaryPhoneAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Secondary Phone"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeePrimaryPhoneAddEdit.Y+lblEmployeePrimaryPhoneAddEdit.Height
+            - lblEmployeeTitleAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Title"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeeSecondaryPhoneAddEdit.Y+lblEmployeeSecondaryPhoneAddEdit.Height
+            - lblEmployeeJobTitleAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Job Title"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =lblEmployeeEmailAddEdit.Y+lblEmployeeEmailAddEdit.Height
+            - cboEmployeeSupervisorAddEdit:
+                Control: ComboBox@0.0.51
+                Properties:
+                  DefaultSelectedItems: |-
+                    =If(
+                        IsBlank(lvSupervisorID),
+                        Blank(),
+                        LookUp(
+                            ShowColumns(
+                                fEmployeesforList,
+                                EmployeeID,
+                                NameFL
+                            ),
+                            EmployeeID = lvSupervisorID
+                        )
+                    )
+                  Height: =lblEmployeeIDAddEdit.Height
+                  InputTextPlaceholder: |-
+                    ="Select Supervisor
+                    "
+                  Items: =ShowColumns( fEmployeesforList,EmployeeID,SupervisorID,NameFL)
+                  OnChange: =
+                  Width: =inpEmployeeFirstAddEdit.Width
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =cboEmployeeTitleAddEdit.Y+cboEmployeeTitleAddEdit.Height
+                Children:
+                  - cboEmployeeSupervisorNameFL:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="NameFL"
+                        FieldName: ="NameFL"
+                        FieldType: ="s"
+                        Order: =1
+                  - EmployeeID1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="EmployeeID"
+                        FieldName: ="EmployeeID"
+                        FieldType: ="n"
+                        Order: =2
+            - inpEmployeeIDDisplayAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Align: =Align.Center
+                  Appearance: ='TextInputCanvas.Appearance'.FilledDarker
+                  BasePaletteColor: =RGBA(246, 142, 104, 1)
+                  BorderRadius: =3
+                  DisplayMode: =DisplayMode.Disabled
+                  Fill: =RGBA(174, 208, 221, 1)
+                  FontColor: =RGBA(0, 0, 0, 1)
+                  FontSize: =16
+                  Height: =lblEmployeeIDAddEdit.Height
+                  Placeholder: ="(New Employee)"
+                  Value: =Right("000000" & Coalesce( Text(inpEmployeeIDAddEdit.Value), lvNewEmployeeID),6)
+                  Width: =120
+                  X: =lblEmployeeIDAddEdit.X+lblEmployeeIDAddEdit.Width
+                  Y: =lblEmployeeIDAddEdit.Y
+            - lblEmployeeSupervisorAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Supervisor"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =202
+            - inpEmployeeNotesAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Height: =lblEmployeeIDAddEdit.Height*3
+                  Mode: ='TextInputCanvas.Mode'.Multiline
+                  OnChange: =
+                  Value: =lvEmployee.Notes
+                  Width: =inpEmployeeFirstAddEdit.Width*1.5
+                  X: =inpEmployeeIDAddEdit.X
+                  Y: =226
+            - lblEmployeeNotesAddEdit:
+                Control: Text@0.0.51
+                Properties:
+                  Align: ='TextCanvas.Align'.End
+                  Height: =lblEmployeeIDAddEdit.Height
+                  PaddingRight: =5
+                  Text: ="Notes"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =lblEmployeeIDAddEdit.Width
+                  X: =lblEmployeeIDAddEdit.X
+                  Y: =226
+            - btnEmployeesAdd:
+                Control: Button@0.0.45
+                Properties:
+                  FontSize: =9
+                  Height: =24
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |
+                    =UpdateContext({lvEmployee: Blank()});
+                    UpdateContext({lvSupervisorID: Blank()});
+                    Reset(cboEmployeeSupervisorAddEdit);
+                    Reset(cboEmployeeTitleAddEdit);
+                    Reset(inpEmployeeFirstAddEdit);
+                    Reset(inpEmployeeLastAddEdit);
+                    Reset(inpEmployeeJobTitleAddEdit);
+                    Reset(inpEmployeePrimaryPhoneAddEdit);
+                    Reset(inpEmployeeSecondaryPhoneAddEdit);
+                    Reset(inpEmployeeNotesAddEdit);
+                    Reset(inpEmployeeEmailAddEdit);
+                    UpdateContext({lvNewEmployeeID: 0});
+                  Text: "=\"\U0001F195 New\""
+                  Width: =60
+                  X: =480
+                  Y: =7
+            - brnEmployeesSave:
+                Control: Button@0.0.45
+                Properties:
+                  DisplayMode: |-
+                    =If(
+                        gvCanSave,
+                        DisplayMode.Edit,
+                        DisplayMode.Disabled
+                    )
+                  FontSize: =9
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |+
+                    =Set (
+                        gvCRUDType,
+                        If (
+                            Coalesce(
+                                lvEmployee.EmployeeID,
+                                0
+                            ) = 0,
+                            fMagicNo.gvCRUDC,
+                            fMagicNo.gvCRUDU
+                        )
+                    );
+                    Set(
+                        gvCRUDEmployeeID,
+                        Coalesce(
+                            lvEmployee.EmployeeID,
+                            0
+                        )
+                    );
+                    Set(
+                        gvFirstName,
+                        Text(inpEmployeeFirstAddEdit.Value)
+                    );
+                    Set(
+                        gvLastName,
+                        Text(inpEmployeeLastAddEdit.Value)
+                    );
+                    Set(
+                        gvEmailAddress,
+                        Text(inpEmployeeEmailAddEdit.Value)
+                    );
+                    Set(
+                        gvJobTitle,
+                        Text(inpEmployeeJobTitleAddEdit.Value)
+                    );
+                    Set(
+                        gvPrimaryPhone,
+                        Text(inpEmployeePrimaryPhoneAddEdit.Value)
+                    );
+                    Set(
+                        gvSecondaryPhone,
+                        Text(inpEmployeeSecondaryPhoneAddEdit.Value)
+                    );
+                    Set(
+                        gvTitle,
+                        Text(cboEmployeeTitleAddEdit.Selected.Title)
+                    );
+                    Set(
+                        gvEmployeeNotes,
+                        Text(inpEmployeeNotesAddEdit.Value)
+                    );
+                    Set(
+                        gvSupervisorID,
+                        Value(cboEmployeeSupervisorAddEdit.Selected.EmployeeID)
+                    );
+                    Set(
+                        gvWindowsUserName,
+                        User().Email
+                    );
+                    Set(
+                        gvTGLCRUDEmployee,
+                        !gvTGLCRUDEmployee
+                    );
+
+                  Text: ="Save " & If(Value(inpEmployeeIDAddEdit.Value) >0,"Changes","New")
+                  Width: =60
+                  X: =480
+                  Y: =btnEmployeesAdd.Y+btnEmployeesAdd.Height+10
+            - TextCanvas9:
+                Control: Text@0.0.51
+                Properties:
+                  Text: =
+                  Visible: =false
+                  X: =410
+                  Y: =170
+            - AddEmployeeImage:
+                Control: AddMedia@2.2.1
+                Group: grpEmployeeImage
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  ChangePictureText: "=\"\U0001F50D/⬆️\U0001F4F7\""
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledFill: =RGBA(255, 255, 0, 1)
+                  Fill: =fAppColors.gvlblFill
+                  FontWeight: =FontWeight.Normal
+                  Height: =34
+                  Size: =10
+                  Text: "=\"\U0001F50D/⬆️\U0001F4F7\""
+                  Width: =80
+                  X: =inpEmployeeFirstAddEdit.X+inpEmployeeFirstAddEdit.Width+20
+                  Y: =lblEmployeeIDAddEdit.Y
+            - brnEmployeesDelete:
+                Control: Button@0.0.45
+                Properties:
+                  DisplayMode: |-
+                    =If(
+                        gvCanSave,
+                        DisplayMode.Edit,
+                        DisplayMode.Disabled
+                    )
+                  FontSize: =9
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |+
+                    =Set (
+                        gvCRUDType,
+                        fMagicNo.gvCRUDD
+                    );
+                    Set(
+                        gvCRUDEmployeeID,
+                        Coalesce(
+                            lvEmployee.EmployeeID,
+                            0
+                        )
+                    );
+                    Set(
+                        gvTGLCRUDEmployee,
+                        !gvTGLCRUDEmployee
+                    );
+
+                  Text: ="Delete"
+                  Width: =60
+                  X: '=brnEmployeesSave.X '
+                  Y: =brnEmployeesSave.Y+brnEmployeesSave.Height+10
+      - conEmployeeOrdersList:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Height: =conEmployeeAddedit.Height
+            Width: =Parent.Width-conEmployeeAddedit.Width
+            X: =conEmployeeAddedit.X+conEmployeeAddedit.Width
+            Y: =conEmployeeAddedit.Y
+          Children:
+            - glryEmployeesOrders:
+                Control: Gallery@2.15.0
+                Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Height: =Parent.Height-conEmployeeOrdersHeader.Height
+                  Items: |-
+                    =SortByColumns(
+                        Filter(
+                            fEmployeeOrders,
+                            EmployeeID = lvEmployee.EmployeeID
+                        ),
+                        "OrderDate",
+                        SortOrder.Descending
+                    )
+                  TemplateSize: =30
+                  Width: =Parent.Width
+                  Y: =conEmployeeOrdersHeader.Y+conEmployeeOrdersHeader.Height
+                Children:
+                  - EmployeeOrdersCustomer:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =25
+                        Italic: =true
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: =ThisItem.CompanyName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =240
+                        X: =EmployeeOrdersEmployeeName.X+EmployeeOrdersEmployeeName.Width
+                        Y: =2
+                  - EmployeeOrdersEmployeeName:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =27
+                        Italic: =true
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: =ThisItem.Employee
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =160
+                        X: =EmployeeOrdersOrderID.X+EmployeeOrdersOrderID.Width
+                  - EmployeeOrdersOrderID:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(39, 113, 194, 1)
+                        Fill: =RGBA(174, 208, 221, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =30
+                        Italic: =true
+                        OnSelect: "=Select(Parent);\r\nSet(gvCRUDOrder,ThisItem);\r\nSet(gvCRUDOrderID,gvCRUDOrder.OrderID);\r\nNavigate(scrOrderAdd);\r\n "
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: ="✏️" & ThisItem.OrderID
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =60
+                  - EmployeeOrdersOrderDate:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =27
+                        Italic: =true
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: =DateValue(ThisItem.OrderDate)
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =100
+                        X: =EmployeeOrdersCustomer.X+EmployeeOrdersCustomer.Width
+                  - EmployeeOrdersOrderTotal:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =27
+                        Italic: =true
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: |-
+                          =Text(
+                              ThisItem.ExtendedPrice,
+                              "$#,##0.00"
+                          )
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =80
+                        X: =EmployeeOrdersOrderDate.X+EmployeeOrdersOrderDate.Width
+                  - lblEmployeeOrdersCustomerStatus:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =20
+                        Italic: =true
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =11
+                        Text: =ThisItem.OrderStatusName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =100
+                        X: =EmployeeOrdersOrderTotal.X+EmployeeOrdersOrderTotal.Width
+            - conEmployeeOrdersHeader:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =fAppColors.gvlblFill
+                  Height: =30
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  Width: =Parent.Width
+                  Y: =EmployeeOrdersCaptionList.Y+EmployeeOrdersCaptionList.Height
+                Children:
+                  - txtEmployeeNbr:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="#"
+                        Width: =40
+                  - txtEmployeeName:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="Employee"
+                        Width: =160
+                  - txtCustomers:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="Customer"
+                        Width: =240
+                  - txtOrderDate:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="Order Date"
+                        Width: =100
+                  - txtOrderTotal:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="Order Total"
+                        Width: =80
+                  - txtOrderStatus:
+                      Control: Text@0.0.51
+                      Properties:
+                        FontColor: =RGBA(255, 255, 255, 1)
+                        Text: ="Status"
+                        Width: =100
+            - EmployeeOrdersCaptionList:
+                Control: Text@0.0.51
+                Properties:
+                  Height: =24
+                  Size: =12
+                  Text: |-
+                    ="Recent Orders for " & LookUp(
+                        fEmployeeOrders,
+                        EmployeeID = lvEmployee.EmployeeID,
+                        Employee
+                    )
+                  Width: =250
+      - lblFUEmployee_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(255, 255, 255, 1)
+            Font: =Font.'Open Sans'
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =200
+            X: =120
+            Y: =20

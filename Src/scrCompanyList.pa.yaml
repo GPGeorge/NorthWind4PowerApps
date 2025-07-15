@@ -1,0 +1,852 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrCompanyList:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |
+        =UpdateContext({lvCompanyFilter: 1});
+        UpdateContext({lvShowHideFields: false});
+        UpdateContext({lvCompanyIDShowHide: true});
+        UpdateContext({lvCompanyNameShowHide: true});
+        UpdateContext({lvCompanyTypeShowHide: true});
+        UpdateContext({lvCompanyBusinessPhoneShowHide: true});
+        UpdateContext({lvCompanyAddressShowHide: true});
+        UpdateContext({lvCompanyCityShowHide: false});
+        UpdateContext({lvCompanyStateAbbrevShowHide: false});
+        UpdateContext({lvCompanyZIPShowHide: false});
+        UpdateContext({lvCompanyWebiteShowHide: true});
+        UpdateContext({lvCompanyNotesShowHide: true});
+        UpdateContext({lvCompanyNameShowHide: true});
+        UpdateContext({lvCompanyTaxStatusShowHide:true});
+        UpdateContext({lvChecked: false});
+        ClearCollect(
+            colCompaniesFieldNamesSH,
+            {
+                TableName: "fCompanies",
+                FieldName: "Field Name",
+                ShowHide: lvChecked
+            }
+        );
+        Collect(
+            colCompaniesFieldNamesSH,
+            AddColumns(
+                fCompaniesFieldNames,
+                ShowHide,
+                lvChecked
+            )
+        );
+    Children:
+      - compAppTitleCompany:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - compNWDevMenuCompanyList:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleCompany.X+compAppTitleCompany.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - filterCompanyType:
+          Control: Classic/Radio@2.3.0
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =1
+            Default: ="All"
+            Fill: =RGBA(214, 223, 238, 1)
+            Font: =Font.'Open Sans'
+            Height: =24
+            HoverColor: =RGBA(0, 18, 107, 1)
+            Items: =["All","Customers", "Shippers", "Vendors"]
+            Items.Value: =Value
+            Layout: =Layout.Horizontal
+            OnChange: |-
+              =UpdateContext(
+                  {
+                      lvCompanyFilter: Switch(
+                          Text(filterCompanyType.Selected.Value),
+                          "All",
+                          1,
+                          "Customers",
+                          2,
+                          "Shippers",
+                          3,
+                          "Vendors",
+                          4
+                      )
+                  }
+              )
+            PaddingBottom: =2
+            PaddingTop: =2
+            RadioBorderColor: =RGBA(0, 18, 107, 1)
+            RadioSelectionFill: =RGBA(0, 0, 0, 1)
+            RadioSize: =15
+            Size: =11
+            Width: =Parent.Width
+            X: =conCompanyBonusFeatures.X
+            Y: '=conCompanyBonusFeatures.Y+conCompanyBonusFeatures.Height '
+      - conCompanyBonusFeatures:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Fill: =fAppColors.gvlblFill
+            Height: =24
+            Width: =Parent.Width
+            Y: =compNWDevMenuCompanyList.Y+compNWDevMenuCompanyList.Height
+          Children:
+            - btnShowHideFields:
+                Control: Button@0.0.45
+                Properties:
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: |
+                    =Notify(
+                        "Show/Hide Fields is for demo purposes only. Only User fields are displayed. Audit Fields are never visible in the interface.",
+                        NotificationType.Information,
+                        fMagicNo.gvNotifyTimeout
+                    );
+
+                    UpdateContext({lvShowHideFields: true});
+                  Text: ="Show/Hide Fields"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: =130
+            - btnCreateLabels:
+                Control: Button@0.0.45
+                Properties:
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: |-
+                    =Navigate(scrCompanyMailingLabels);
+
+                    //Notify("Create Labels Under Development",NotificationType.Information,fMagicNo.gvNotifyTimeout);
+                  Text: ="Create Labels"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: = btnShowHideFields.X  +260
+            - btnShowFilter:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =RGBA(5, 102, 178, 1)
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: |
+                    =Notify(
+                         Switch(
+                            Text(filterCompanyType.Selected.Value),
+                            "All",
+                            " 1=1 (No Filter Applied)",
+                            "Customers",
+                            "CompanyTypeID = 1",
+                            "Shippers",
+                            "CompanyTypeID = 2",
+                            "Vendors",
+                            "CompanyTypeID = 3"
+                        ),NotificationType.Success,fMagicNo.gvNotifyTimeout
+                    );
+                  Text: ="Show Filter"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: =btnCreateLabels.X+260
+            - btnCompanyAddNew:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =ColorFade(Self.Fill, -15%)
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                  Fill: =fAppColors.gvlblColorFade
+                  Font: =Font.'Open Sans'
+                  Height: =24
+                  HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                  HoverColor: =RGBA(255, 255, 255, 1)
+                  HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                  OnSelect: |
+                    =Set(
+                        gvCRUDType,
+                        fMagicNo.gvCRUDC
+                    );
+                    Set(
+                        gvCRUDCompany,
+                        Blank()
+                    );
+                    Set(
+                        gvCRUDCompanyID,
+                        0
+                    );
+                    Navigate(scrCompanyEdit);
+                  PressedBorderColor: =Self.Fill
+                  PressedColor: =Self.Fill
+                  PressedFill: =Self.Color
+                  Size: =9
+                  Text: ="➕Add Company"
+                  Width: =150
+                  X: =Parent.Width- Self.Width
+      - conCompanyHorzontalList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =654
+            LayoutDirection: =LayoutDirection.Horizontal
+            LayoutJustifyContent: =LayoutJustifyContent.SpaceBetween
+            LayoutOverflowX: =LayoutOverflow.Scroll
+            LayoutWrap: =true
+            Width: =Parent.Width
+            X: =conCompanyCaptionsList.X
+            Y: =filterCompanyType.Y+filterCompanyType.Height
+          Children:
+            - conCompanyList:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.SetByContainer
+                  Height: =Parent.Height
+                  LayoutMinHeight: =500
+                  LayoutMinWidth: =glryCompanyList.Width
+                  Width: =glryCompanyList.Width
+                  Y: =filterCompanyType.Y+filterCompanyType.Height
+                Children:
+                  - glryCompanyList:
+                      Control: Gallery@2.15.0
+                      Variant: VariableHeight
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Height: '=600 '
+                        Items: |-
+                          =SortByColumns(
+                              With(
+                                  {
+                                      records: Filter(
+                                          'fCompanies',
+                                          If (
+                                              lvCompanyFilter = 1,
+                                              1 = 1,
+                                              lvCompanyFilter = 2,
+                                              CompanyTypeID = 1,
+                                              lvCompanyFilter = 3,
+                                              CompanyTypeID = 2,
+                                              lvCompanyFilter = 4,
+                                              CompanyTypeID = 3
+                                          )
+                                      )
+                                  },
+                                  ForAll(
+                                      Sequence(CountRows(records)),
+                                      Patch(
+                                          Last(
+                                              FirstN(
+                                                  records,
+                                                  Value
+                                              )
+                                          ),
+                                          {rowNumber: Value}
+                                      )
+                                  )
+                              ),
+                              "CompanyName",
+                              SortOrder.Ascending,
+                              "rowNumber",
+                              SortOrder.Descending
+                          )
+                        MaxTemplateSize: =500
+                        OnSelect: |-
+                          =Set(gvCRUDCompanyID,ThisItem.CompanyID);
+                          Set(gvCRUDCompany, ThisItem);
+                        TemplateFill: |-
+                          =If(
+                              Mod(
+                                  ThisItem.rowNumber,
+                                  2
+                              ) = 0,
+                              fAppColors.gvBodyFill,
+                              fAppColors.gvlblFillFade
+                          )
+                        TemplatePadding: =0
+                        TemplateSize: =30
+                        Width: =1850
+                        X: =filterCompanyType.X
+                        Y: =conCompanyCaptionsList.Y+conCompanyCaptionsList.Height
+                      Children:
+                        - lblCompanyNameList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 0, 0, 1)
+                              Color: =RGBA(50, 49, 48, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Text: =ThisItem.CompanyName
+                              VerticalAlign: =VerticalAlign.Top
+                              Visible: =lvCompanyNameShowHide
+                              Width: =lblCompanyNameCaptionList.Width
+                              X: =lblCompanyNameCaptionList.X
+                        - lblCompanyCompanyIDList:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              BorderThickness: =2
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Bold
+                              Height: =42
+                              OnSelect: |
+                                =Select(Parent);
+                                Set(
+                                    gvCRUDCompany, 
+                                    ThisItem
+                                );
+                                Set(
+                                    gvCRUDType,
+                                    fMagicNo.gvCRUDU
+                                );
+                                Navigate(scrCompanyEdit);
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Text: ="✏️ " & ThisItem.CompanyID
+                              Visible: =lvCompanyIDShowHide
+                              Width: =lblCompanyCompanyIDCaptionList.Width
+                              X: =lblCompanyCompanyIDCaptionList.X
+                        - lblCompanyTaxStaus:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Text: =LookUp(fTaxStatus,TaxStatusID= ThisItem.StandardTaxStatusID,TaxStatus)
+                              Visible: =lvCompanyTaxStatusShowHide
+                              Width: =lblCompanyTaxStatusCaptionList.Width
+                              X: '=lblCompanyTaxStatusCaptionList.X '
+                        - lblCompanyTypeList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Text: =LookUp(fCompanyTypes, CompanyTypeID= ThisItem.CompanyTypeID,CompanyType)
+                              Visible: =lvCompanyTypeShowHide
+                              Width: =lblCompanyTypeCaptionList.Width
+                              X: '=lblCompanyTypeCaptionList.X '
+                        - lblCompanyNotesList:
+                            Control: HtmlViewer@2.1.0
+                            Properties:
+                              AutoHeight: =true
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              HtmlText: =ThisItem.Notes
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Visible: =lvCompanyNotesShowHide
+                              Width: =lblCompanyNotesCaptionList.Width
+                              X: =lblCompanyNotesCaptionList.X
+                        - lblCompanyPhoneList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              Size: =9
+                              Text: =ThisItem.BusinessPhone
+                              Visible: =lvCompanyBusinessPhoneShowHide
+                              Width: =lblCompanyBusinessPhoneCaptionList.Width
+                              X: '=lblCompanyBusinessPhoneCaptionList.X '
+                        - lblCompanyWebsiteList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =RGBA(15, 108, 189, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: |
+                                =Notify(
+                                    "If this were a real URL, it would open in your browser: " & ThisItem.Website,
+                                    NotificationType.Information,
+                                    fMagicNo.gvNotifyTimeout
+                                );
+                              Size: =9
+                              Text: =ThisItem.Website
+                              Underline: =true
+                              Visible: =lvCompanyWebiteShowHide
+                              Width: =lblCompanyWebsiteCaptionList.Width
+                              X: '=lblCompanyWebsiteCaptionList.X '
+                        - lblCompanyAddressList:
+                            Control: HtmlViewer@2.1.0
+                            Properties:
+                              AutoHeight: =true
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              HtmlText: =ThisItem.Address & "</br>" & ThisItem.City & ", " & ThisItem.StateAbbrev & " " & ThisItem.Zip
+                              OnSelect: =Select(Parent)
+                              PaddingBottom: =2
+                              PaddingLeft: =2
+                              PaddingRight: =2
+                              PaddingTop: =2
+                              Size: =9
+                              Visible: =lvCompanyAddressShowHide
+                              Width: =lblCompanyBusAddressCaptionList.Width
+                              X: '=lblCompanyBusAddressCaptionList.X '
+                        - lblCompanyCityList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              Size: =9
+                              Text: =ThisItem.City
+                              Visible: =lvCompanyCityShowHide
+                              Width: =120
+                              X: =lblCompanyCityCaptionList.X
+                        - lblCompanyStateList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              Size: =9
+                              Text: =ThisItem.StateAbbrev
+                              Visible: =lvCompanyStateAbbrevShowHide
+                              Width: |+
+                                =60
+                              X: '=lblCompanyStateCaptionList.X '
+                        - lblCompanyZIPList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =42
+                              OnSelect: =Select(Parent)
+                              Size: =9
+                              Text: =ThisItem.Zip
+                              Visible: =lvCompanyZIPShowHide
+                              Width: |+
+                                =100 
+                              X: '=lblCompanyZIPCaptionList.X '
+                  - conCompanyCaptionsList:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(39, 67, 125, 1)
+                        Height: =40
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        LayoutOverflowX: =LayoutOverflow.Scroll
+                        Width: =glryCompanyList.Width
+                      Children:
+                        - lblCompanyCompanyIDCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="ID"
+                              Visible: =lvCompanyIDShowHide
+                              Width: =60
+                        - lblCompanyNameCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Company Name"
+                              Visible: =lvCompanyNameShowHide
+                              Width: =230
+                              X: =lblCompanyCompanyIDCaptionList.X+lblCompanyCompanyIDCaptionList.Width
+                        - lblCompanyTaxStatusCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Tax Status"
+                              Visible: =lvCompanyTaxStatusShowHide
+                              Width: =80
+                        - lblCompanyTypeCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Company Type"
+                              Visible: =lvCompanyTypeShowHide
+                              Width: =100
+                              X: =lblCompanyTaxStatusCaptionList.X+lblCompanyTaxStatusCaptionList.Width
+                        - lblCompanyNotesCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Notes"
+                              Visible: =lvCompanyNotesShowHide
+                              Width: =250
+                              X: =lblCompanyTypeCaptionList.X+lblCompanyTypeCaptionList.Width
+                        - lblCompanyBusinessPhoneCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              AutoHeight: =true
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Business Phone"
+                              Visible: =lvCompanyBusinessPhoneShowHide
+                              Width: =170
+                              X: =lblCompanyNotesCaptionList.X+lblCompanyNotesCaptionList.Width
+                        - lblCompanyWebsiteCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Website"
+                              Visible: =lvCompanyWebiteShowHide
+                              Width: =220
+                              X: =lblCompanyBusinessPhoneCaptionList.X+lblCompanyBusinessPhoneCaptionList.Width
+                        - lblCompanyBusAddressCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="Business Address"
+                              Visible: =lvCompanyAddressShowHide
+                              Width: =180
+                              X: =lblCompanyWebsiteCaptionList.X+lblCompanyWebsiteCaptionList.Width
+                        - lblCompanyCityCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="City"
+                              Visible: =lvCompanyCityShowHide
+                              Width: =120
+                              X: =lblCompanyBusAddressCaptionList.X+lblCompanyBusAddressCaptionList.Width
+                        - lblCompanyStateCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="State"
+                              Visible: =lvCompanyStateAbbrevShowHide
+                              Width: =60
+                              X: =lblCompanyCityCaptionList.X+lblCompanyCityCaptionList.Width
+                        - lblCompanyZIPCaptionList:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              FontWeight: =FontWeight.Semibold
+                              Size: =9
+                              Text: ="ZIP"
+                              Visible: =lvCompanyZIPShowHide
+                              Width: =lblCompanyZIPList.Width
+                              X: =lblCompanyStateCaptionList.X+lblCompanyStateCaptionList.Width
+      - conCompaniesFieldNamesShowHide:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Fill: =RGBA(150, 150, 100, 0.92)
+            Height: =glryCompanyList.Height-100
+            Visible: =lvShowHideFields
+            Width: =350
+            X: =btnShowHideFields.X
+            Y: =filterCompanyType.Y+filterCompanyType.Height
+          Children:
+            - glryCompanyFieldNamesPopup:
+                Control: Gallery@2.15.0
+                Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Height: =Parent.Height-30
+                  Items: =colCompaniesFieldNamesSH
+                  MaxTemplateSize: =40
+                  TemplateSize: =30
+                  Visible: =lvShowHideFields
+                  Width: =Parent.Width-10
+                  X: =10
+                Children:
+                  - lblCompaniesFieldName:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: '=If(Text(ThisItem.FieldName)= "Field Name",fAppColors.gvAppTitleColor,fAppColors.gvlblColor) '
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: |-
+                          =If(
+                              ThisItem.IsSelected,
+                              FontWeight.Semibold,
+                              FontWeight.Normal
+                          )
+                        Height: =Self.Size * 1.8
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =14
+                        Text: =ThisItem.FieldName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =Parent.TemplateWidth/1.5
+                  - tglCompaniesFieldsVisible:
+                      Control: Toggle@1.1.5
+                      Properties:
+                        Checked: =  ThisItem.ShowHide
+                        FontColor: '=If(Text(ThisItem.FieldName)= "Field Name",fAppColors.gvSelectedHighlight,fAppColors.gvlblColor) '
+                        FontWeight: |-
+                          =If(
+                              ThisItem.IsSelected,
+                              FontWeight.Semibold,
+                              FontWeight.Normal
+                          )
+                        Height: =30
+                        Label: ="Show"
+                        OnCheck: |
+                          =If(
+                              Text(ThisItem.FieldName) = "CompanyID",
+                              UpdateContext({lvCompanyIDShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "CompanyName",
+                              UpdateContext({lvCompanyNameShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "CompanyTypeID",
+                              UpdateContext({lvCompanyTypeShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "BusinessPhone",
+                              UpdateContext({lvCompanyBusinessPhoneShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Address",
+                              UpdateContext({lvCompanyAddressShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "City",
+                              UpdateContext({lvCompanyCityShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "StateAbbrev",
+                              UpdateContext({lvCompanyStateAbbrevShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Zip",
+                              UpdateContext({lvCompanyZIPShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Website",
+                              UpdateContext({lvCompanyWebiteShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Notes",
+                              UpdateContext({lvCompanyNotesShowHide: true}),
+                              true
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "StandardTaxStatusID",
+                              UpdateContext({lvCompanyTaxStatusShowHide: true}), 
+                              true
+                          );
+                          Patch(
+                              LookUp(
+                                  colCompaniesFieldNamesSH,
+                                  FieldName = Text(Trim(ThisItem.FieldName))
+                              ),
+                              {ShowHide: true}
+                          );
+                        OnUncheck: |-
+                          =If(
+                              Text(ThisItem.FieldName) = "CompanyID",
+                              UpdateContext({lvCompanyIDShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "CompanyName",
+                              UpdateContext({lvCompanyNameShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "CompanyTypeID",
+                              UpdateContext({lvCompanyTypeShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "BusinessPhone",
+                              UpdateContext({lvCompanyBusinessPhoneShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Address",
+                              UpdateContext({lvCompanyAddressShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "City",
+                              UpdateContext({lvCompanyCityShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "StateAbbrev",
+                              UpdateContext({lvCompanyStateAbbrevShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Zip",
+                              UpdateContext({lvCompanyZIPShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Website",
+                              UpdateContext({lvCompanyWebiteShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "Notes",
+                              UpdateContext({lvCompanyNotesShowHide: false}),
+                              false
+                          );
+                          If(
+                              Text(ThisItem.FieldName) = "StandardTaxStatusID",
+                              UpdateContext({lvCompanyTaxStatusShowHide: false}),
+                              false
+                          );
+                          Patch(
+                               First(Filter(
+                                 colCompaniesFieldNamesSH,
+                                  FieldName = ThisItem.FieldName)
+                              ),
+                              {ShowHide: false}
+                          );
+                        ToggleSize: =20
+                        Visible: = If(Text(ThisItem.FieldName)= "Field Name",false,true)
+                        Width: =Parent.Width-lblCompaniesFieldName.Width-10
+                        X: =182
+            - btnCompanyFieldsShowHideDone:
+                Control: Button@0.0.45
+                Properties:
+                  OnSelect: |+
+                    =UpdateContext({lvShowHideFields: false});
+                  Text: ="Done"
+                  X: =Parent.Width-Self.Width-20
+                  Y: =470
+            - optCompanyFieldsShowHideAll:
+                Control: Radio@0.0.25
+                Properties:
+                  DefaultSelectedItems: |-
+                    = {Value: "Show All"}
+                  FontColor: =fAppColors.gvlblColor
+                  FontSize: =14
+                  Height: =47
+                  Items: =["Hide All", "Show All"]
+                  Layout: ='RadioGroupCanvas.Layout'.Horizontal
+                  OnChange: "=If(\n    optCompanyFieldsShowHideAll.Selected.Value = \"Show All\",\n    UpdateContext({lvCompanyIDShowHide: true});\n    UpdateContext({lvCompanyNameShowHide: true});\n    UpdateContext({lvCompanyTypeShowHide: true});\n    UpdateContext({lvCompanyBusinessPhoneShowHide: true});\n    UpdateContext({lvCompanyAddressShowHide: true});\n    UpdateContext({lvCompanyCityShowHide: true});\n    UpdateContext({lvCompanyStateAbbrevShowHide: true});\n    UpdateContext({lvCompanyZIPShowHide: true});\n    UpdateContext({lvCompanyWebiteShowHide: true});\n    UpdateContext({lvCompanyNotesShowHide: true});\n    UpdateContext({lvCompanyNameShowHide: true});\n    UpdateContext({lvCompanyTaxStatusShowHide:true});\n    ClearCollect(\n    colCompaniesFieldNamesSH,\n    {\n        TableName: \"fCompanies\",\n        FieldName: \"Field Name\",\n        ShowHide: true\n    }\n);\nCollect(\n    colCompaniesFieldNamesSH,\n    AddColumns(\n        fCompaniesFieldNames,\n        ShowHide,\n        true\n    )\n);\n    ,\n    UpdateContext({lvCompanyIDShowHide: false});\n    UpdateContext({lvCompanyNameShowHide: false});\n    UpdateContext({lvCompanyTypeShowHide: false});\n    UpdateContext({lvCompanyBusinessPhoneShowHide: false});\n    UpdateContext({lvCompanyAddressShowHide: false});\n    UpdateContext({lvCompanyCityShowHide: false});\n    UpdateContext({lvCompanyStateAbbrevShowHide: false});\n    UpdateContext({lvCompanyZIPShowHide: false});\n    UpdateContext({lvCompanyWebiteShowHide: false});\n    UpdateContext({lvCompanyNotesShowHide: false});\n    UpdateContext({lvCompanyTaxStatusShowHide:false});\n    UpdateContext({lvCompanyNameShowHide: false});ClearCollect(\n    colCompaniesFieldNamesSH,\n    {\n        TableName: \"fCompanies\",\n        FieldName: \"Field Name\",\n        ShowHide: false\n    }\n);\nCollect(\n    colCompaniesFieldNamesSH,\n    AddColumns(\n        fCompaniesFieldNames,\n        ShowHide,\n        false\n    )\n);\n    \n); "
+                  RadioSize: =15
+                  Width: =Parent.Width
+                  Y: =423

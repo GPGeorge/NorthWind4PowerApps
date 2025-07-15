@@ -1,0 +1,1077 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrCompanyEdit:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - compAppTitleCompanyAdd:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - compNWDevMenuCompanyAdd:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleCompanyAdd.Y+compAppTitleCompanyAdd.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - conCompanyAddEdit:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Height: =515
+            Width: =Parent.Width/2.5
+            X: =conCompanyAddEditManage.X
+            Y: =conCompanyAddEditManage.Y+conCompanyAddEditManage.Height
+          Children:
+            - inpCompanyHTMLNotesAddEdit:
+                Control: RichTextEditor@2.7.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Default: '=LookUp(fCompanies,CompanyID=gvCRUDCompany.CompanyID,Notes) '
+                  Height: =177
+                  X: =6
+                  Y: =lblCompanyHTMLNotesAddEdit.Y+lblCompanyHTMLNotesAddEdit.Height
+            - lblCompanyHTMLNotesAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.Disabled
+                  Font: =Font.'Open Sans'
+                  Height: =24
+                  Size: =10
+                  Text: |-
+                    ="Notes (HTML Text)
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  X: =6
+                  Y: =300
+            - lblCompanyCompanyIDAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: ="Company ID"
+                  Width: =125
+            - inpCompanyCityAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,City)
+                  Width: =cboCompanyTaxStatusAddEdit.Width
+                  X: '=inpCompanyCompanyIDAddEdit.X '
+                  Y: =inpCompanyAddressAddEdit.Y+inpCompanyAddressAddEdit.Height
+            - inpCompanyZIPAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,Zip)
+                  Width: =100
+                  X: =lblCompanyZIPAddEdit.X+lblCompanyZIPAddEdit.Width
+                  Y: =inpCompanyCityAddEdit.Y+inpCompanyCityAddEdit.Height+1
+            - inpCompanyPhoneAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,BusinessPhone)
+                  Width: =cboCompanyTaxStatusAddEdit.Width
+                  X: '=inpCompanyCompanyIDAddEdit.X '
+                  Y: =cboCompaniesStateAddEdit.Y+cboCompaniesStateAddEdit.Height
+            - lblCompanyCompanyAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="Company
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  X: =lblCompanyCompanyIDAddEdit.X
+                  Y: =lblCompanyCompanyIDAddEdit.Y+lblCompanyCompanyIDAddEdit.Height
+            - lblCompanyAddressAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="Address
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  X: =lblCompanyCompanyAddEdit.X
+                  Y: =lblCompanyCompanyAddEdit.Y+lblCompanyCompanyAddEdit.Height
+            - lblCompanyCityAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="City
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  X: =lblCompanyAddressAddEdit.X
+                  Y: '=lblCompanyAddressAddEdit.Y+lblCompanyAddressAddEdit.Height  '
+            - lblCompanySTAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="State
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  Y: =lblCompanyCityAddEdit.Y+lblCompanyCityAddEdit.Height
+            - lblCompanyZIPAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="ZIP
+                    "
+                  Width: =60
+                  X: =cboCompaniesStateAddEdit.X + cboCompaniesStateAddEdit.Width
+                  Y: =inpCompanyCityAddEdit.Y+inpCompanyCityAddEdit.Height
+            - inpCompanyAddressAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,Address)
+                  Width: =cboCompanyTaxStatusAddEdit.Width
+                  X: '=inpCompanyCompanyIDAddEdit.X '
+                  Y: =inpCompanyNameAddEdit.Y+inpCompanyNameAddEdit.Height
+            - inpCompanyNameAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,CompanyName)
+                  Width: =cboCompanyTaxStatusAddEdit.Width
+                  X: '=inpCompanyCompanyIDAddEdit.X '
+                  Y: =inpCompanyCompanyIDAddEdit.Y+inpCompanyCompanyIDAddEdit.Height
+            - cboCompanyCompanyTypeAddEdit:
+                Control: ComboBox@0.0.51
+                Properties:
+                  DefaultSelectedItems: =LookUp(fCompanyTypes,CompanyTypeID=gvCRUDCompany.CompanyTypeID)
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  InputTextPlaceholder: ="Select Company Type"
+                  Items: =fCompanyTypes
+                  Width: =140
+                  X: =304
+                Children:
+                  - CompanyTypeID1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="CompanyTypeID"
+                        FieldName: ="CompanyTypeID"
+                        FieldType: ="n"
+                        Order: =2
+                  - CompanyType1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="CompanyType"
+                        FieldName: ="CompanyType"
+                        FieldType: ="s"
+                        Order: =1
+            - inpCompanyCompanyIDAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  FontColor: =RGBA(9, 33, 98, 1)
+                  FontSize: =12
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: '=LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,CompanyID)  '
+                  Width: |+
+                    =100
+                  X: =lblCompanyCompanyIDAddEdit.X+lblCompanyCompanyIDAddEdit.Width
+                  Y: =lblCompanyCompanyIDAddEdit.Y
+            - cboCompanyTaxStatusAddEdit:
+                Control: ComboBox@0.0.51
+                Properties:
+                  DefaultSelectedItems: '=LookUp(fTaxStatus,TaxStatusID=gvCRUDCompany.StandardTaxStatusID) '
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Height: =36
+                  InputTextPlaceholder: ="Select Tax Status"
+                  Items: =fTaxStatus
+                  OnChange: =
+                  TriggerOutput: ='ComboboxCanvas.TriggerOutput'.FocusOut
+                  X: '=inpCompanyCompanyIDAddEdit.X '
+                  Y: =inpCompanyPhoneAddEdit.Y+inpCompanyPhoneAddEdit.Height
+                Children:
+                  - EditCompanyTaxStatus:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="TaxStatus"
+                        FieldName: ="TaxStatus"
+                        FieldType: ="s"
+                        Order: =1
+                  - EditCompanyTaxStatusID:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="TaxStatusID"
+                        FieldName: ="TaxStatusID"
+                        FieldType: ="n"
+                        Order: =2
+            - lblCompanyPhoneAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblCompanyCompanyIDAddEdit.Height
+                  Size: =10
+                  Text: |-
+                    ="Phone
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  Y: =lblCompanySTAddEdit.Y+lblCompanySTAddEdit.Height
+            - lblCompanyTaxStatusAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblCompanyCompanyIDAddEdit.Height
+                  Size: =10
+                  Text: |-
+                    ="Tax Status
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  Y: =lblCompanyPhoneAddEdit.Y+lblCompanyPhoneAddEdit.Height
+            - cboCompaniesStateAddEdit:
+                Control: ComboBox@0.0.51
+                Properties:
+                  DefaultSelectedItems: =LookUp( fStates, StateAbbrev=Text(gvCRUDCompany.StateAbbrev))
+                  Fill: =If(Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,fAppColors.gvWarningFill,Color.White)
+                  Height: =36
+                  Items: =fStates
+                  Width: =160
+                  X: =inpCompanyCityAddEdit.X
+                  Y: =inpCompanyCityAddEdit.Y+inpCompanyCityAddEdit.Height
+                Children:
+                  - StateName1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="StateName"
+                        FieldName: ="StateName"
+                        FieldType: ="s"
+                        Order: =1
+                  - StateAbbrev1:
+                      Control: ComboBoxDataField@1.5.0
+                      Variant: textualColumn
+                      IsLocked: true
+                      Properties:
+                        FieldDisplayName: ="StateAbbrev"
+                        FieldName: ="StateAbbrev"
+                        FieldType: ="s"
+                        Order: =2
+            - lblCompanyTypeAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =36
+                  Size: =10
+                  Text: |-
+                    ="Type
+                    "
+                  Width: =79
+                  X: =225
+            - btnCompanyMap:
+                Control: Button@0.0.45
+                Properties:
+                  Icon: ="Globe"
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |
+                    =Launch(
+                        "www.googlemaps.com",
+                        "q",
+                        Text(inpCompanyAddressAddEdit.Value) & " " & Text(inpCompanyCityAddEdit.Value) & ", " & Text(cboCompaniesStateAddEdit.Selected.StateName)
+                    );
+                  Text: "=\"\U0001F310Map\""
+                  X: =444
+                  Y: =80
+            - btnCompanyAddEditSave:
+                Control: Button@0.0.45
+                Properties:
+                  FontSize: =9
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: "=//*Before we can save, we have to validate required entries: FirstName, LastName and JobTitle\nUpdateContext(\n    {\n        lvCompanyNameRequired: If(\n            IsBlank(inpCompanyNameAddEdit.Value),\n            \"Company Name, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvCompanyTypeRequired: If(\n            IsBlank(cboCompanyCompanyTypeAddEdit.Selected.CompanyType),\n            \"Company Type, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvAddressRequired: If(\n            IsBlank(inpCompanyAddressAddEdit.Value),\n            \"Address, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvCityRequired: If(\n            IsBlank(inpCompanyCityAddEdit.Value),\n            \"City, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvStateRequired: If(\n            IsBlank(cboCompaniesStateAddEdit.Selected.StateAbbrev),\n            \"State, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvZIPRequired: If(\n            IsBlank(inpCompanyZIPAddEdit.Value),\n            \"ZIP, \",\n            Blank()\n        )\n    }\n);\nUpdateContext(\n    {\n        lvTaxStatusRequired: If(\n            IsBlank(cboCompanyTaxStatusAddEdit.Selected.TaxStatus),\n            \"Tax Status \",\n            Blank()\n        )\n    }\n);\nIf (\n    Len(lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired) > 0,\n    Notify (\n        \"Company can't be saved without required fields: \" & lvCompanyNameRequired & lvCompanyTypeRequired & lvAddressRequired & lvCityRequired & lvStateRequired & lvZIPRequired & lvTaxStatusRequired,\n        NotificationType.Warning,\n        fMagicNo.gvNotifyTimeout * 2\n    );\n    ,\n    Set(\n        gvCRUDCompanyID,\n        Coalesce(\n            gvCRUDCompany.CompanyID,\n            0\n        )\n    );\n    Set(\n        gvCRUDType,\n        If(\n            gvCRUDCompanyID > 0,\n            fMagicNo.gvCRUDU,\n            fMagicNo.gvCRUDC\n        )\n    );\n    Set(\n        gvCompanyAddress,\n        Text(inpCompanyAddressAddEdit.Value)\n    );\n    Set(\n        gvBusinessPhone,\n        Text(inpCompanyPhoneAddEdit.Value)\n    );\n    Set(\n        gvCity,\n        Text(inpCompanyCityAddEdit.Value)\n    );\n    Set(\n        gvCompanyName,\n        Text(inpCompanyNameAddEdit.Value)\n    );\n    Set(\n        gvCompanyTypeID,\n        Value(cboCompanyCompanyTypeAddEdit.Selected.CompanyTypeID)\n    );\n    Set(\n        gvCompanyNotes,\n        Text(inpCompanyHTMLNotesAddEdit.HtmlText)\n    );\n    Set(\n        gvStandardTaxStatusID,\n        Value(cboCompanyTaxStatusAddEdit.Selected.TaxStatusID)\n    );\n    Set(\n        gvStateAbbrev,\n        Text(cboCompaniesStateAddEdit.Selected.StateAbbrev)\n    );\n    Set(\n        gvZip,\n        Text(inpCompanyZIPAddEdit.Value)\n    );\n    Set(\n        gvWebsite,\n        Text(inpCompanyWebsiteAddEdit.Value)\n    );\n    Set(\n        gvTGLCRUDCompany,\n        !gvTGLCRUDCompany\n    );\n    \n);\n"
+                  Text: "=\"\U0001F195/✏️ Save\""
+                  X: =btnCompanyMap.X
+                  Y: =208
+            - inpCompanyWebsiteAddEdit:
+                Control: TextInput@0.0.54
+                Properties:
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Normal
+                  Height: =36
+                  Value: =LookUp(fCompanies,CompanyID= gvCRUDCompany.CompanyID,Website)
+                  Width: =cboCompanyTaxStatusAddEdit.Width
+                  X: =124
+                  Y: =252
+            - lblCompanyWebsiteAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblCompanyCompanyIDAddEdit.Height
+                  Size: =10
+                  Text: |-
+                    ="Website
+                    "
+                  Width: =lblCompanyCompanyIDAddEdit.Width
+                  Y: =252
+            - btnCompanyAddEditDelete:
+                Control: Button@0.0.45
+                Properties:
+                  FontSize: =9
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: |
+                    =Set(
+                        gvCRUDCompanyID,
+                        Coalesce(
+                            gvCRUDCompany.CompanyID,
+                            0
+                        )
+                    );
+                    Set(
+                        gvCRUDType,
+                       fMagicNo.gvCRUDD
+                    );
+                    Set(
+                        gvTGLCRUDCompany,
+                        !gvTGLCRUDCompany
+                    );
+                  Text: ="❌ Delete"
+                  X: =btnCompanyMap.X
+                  Y: =inpCompanyWebsiteAddEdit.Y
+            - Label1:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Font: =Font.'Open Sans'
+                  Text: =
+                  X: =240
+                  Y: =284
+      - conCompanyAddEditManage:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Fill: =fAppColors.gvlblFill
+            Height: =24
+            Width: =Parent.Width
+            Y: =compNWDevMenuCompanyAdd.Y+compNWDevMenuCompanyAdd.Height
+          Children:
+            - btnCompaniesCancelAddEdit:
+                Control: Button@0.0.45
+                Properties:
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  Layout: ='ButtonCanvas.Layout'.TextOnly
+                  OnSelect: =
+                  Text: ="❌ Cancel "
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: =52
+            - btnCompaniesEmailListAddEdit:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =RGBA(5, 102, 178, 1)
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: =Navigate(scrCompanyMailingLabels);
+                  Text: ="Email Company List"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: =btnCompanyAddNewAddEdit.X+260
+            - btnCompanyAddNewAddEdit:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =ColorFade(Self.Fill, -15%)
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                  Fill: =fAppColors.gvlblColorFade
+                  Font: =Font.'Open Sans'
+                  Height: =24
+                  HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                  HoverColor: =RGBA(255, 255, 255, 1)
+                  HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                  OnSelect: |
+                    =Set(
+                        gvCRUDType,
+                        fMagicNo.gvCRUDC
+                    );
+                    Set(
+                        gvCRUDCompany,
+                        Blank()
+                    );
+                  PressedBorderColor: =Self.Fill
+                  PressedColor: =Self.Fill
+                  PressedFill: =Self.Color
+                  Size: =9
+                  Text: ="➕Add"
+                  Width: =150
+                  X: =202
+            - btnShowFilterCompanies:
+                Control: Button@0.0.45
+                Properties:
+                  BasePaletteColor: =RGBA(5, 102, 178, 1)
+                  Font: =Font.'Open Sans'
+                  FontSize: =9
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: |
+                    =Notify(
+                         Switch(
+                            Text(filterCompanyType.Selected.Value),
+                            "All",
+                            "No Filter Applied",
+                            "Customers",
+                            "CompanyTypeID = 1",
+                            "Shippers",
+                            "CompanyTypeID = 2",
+                            "Vendors",
+                            "CompanyTypeID = 3"
+                        ),NotificationType.Success,fMagicNo.gvNotifyTimeout
+                    );
+                  Text: ="Show Filter"
+                  VerticalAlign: =VerticalAlign.Middle
+                  Width: =150
+                  X: =824
+      - lblCOmpanyOrdersAddEdit:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Color: =RGBA(5, 102, 178, 1)
+            Fill: =RGBA(0,0,0,0)
+            Font: =Font.'Open Sans'
+            Text: ="Orders"
+            X: =546
+            Y: =117
+      - conCompanyOrdersList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =448
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width-conCompanyAddEdit.Width
+            X: =conCompanyAddEdit.X+conCompanyAddEdit.Width
+            Y: =lblCOmpanyOrdersAddEdit.Y+lblCOmpanyOrdersAddEdit.Height
+          Children:
+            - conCompanyOrdersListCaptions:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  AlignInContainer: =AlignInContainer.Start
+                  Height: =20
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =30
+                  Width: =Parent.Width
+                Children:
+                  - lblCompanyOrdersOrderNoCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: ="#"
+                        Width: =60
+                  - lblCompanyOrdersEmployeeCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: ="Employee"
+                        Width: =160
+                  - lblCompanyOrdersOrderDateCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: |-
+                          ="Order Date
+                          "
+                        Width: =100
+                  - lblCompanyOrdersOrderTotalCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: ="Order Total w/Shipping"
+                        Width: =180
+                  - lblCompanyOrdersOrderStatusCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: ="Status"
+                        Width: =100
+                  - lblCompanyOrdersOrderShipperCaption:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        Size: =10
+                        Text: ="Shipper"
+                        Width: =200
+            - glryCompanyOrdersList:
+                Control: Gallery@2.15.0
+                Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Height: '=500 '
+                  Items: =Sort(Filter(fEmployeeOrders, CompanyID=gvCRUDCompany.CompanyID),OrderDate,SortOrder.Descending)
+                  LayoutMinHeight: =Parent.Height-80
+                  Width: =Parent.Width
+                Children:
+                  - lblCompanyOrdersOrderNo:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =Color.MediumBlue
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 1.8
+                        OnSelect: |
+                          =Select(Parent);
+                          Set(
+                              gvCRUDOrder,
+                              ThisItem
+                          );
+                          Set(
+                              gvCRUDOrderID,
+                              gvCRUDOrder.OrderID
+                          );
+                          Navigate(scrOrderAdd);
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: ="✏️ " & ThisItem.OrderID
+                        Underline: =true
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: |+
+                          =lblCompanyOrdersOrderNoCaption.Width
+                        X: =1
+                  - lblCompanyOrdersEmployee:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 4
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =ThisItem.Employee
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCompanyOrdersEmployeeCaption.Width
+                        X: =lblCompanyOrdersOrderNo.X+lblCompanyOrdersOrderNo.Width
+                  - lblCompanyOrdersOrderDate:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 4
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =DateValue( ThisItem.OrderDate)
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCompanyOrdersOrderDateCaption.Width
+                        X: =lblCompanyOrdersEmployee.X+lblCompanyOrdersEmployee.Width
+                        Y: =lblCompanyOrdersEmployee.Y
+                  - lblCompanyOrdersOrderTotal:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 4
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =25
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =Text(ThisItem.ExtendedPrice + ThisItem.ShippingFee, "$#,##0.00")
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCompanyOrdersOrderTotalCaption.Width
+                        X: =lblCompanyOrdersOrderTotalCaption.X
+                  - lblCompanyOrdersOrderStatus:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 4
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =25
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =ThisItem.OrderStatusName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCompanyOrdersOrderStatusCaption.Width
+                        X: =lblCompanyOrdersOrderStatusCaption.X
+                  - lblCompanyOrdersOrderShipper:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: =Self.Size * 4
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =25
+                        PaddingTop: =0
+                        Size: =12
+                        Text: =ThisItem.ShipperName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCompanyOrdersOrderShipperCaption.Width
+                        X: =lblCompanyOrdersOrderShipperCaption.X
+            - lblCompanyOrdersCount:
+                Control: Label@2.5.1
+                Properties:
+                  AlignInContainer: =AlignInContainer.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Font: =Font.'Open Sans'
+                  OnSelect: =
+                  Size: =10
+                  Text: ="Order Count " & glryCompanyOrdersList.AllItemsCount
+                  X: =120
+                  Y: =glryCompanyOrdersList.Y+glryCompanyOrdersList.AllItemsCount*30
+      - lblFUCompanyAddEdit_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDCompanies.Value
+            Visible: =false
+            Width: =10
+      - conCompanyContactsAddEdit:
+          Control: GroupContainer@1.3.0
+          Variant: ManualLayout
+          Properties:
+            Height: =163
+            Width: =Parent.Width
+            Y: =conCompanyAddEdit.Y+conCompanyAddEdit.Height
+          Children:
+            - glryCompanyContactsAddEdit:
+                Control: Gallery@2.15.0
+                Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Height: =65
+                  Items: =Filter(fCompanyContacts, CompanyID= gvCRUDCompany.CompanyID)
+                  TemplateSize: =30
+                  Width: =Parent.Width
+                  Y: =lblCustomerContactContactIDCaptionAddEdit.Y+lblCustomerContactContactIDCaptionAddEdit.Height
+                Children:
+                  - lblCompanyContactsFirstNameAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.FirstName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactFirstNameCaptionAddEdit.Width
+                        X: =lblCustomerContactFirstNameCaptionAddEdit.X
+                  - lblCompanyContactsEmailAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.EmailAddress
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactEmailCaptionAddEdit.Width
+                        X: =lblCustomerContactEmailCaptionAddEdit.X
+                  - Separator1:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Height: =8
+                        OnSelect: =Select(Parent)
+                        Width: =Parent.TemplateWidth
+                        Y: =Parent.TemplateHeight - Self.Height
+                  - recCompanyContactsSelected:
+                      Control: Rectangle@2.3.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Fill: =RGBA(0, 18, 107, 1)
+                        Height: =Parent.TemplateHeight - Separator1.Height
+                        OnSelect: =Select(Parent)
+                        Visible: =ThisItem.IsSelected
+                        Width: =1
+                  - lblCompanyContactsLastNameAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.LastName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactLastNameCaptionAddEdit.Width
+                        X: =lblCustomerContactLastNameCaptionAddEdit.X
+                  - lblCompanyContactsContactIDAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =8
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.ContactID
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =40
+                  - lblCompanyContactsCustomerAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.CompanyName
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactCustomerCaptionAddEdit.Width
+                        X: =lblCustomerContactCustomerCaptionAddEdit.X
+                  - lblCompanyContactsJobTitleAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Color: =RGBA(50, 49, 48, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.JobTitle
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactJobTitleCaptionAddEdit.Width
+                        X: =lblCustomerContactJobTitleCaptionAddEdit.X
+                  - lblCompanyContactsPrimaryPhoneAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.PrimaryPhone
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactPrimaryPhoneCaptionAddEdit.Width
+                        X: =lblCustomerContactPrimaryPhoneCaptionAddEdit.X
+                  - lblCompanyContactSecondaryPhoneAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.SecondaryPhone
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactSecondaryPhoneCaptionAddEdit.Width
+                        X: =lblCustomerContactSecondaryPhoneCaptionAddEdit.X
+                  - lblCompanyContactsNotesAddEdit:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 0, 0, 1)
+                        Font: =Font.'Open Sans'
+                        FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                        Height: '=30 '
+                        OnSelect: =Select(Parent)
+                        PaddingBottom: =0
+                        PaddingLeft: =0
+                        PaddingRight: =0
+                        PaddingTop: =0
+                        Size: =10
+                        Text: =ThisItem.Notes
+                        VerticalAlign: =VerticalAlign.Top
+                        Width: =lblCustomerContactNotesCaptionAddEdit.Width
+                        X: =lblCustomerContactNotesCaptionAddEdit.X
+            - lblCustomerContactContactIDCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="#"
+                  Width: =40
+            - lblCustomerContactNotesCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Notes"
+                  Width: =300
+                  X: =lblCustomerContactSecondaryPhoneCaptionAddEdit.X+lblCustomerContactSecondaryPhoneCaptionAddEdit.Width
+            - lblCustomerContactSecondaryPhoneCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Secondary Phone"
+                  X: |-
+                    =
+                    lblCustomerContactPrimaryPhoneCaptionAddEdit.X+lblCustomerContactPrimaryPhoneCaptionAddEdit.Width
+            - lblCustomerContactPrimaryPhoneCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Primary Phone"
+                  X: =lblCustomerContactEmailCaptionAddEdit.X+lblCustomerContactEmailCaptionAddEdit.Width
+            - lblCustomerContactEmailCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Email"
+                  Width: =160
+                  X: =lblCustomerContactJobTitleCaptionAddEdit.X+lblCustomerContactJobTitleCaptionAddEdit.Width
+            - lblCustomerContactJobTitleCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Job Title"
+                  Width: =120
+                  X: =lblCustomerContactFirstNameCaptionAddEdit.X+lblCustomerContactFirstNameCaptionAddEdit.Width
+            - lblCustomerContactFirstNameCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="First Name"
+                  Width: =120
+                  X: =lblCustomerContactLastNameCaptionAddEdit.X+lblCustomerContactLastNameCaptionAddEdit.Width
+            - lblCustomerContactLastNameCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: ="Last Name"
+                  Width: =120
+                  X: =lblCustomerContactCustomerCaptionAddEdit.X+lblCustomerContactCustomerCaptionAddEdit.Width
+            - lblCustomerContactCustomerCaptionAddEdit:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =RGBA(255, 255, 255, 1)
+                  Fill: =RGBA(39, 113, 194, 1)
+                  Font: =Font.'Open Sans'
+                  Size: =11
+                  Text: |-
+                    ="Customer
+                    "
+                  Width: =220
+                  X: =lblCustomerContactContactIDCaptionAddEdit.X+lblCustomerContactContactIDCaptionAddEdit.Width
+            - TextInputCanvas1:
+                Control: TextInput@0.0.54
+                Properties:
+                  Y: =127

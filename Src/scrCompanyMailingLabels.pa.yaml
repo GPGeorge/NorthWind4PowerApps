@@ -1,0 +1,131 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrCompanyMailingLabels:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - glryCompanyMailingLabels:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Items: =fCompanies
+            TemplateSize: =80
+            Width: =400
+            X: =60
+            Y: =60
+          Children:
+            - lblCompanyNameMailing:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.6
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.CompanyName
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =300
+                  X: |+
+                    =0
+                  Y: =(Parent.TemplateHeight - (Self.Size * 1.8 + lblCompanyAddressMailing.Size * 1.8)) / 2
+            - lblCompanyAddressMailing:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.6
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.Address
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =lblCompanyNameMailing.Width
+                  X: |+
+                    =0
+                  Y: =lblCompanyNameMailing.Y + lblCompanyNameMailing.Height
+            - lblCompanyCitySTZIPMailing:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.6
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.City & ", " & ThisItem.StateAbbrev & " " & ThisItem.Zip
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =lblCompanyNameMailing.Width
+                  X: |+
+                    =0
+                  Y: =lblCompanyAddressMailing.Y+lblCompanyAddressMailing.Height
+      - btnPrintCompanyMailingLabels:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(166, 166, 166, 1)
+            Fill: =RGBA(56, 96, 178, 1)
+            Font: =Font.'Open Sans'
+            Height: =20
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+            OnSelect: |-
+              =//*assume that printing the labels automatically means it will be sent to the customer
+              //*a more advanced logic would wait until the print is completed
+              //*and manually update the invoice date and status.
+              //*Notify(Value(fMagicNo.gvOrderStatusINV) & " " & First(gvInvoice.ResultSets.Table1).OrderID & " " & Now());
+              //*UpdateContext({lvSuccess:UpdateOrderStatus.dboUpdateOrderStatus({OrderID:First(gvInvoice.ResultSets.Table1).OrderID,OrderStatusID:Value(fMagicNo.gvOrderStatusINV),StatusDate:DateTimeValue(Now())})});
+              //*Notify(lvSuccess.OutputParameters.Success);
+              //*Print();
+            PaddingBottom: =0
+            PaddingTop: =0
+            PressedBorderColor: =Self.Fill
+            PressedColor: =Self.Fill
+            PressedFill: =Self.Color
+            Size: =13
+            Text: ="Print"
+            Visible: =Not scrCompanyMailingLabels.Printing
+            X: =136
+            Y: =40
+      - compAppTitleCompanyMailingLabels:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - lblPlaceholderText:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Height: =106
+            Text: |-
+              ="This is a placeholder pending creation of the module to export a CSV for mailing labels
+              "
+            Width: =429
+            X: =520
+            Y: =80

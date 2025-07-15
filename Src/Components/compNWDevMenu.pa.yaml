@@ -1,0 +1,74 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+ComponentDefinitions:
+  compNWDevMenu:
+    DefinitionType: CanvasComponent
+    AccessAppScope: true
+    CustomProperties:
+      cpiMenuText:
+        PropertyKind: Input
+        DisplayName: cpiMenuText
+        Description: A custom property
+        DataType: Table
+        Default: |-
+          =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+    Properties:
+      Height: =30
+      Width: =App.Width
+    Children:
+      - recMenuFill:
+          Control: Rectangle@2.3.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            DisplayMode: =DisplayMode.Disabled
+            Fill: =fAppColors.gvlblFillFade
+            Height: =compNWDevMenu.Height
+            Width: =App.Width
+      - glryMenuItems:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =recMenuFill.Height
+            Items: =colNWDevMenu
+            ShowScrollbar: =false
+            TemplatePadding: =2
+            TemplateSize: =(Parent.Width/Min(10,CountRows(colNWDevMenu)*2) )
+            Width: =Parent.Width
+          Children:
+            - lblMenuOption:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  Color: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =24
+                  OnSelect: =Navigate(ThisItem.ScreenName)
+                  PaddingBottom: =0
+                  PaddingLeft: =10
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: =ThisItem.Title
+                  Tooltip: ="Navigate to Lists"
+                  Width: =140
+                  Y: =2
+            - icoMenuOption:
+                Control: Classic/Icon@2.5.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =fAppColors.gvlblColor
+                  Height: =22
+                  Icon: =ThisItem.Icon
+                  OnSelect: =Navigate(ThisItem.ScreenName)
+                  Width: =22
+                  X: =lblMenuOption.X +lblMenuOption.Width- Self.Width
+                  Y: =5

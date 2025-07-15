@@ -1,0 +1,124 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrWelcome:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - glryWelcome:
+          Control: Gallery@2.15.0
+          Variant: Horizontal
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =174
+            Items: =fWelcome
+            Width: =614
+            X: =icoNWDev.X+icoNWDev.Width
+            Y: =compNWDevMenuWelcome.Y+compNWDevMenuWelcome.Height
+          Children:
+            - WelcomeText:
+                Control: HtmlViewer@2.1.0
+                Properties:
+                  AutoHeight: =true
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =150
+                  HtmlText: =ThisItem.Welcome
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.Width
+                  X: '=0   '
+      - icoNWDev:
+          Control: Image@2.2.3
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =155
+            Image: ='Northwind Traders Developer Edition Thumbnail'
+            Width: =200
+            Y: =compNWDevMenuWelcome.Y+compNWDevMenuWelcome.Height
+      - compAppTitleWelcome:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - compNWDevMenuWelcome:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleWelcome.Y+compAppTitleWelcome.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - LearnVideoImage:
+          Control: Video@2.4.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Fill: =RGBA(56, 96, 178, 1)
+            Height: =200
+            ShowControls: =false
+            Width: =300
+            X: =882
+            Y: =compNWDevMenuWelcome.Y+compNWDevMenuWelcome.Height
+      - LearnLink:
+          Control: HtmlViewer@2.1.0
+          Properties:
+            AutoHeight: =true
+            Font: =Font.'Open Sans'
+            HtmlText: = "<font color=white>" & "Northwind Developer Video" & "</font>"
+            OnSelect: =Launch(glryWelcome.Selected.Learn)
+            Width: =238
+            X: =913
+            Y: =81
+      - lblLogin:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Size: =12
+            Text: ="After watching, click Continue to login"
+            Width: =LearnVideoImage.Width
+            X: =LearnVideoImage.X
+            Y: =181
+      - lblPleaseWatch:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Text: |-
+              ="Please watch this short video.  
+              We promise, it will be well worth it!"
+            Width: =glryWelcome.Width
+            X: =glryWelcome.X
+            Y: =314
+      - btnLaunchLearn:
+          Control: Button@0.0.45
+          Properties:
+            Align: =Align.Center
+            BorderRadius: =25
+            FontColor: =RGBA(255, 255, 255, 1)
+            Icon: ="Send"
+            IconStyle: ='ButtonCanvas.IconStyle'.Filled
+            Layout: ='ButtonCanvas.Layout'.IconOnly
+            OnSelect: =Launch(glryWelcome.Selected.Learn)
+            Text: =
+            Width: =32
+            X: =1021
+            Y: =133
+      - lblBebugWelcome:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Font: =Font.'Open Sans'
+            Text: =CountRows(fSystemSettings)
+            Visible: =false
+            X: =175
+            Y: =450

@@ -1,0 +1,475 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrOrderList:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |
+        =Reset(filterOrderStatus);
+        UpdateContext({lvOrderFilter: 1});
+           Set(
+                gvOrderStatusID,
+                fMagicNo.gvOrderStatusCLO
+            );
+            Set(
+                gvOrderFilterDate,
+                Blank()
+            );
+            Set(
+                gvOrderEmployeeID,
+                0
+            );
+        Set(
+            gvTGLCRUDOrderList,
+            !gvTGLCRUDOrderList
+        );
+    Children:
+      - filterOrderStatus:
+          Control: Classic/Radio@2.3.0
+          Properties:
+            Align: =Align.Center
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =1
+            Default: ="Open Orders"
+            Fill: =RGBA(214, 223, 238, 1)
+            Font: =Font.'Open Sans'
+            Height: =40
+            HoverColor: =RGBA(0, 18, 107, 1)
+            Items: =["Open Orders","Recent Orders", "Internet Orders", "All Orders"]
+            Items.Value: =Value
+            Layout: =Layout.Horizontal
+            OnChange: "=UpdateContext(\n    {\n        lvOrderFilter: Switch(\n            Text(filterOrderStatus.Selected.Value),\n            \"Open Orders\",\n            1,\n            \"Recent Orders\",\n            2,\n            \"Internet Orders\",\n            3,\n            \"All Orders\",\n            4\n        )\n    }\n);\nIf(\n    lvOrderFilter = 1,\n    Set(\n        gvFilterDemo,\n        fMagicNo.gvOrderStatusCLO\n    );\n    Set(\n        gvOrderStatusID,\n        fMagicNo.gvOrderStatusCLO\n    );\n    Set(\n        gvOrderFilterDate,\n        Blank()\n    );\n    Set(\n        gvOrderEmployeeID,\n        0\n    );\n    \n);\nIf(\n    lvOrderFilter = 2,\n    Set(\n        gvFilterDemo,\n        0\n    );\n    Set(\n        gvOrderStatusID,\n        0\n    );\n    Set(\n        gvOrderFilterDate,\n        Text(\n            Today(),\n            \"yyyy-mm-dd\"\n        )\n    );\n    Set(\n        gvOrderEmployeeID,\n        0\n    );\n    \n);\nIf(\n    lvOrderFilter = 3,\n    Set(\n        gvFilterDemo,\n        0\n    );\n    Set(\n        gvOrderStatusID,\n        0\n    );\n    Set(\n        gvOrderFilterDate,\n        Blank()\n    );\n    Set(\n        gvOrderEmployeeID,\n        10\n    );\n    \n);\nIf(\n    lvOrderFilter = 4,\n    Set(\n        gvFilterDemo,\n        0\n    );\n    Set(\n        gvOrderStatusID,\n        0\n    );\n    Set(\n        gvOrderFilterDate,\n        Blank()\n    );\n    Set(\n        gvOrderEmployeeID,\n        0\n    );\n    \n);\nSet(\n    gvCRUDType,\n    fMagicNo.gvCRUDRO\n);\nSet(\n    gvTGLCRUDOrderList,\n    !gvTGLCRUDOrderList\n);\n"
+            PaddingBottom: =2
+            PaddingTop: =2
+            RadioBorderColor: =RGBA(0, 18, 107, 1)
+            RadioSelectionFill: =RGBA(0, 0, 0, 1)
+            RadioSize: =30
+            Size: =11
+            Underline: =true
+            Width: =Parent.Width
+            X: =compAppTitleOrderList.X
+            Y: =66
+      - lblOrderDisplayed:
+          Control: Label@2.5.1
+          Properties:
+            Align: =Align.Center
+            AutoHeight: =true
+            BorderColor: =RGBA(0, 18, 107, 1)
+            DisplayMode: =DisplayMode.View
+            Fill: =fAppColors.gvlblFillFade
+            Font: =Font.'Open Sans'
+            Height: =filterOrderStatus.Height
+            Text: =glryOrderList.AllItemsCount & " " & Text(filterOrderStatus.Selected.Value)
+            Width: =180
+            X: =Parent.Width-Self.Width-btnOrderAddNew.Width-12
+            Y: =filterOrderStatus.Y +4
+      - conMenuOrderList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =30
+            LayoutDirection: =LayoutDirection.Horizontal
+            Width: =Parent.Width
+            Y: =compAppTitleOrderList.Y+compAppTitleOrderList.Height
+          Children:
+            - compNWDevMenuOrders:
+                Control: CanvasComponent
+                ComponentName: compNWDevMenu
+                Properties:
+                  AlignInContainer: =AlignInContainer.Start
+                  FillPortions: =1
+                  Height: =30
+                  Width: =App.Width
+                  cpiMenuText: =
+      - compAppTitleOrderList:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - btnOrderAddNew:
+          Control: Classic/Button@2.2.0
+          Properties:
+            BorderColor: =ColorFade(Self.Fill, -15%)
+            Color: =RGBA(255, 255, 255, 1)
+            DisabledBorderColor: =RGBA(166, 166, 166, 1)
+            Fill: =fAppColors.gvlblColorFade
+            Font: =Font.'Open Sans'
+            HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+            HoverColor: =RGBA(255, 255, 255, 1)
+            HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+            OnSelect: |
+              =Set(
+                  gvCRUDType,
+                  fMagicNo.gvCRUDC //* C = Create, the 1st position in CRUD
+              );
+              Set(
+                  gvCRUDOrder,
+                  Blank()
+              );
+              Set(
+                  gvCRUDOrderID,
+                  0
+              );
+              //* Formatting of ship fee for the Orders Detail in order to show the Dollars and cents.
+              Set(
+                  gvShipFeeFormat,
+                  Text(
+                      0,
+                      "$#,###.00",
+                      "en-US"
+                  )
+              );
+              Navigate(scrOrderAdd);
+            PressedBorderColor: =Self.Fill
+            PressedColor: =Self.Fill
+            PressedFill: =Self.Color
+            Text: ="➕"
+            Width: =40
+            X: =lblOrderDisplayed.X+lblOrderDisplayed.Width+8
+            Y: =filterOrderStatus.Y
+      - conOrderList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =Parent.Height-(compAppTitleOrderList.Height+conMenuOrderList.Height+filterOrderStatus.Height)
+            LayoutDirection: =LayoutDirection.Vertical
+            Width: =Parent.Width
+            Y: =filterOrderStatus.Y+filterOrderStatus.Height
+          Children:
+            - conOrderCaptionList:
+                Control: GroupContainer@1.3.0
+                Variant: AutoLayout
+                Properties:
+                  Fill: =RGBA(39, 67, 125, 1)
+                  FillPortions: =0
+                  Height: =40
+                  LayoutDirection: =LayoutDirection.Horizontal
+                  LayoutMinHeight: =40
+                Children:
+                  - lblOrderLineItemsOrderIDList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="#"
+                        Width: =80
+                  - lblOrderLineItemsEmployeeList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Employee"
+                        Width: =200
+                  - lblOrderLineItemsCustomerList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: |-
+                          ="Customer
+                          "
+                        Width: =300
+                  - lblOrderLineItemsOrderDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Order Date"
+                        Width: =120
+                  - lblOrderLineItemsShippedDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Shipped Date"
+                        Width: =120
+                  - lblOrderLineItemsOrderTotalList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Order Total"
+                        Width: =120
+                  - lblOrderLineItemsPaidDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Paid Date"
+                        Width: =120
+                  - lblOrderLineItemsOrderStatusList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Status"
+                        Width: =100
+                  - lblOrderLineItemsOrderDetailStatusList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Font: =Font.'Open Sans'
+                        Size: =11
+                        Text: ="Detail Status"
+                        Width: =120
+            - glryOrderList:
+                Control: Gallery@2.15.0
+                Variant: Vertical
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: |+
+                    =fAppColors.gvlblColorFade
+                  Height: =606
+                  Items: |-
+                    =SortByColumns (
+                        With(
+                            {
+                                records: SortByColumns(
+                                    'gvCRUDOrderList',
+                                    "OrderDate",
+                                    SortOrder.Descending 
+                                )
+                            },
+                            ForAll(
+                                Sequence(CountRows(records)),
+                                Patch(
+                                    Last(
+                                        FirstN(
+                                            records,
+                                            Value
+                                        )
+                                    ),
+                                    {rowNumber: Value}
+                                )
+                            )
+                        ),
+                        "OrderDate",
+                        SortOrder.Descending,
+                        "rowNumber",
+                        SortOrder.Ascending
+                    )
+                  OnSelect: =
+                  TemplateFill: |-
+                    =If(
+                        Mod(
+                            Coalesce(
+                                ThisItem.rowNumber,
+                                1
+                            ),
+                            2
+                        ) = 0,
+                        fAppColors.gvBodyFill,
+                        fAppColors.gvlblFillFade
+                    )
+                  TemplatePadding: =1
+                  TemplateSize: =30
+                  Width: =compAppTitleOrderList.Width
+                  X: =compAppTitleOrderList.X
+                Children:
+                  - lblOrderOrderIDList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        BorderThickness: =2
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =30
+                        OnSelect: "=Select(Parent);\nSet(\n    gvCRUDType,\n    fMagicNo.gvCRUDR  \n);\nSet(\n    gvCRUDOrder,\n    ThisItem\n);\nSet(\n    gvCRUDOrderID,\n    gvCRUDOrder.OrderID\n);\n\n//* Formatting of ship fee for the Orders Detail in order to show the Dollars.\nSet(\n    gvShipFeeFormat,\n    Text(\n        Coalesce(\n            Value(ThisItem.ShippingFee),\n            0\n        ),\n        \"$#,###.00\",\n        \"en-US\"\n    )\n);\nNavigate(scrOrderAdd);\n "
+                        Size: =11
+                        Text: ="✏️ " & ThisItem.OrderID
+                        Tooltip: ="Click to See Order Detail"
+                        Width: =80
+                        X: =compAppTitleOrderList.X
+                  - lblOrderCustomerList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =ThisItem.Customer
+                        Width: =lblOrderLineItemsCustomerList.Width
+                        X: =lblOrderTakenByFullNameList.X+lblOrderTakenByFullNameList.Width
+                  - lblOrderTakenByFullNameList:
+                      Control: Label@2.5.1
+                      Properties:
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =ThisItem.EmployeeFNLN
+                        Width: =lblOrderLineItemsEmployeeList.Width
+                        X: =lblOrderOrderIDList.X+lblOrderOrderIDList.Width
+                  - lblOrderDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =DateValue(ThisItem.OrderDate)
+                        Width: =120
+                        X: =lblOrderCustomerList.X+lblOrderCustomerList.Width
+                  - lblOrderShippedDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =DateValue(ThisItem.ShippedDate)
+                        Width: =120
+                        X: =lblOrderDateList.X+lblOrderDateList.Width
+                  - lblOrderTotalList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =Text(ThisItem.OrderTotal,"$#,###.00")
+                        Width: =lblOrderLineItemsOrderTotalList.Width
+                        X: =lblOrderShippedDateList.X+lblOrderShippedDateList.Width
+                  - lblOrderPaidDateList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =DateValue(ThisItem.PaidDate)
+                        Width: =120
+                        X: =lblOrderTotalList.X+lblOrderTotalList.Width
+                  - lblOrderStatusList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =ThisItem.OrderStatusName
+                        Width: =lblOrderLineItemsOrderStatusList.Width
+                        X: =lblOrderPaidDateList.X+lblOrderPaidDateList.Width
+                  - lblOrderDetailStatusList:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Center
+                        AutoHeight: =true
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        OnSelect: =Select(Parent)
+                        Size: =11
+                        Text: =ThisItem.OrderDetailStatusName
+                        Width: =115
+                        X: =lblOrderStatusList.X+lblOrderStatusList.Width
+                  - lblOrderRowNumberhdnList:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =29
+                        OnSelect: =Select(Parent)
+                        Size: =9
+                        Text: =ThisItem.rowNumber
+                        Visible: =false
+                        Width: =25
+                        X: =Parent.Width-Self.Width
+      - btnOrdersShowFilter:
+          Control: Button@0.0.45
+          Properties:
+            BasePaletteColor: =RGBA(5, 102, 178, 1)
+            Font: =Font.'Open Sans'
+            FontSize: =9
+            FontWeight: =FontWeight.Semibold
+            Height: =24
+            OnSelect: |
+              =Notify(
+                  Switch(
+                      Text(filterOrderStatus.Selected.Value),
+                      "Open Orders",
+                      "OrderStatusID <> 1",
+                      "Recent Orders",
+                      "OrderDate > (Today() - 14)",
+                      "Internet Orders",
+                      "EmployeeID = 10, (Shows internet orders. Multiple users will be added in Phase III.)",
+                      "All Orders",
+                      "1 = 1 (No filter applies)"
+                  ),
+                  NotificationType.Information,
+                  fMagicNo.gvNotifyTimeout
+              );
+            Text: ="Show Filter"
+            VerticalAlign: =VerticalAlign.Middle
+            Width: =150
+            X: =635
+            Y: =74
+      - lblFUAddEditOrderAdd_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Color: =RGBA(255, 255, 255, 1)
+            Font: =Font.'Open Sans'
+            Height: =20
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =200
+            X: =100

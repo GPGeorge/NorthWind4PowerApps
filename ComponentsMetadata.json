@@ -1,0 +1,25 @@
+{
+  "Components": [
+    {
+      "Name": "compNWDevMenu",
+      "TemplateName": "deb4393b2ba047b683a378ff748807c1",
+      "Description": "",
+      "AllowCustomization": true,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "compAppTitle",
+      "TemplateName": "c7cc671b91324bee8b76524403ed409b",
+      "Description": "",
+      "AllowCustomization": true,
+      "AllowAccessToGlobals": true
+    },
+    {
+      "Name": "compAppTitleBackup",
+      "TemplateName": "f0c5b3a970e842b395513c7262a80043",
+      "Description": "",
+      "AllowCustomization": true,
+      "AllowAccessToGlobals": true
+    }
+  ]
+}

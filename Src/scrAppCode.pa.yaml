@@ -1,0 +1,715 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrAppCode:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+    Children:
+      - tglCRUDOrders:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDOrder
+            FalseText: ="Add/Select/Edit/Delete  Order"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDOrder: CRUDOrders.dboCRUDOrder(\n            {\n                CRUDType: Coalesce(\n                    gvCRUDType,\n                    fMagicNo.gvCRUDR\n                ),\n                OrderID: Coalesce(\n                    gvCRUDOrderOrderID,\n                    0\n                ),\n                EmployeeID: Coalesce(\n                    gvCRUDOrderEmployeeID,\n                    0\n                ),\n                CustomerID: Coalesce(\n                    gvCRUDOrderCustomerID,\n                    0\n                ),\n                OrderDate: Blank(),\n                OrderStartDate: If(\n                    IsBlank(gvOrderFilterDate),\n                    Blank(),\n                    Text(\n                        gvOrderFilterDate,\n                        \"yyyy-mm-dd hh:mm:ss\"\n                    )\n                ),\n                TaxRate: Coalesce(\n                    gvCRUDOrderTaxRate,\n                    0\n                ),\n                TaxStatusID: Coalesce(\n                    gvCRUDOrderTaxStatusID,\n                    0\n                ),\n                Notes: gvCRUDOrderNotes,\n                OrderStatusID: gvOrderStatusID,\n                ShipperID: gvCRUDOrderShipperID,\n                ShippingFee: Coalesce(\n                    gvCRUDOrderShippingFee,\n                    0\n                ),\n                //InvoiceDate: gvCRUDOrderInvoiceDate,\n                // ShippedDate: gvCRUDOrderShippedDate,\nPaymentMethod: Coalesce(\n                    gvCRUDOrderPaymentMethod,\n                    \"Cash\"\n                )\n                    //,\n//PaidDate: gvCRUDOrderPaidDate\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDOrder.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDOrder.OutputParameters.ErrorCode & \" \" & lvCRUDOrder.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout * 1.5\n    )\n);\n//* If create, update or delete action succeeded , we need to refresh fOrders with new values and/or new records\nIf(\n    Coalesce(\n        lvOrderStatusUpdate.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fOrders,\n        CRUDOrders.dboCRUDOrder(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                CustomerID: 0,\n                OrderID: 0,\n                EmployeeID: 0,\n                OrderStatusID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    \n);\n//* When a new order has been created, gvCRUDOrder has to be redefined for it. Note UnifiedID output parameter, not existing OrderID\nSet(\n    gvCRUDOrder,\n    LookUp(\n        fOrders,\n        OrderID = lvCRUDOrder.OutputParameters.UnifiedID\n    )\n);\nUpdateContext({lvCRUDOrder: Blank()});"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete Order"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglAvailableProduct.Y+(tglAvailableProduct.Height*1.25)
+      - lblTestCode:
+          Control: Label@2.5.1
+          Properties:
+            AutoHeight: =true
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =2
+            Font: =Font.'Open Sans'
+            Height: =202
+            Text: =CountRows(gvCRUDOrderList) //gvOrderFilterDate//lvCRUDOrder.OutputParameters.Message //gvProductAvailable.OutputParameters.LocalProductAvailableToSell
+            VerticalAlign: =VerticalAlign.Top
+            Width: =144
+            X: =1199
+            Y: =90
+      - tglAvailableProduct:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCheckProductAvailable
+            FalseText: ="Product Available"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: |
+              =Set(
+                  gvProductAvailable,
+                  ProductAvailableODStatus.dboProductAvailable(
+                      {
+                          ProductID: Coalesce(
+                              gvCRUDProductID,
+                              0
+                          ),
+                          CurrentOrder: Coalesce(
+                              gvCurrentOrderQty,
+                              0
+                          )
+                      }
+                  )
+              );
+              If(
+                  Coalesce(
+                      gvProductAvailable.OutputParameters.LocalErrorCode,
+                      0
+                  ) <> 0,
+                  Notify(
+                      gvProductAvailable.OutputParameters.LocalErrorCode & " " &
+                          gvProductAvailable.OutputParameters.LocalMessage
+                      ,
+                      NotificationType.Error,
+                      fMagicNo.gvNotifyTimeout
+                  )
+              );
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Product Available"
+            Width: =390
+            X: =50
+            Y: =compNWDevMenuAppCode.Y+compNWDevMenuAppCode.Height+12
+      - tglCRUDPODetails:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDPODetail
+            FalseText: ="Add/Select/Edit/Delete PO Detail"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext (\n    {\n        lvCRUDPurchaseOrderDetail: CRUDPurchaseOrderDetails.dboCRUDPurchaseOrderDetail(\n            {\n                CRUDType: Coalesce(\n                    gvCRUDType,\n                    fMagicNo.gvCRUDR\n                ),\n                PurchaseOrderDetailID: gvPODetail.PurchaseOrderDetailID,\n                PurchaseOrderID: Coalesce(\n                    gvCRUDPO.PurchaseOrderID,\n                    0\n                ),\n                ProductID: Coalesce(\n                    gvCRUDProductID,\n                    0\n                ),\n                Quantity: Coalesce(\n                    gvPOQuantity,\n                    fMagicNo.gvDefaultQuantity\n                ),\n                UnitCost: Coalesce(\n                    gvPOUnitCost,\n                    0\n                )//   ,\n//ReceivedDate: Coalesce(                    Value(gvPOReceivedDate),                    0                )  \n            }\n        )\n    }\n);\n//Notify(lvCRUDPurchaseOrderDetail.OutputParameters.Message);\nIf(\n    Coalesce(\n        lvCRUDPurchaseOrderDetail.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDPurchaseOrderDetail.OutputParameters.ErrorCode & \" \" & lvCRUDPurchaseOrderDetail.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\n//* If create, update or delete action succeeded , we need to refresh the resultset with new values\nIf(\n    Coalesce(\n        lvCRUDPurchaseOrderDetail.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fPurchaseOrderDetails,\n        CRUDPurchaseOrderDetails.dboCRUDPurchaseOrderDetail({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    Set(\n        fPODetailsAllPOS,\n        PODetailsAllPOs.dboPODetailsAllPOs().ResultSets.Table1;\n    );\n    \n);\nSet(\n    gvCRUDPODetail,\n    First(\n        Filter(\n            fPurchaseOrderDetails,\n            PurchaseOrderDetailID = lvCRUDPurchaseOrderDetail.OutputParameters.UnifiedID\n        )\n    )\n);\nSet(\n    gvCRUDPODetails,\n    lvCRUDPurchaseOrderDetail.ResultSets.Table1\n);\nUpdateContext({lvCRUDPurchaseOrderDetail: Blank()});"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete PO Detail "
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDPO.Y+(tglCRUDPO.Height*1.25)
+      - tglCRUDPO:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDPO
+            FalseText: ="Add/Select/Edit/Delete PO "
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext (\n    {\n        lvCRUDPO: CRUDPurchaseOrders.dboCRUDPurchaseOrder(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    fMagicNo.gvCRUDR\n                ),\n                PurchaseOrderID: Coalesce(\n                    gvCRUDPOPurchaseOrderID,\n                    0\n                ),\n                VendorID: Coalesce(\n                    gvPOVendorID,\n                    0\n                ),\n                SubmittedByID: Coalesce(\n                    gvPOSubmittedBy,\n                    0\n                ),\n                SubmittedDate: Blank(),\n                ApprovedByID: Coalesce(\n                    gvPOApprovedByID,\n                    0\n                ),\n                ApprovedDate: Blank(),\n                StatusID: If(\n                    gvCRUDType = fMagicNo.gvCRUDC,\n                    fMagicNo.gvPOStatusNEW,\n                    gvCRUDPO.StatusID\n                ),\n                ReceivedDate: Blank(),\n                ShippingFee: Coalesce(\n                    gvPOShippingFee,\n                    0\n                ),\n                TaxAmount: Value(gvPOTaxAmount),\n                PaymentDate: Blank(),\n                PaymentAmount: Coalesce(\n                    gvPOPaymentAmount,\n                    0\n                ),\n                PaymentMethod: Coalesce(\n                    gvPOPaymentMethod,\n                    \"Cash\"\n                )\n            }\n        ),\n        Notes: Text(gvPONotes)\n    }\n);\n//Notify(Coalesce(lvCRUDPO.OutputParameters.UnifiedID,0));\nIf(\n    Coalesce(\n        lvCRUDPO.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDPO.OutputParameters.ErrorCode & \" \" & lvCRUDPO.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\nSet(\n    gvNoShipFee,\n    If(\n        lvCRUDPO.OutputParameters.ErrorCode = 51260,\n        true,\n        false\n    )\n);\n//* If create, update or delete action succeeded , we need to refresh the resultset with new values\nIf(\n    Coalesce(\n        lvCRUDPO.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        gvCRUDPOPurchaseOrderID,\n        Coalesce(\n            lvCRUDPO.OutputParameters.UnifiedID,\n            0\n        )\n    );\n    Set(\n        fPurchaseOrders,\n        CRUDPurchaseOrders.dboCRUDPurchaseOrder(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                PurchaseOrderID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    Set(\n        fPurchaseOrderList,\n        PurchaseOrderList.dboPurchaseOrderList({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    \n);\n//2025_07_10 Test  required \nSet( gvCRUDPO,First(Filter( fPurchaseOrders, PurchaseOrderID = gvCRUDPOPurchaseOrderID )));\nUpdateContext({lvCRUDPO: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete PO"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDOrderDetails.Y+ (tglCRUDOrderDetails.Height*1.25)
+      - tglCRUDOrderDetails:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDOrderDetail
+            FalseText: ="Add/Select/Edit/Delete Order Detail"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=//Execute the stored procedure with required parameters\nUpdateContext (\n    {\n        lvCRUDOrderDetail: CRUDOrderDetails.dboCRUDOrderDetail(\n            {\n                CRUDType: Coalesce(\n                    gvCRUDType,\n                    fMagicNo.gvCRUDR\n                ),\n                OrderID: Coalesce(\n                    gvCRUDOrder.OrderID,\n                    0\n                ),\n                OrderDetailID: Coalesce(\n                    gvCRUDOrderDetailID,\n                    0\n                ),\n                ProductID: Coalesce(\n                    gvCRUDProductID,\n                    0\n                ),\n                Quantity: Coalesce(\n                    gvQuantity,\n                    1\n                ),\n                Discount: Coalesce(\n                    gvDiscount,\n                    0\n                ),\n                UnitPrice: Coalesce(\n                    gvUnitPrice,\n                    0\n                ),\n                OrderDetailStatusID: Coalesce(\n                    gvOrderDetailStatusID,\n                    fMagicNo.gvDefaultOrderDetailStatus\n                )\n            }\n        )\n    }\n);\n//Provide error resonse if ErrorCode is not 0\nIf (\n    Coalesce(\n        lvCRUDOrderDetail.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify (\n        lvCRUDOrderDetail.OutputParameters.ErrorCode & \" \" & lvCRUDOrderDetail.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    );\n    ,\n//Update controls for parameters is ErrorCode is 0, indicating a successful add/edit/delete\n//Also, reset required field when data validation was successful here because it has to be done before the calling screen gets focus back\n    Reset(cboLineItemStatusAddOrderLineItemsAdd);\n    Reset(cboProductCategoryAddOrderLineItemsAdd);\n    Reset(inpQuantityAddOrderLineItemsAdd);\n    Reset(inpUnitPriceAddOrderLineItemsAdd);\n    Reset(cboLineItemStatusAddOrderLineItemsAdd);\n    Reset(inpDiscountAddOrderLineItemsAdd);\n    Reset(glryEditOrderLineItemsAdd);\n    Set(\n        gvRequiredOrderFields,\n        true\n    );\n    \n);\n//Update variables to control interface\nSet (\n    gvNewOrderDetailID,\n    lvCRUDOrderDetail.OutputParameters.UnifiedID\n);\nIf (\n    gvCRUDType = fMagicNo.gvCRUDC || gvCRUDType = fMagicNo.gvCRUDU || gvCRUDType = fMagicNo.gvCRUDD,\n    Set(\n        gvCRUDType,\n        fMagicNo.gvCRUDR\n    );\n    Set(\n        gvCRUDOrderDetail,\n        Blank()\n    );\n    Set(\n        gvCRUDProductID,\n        0\n    );\n    \n);\n//* If a create, update or delete action succeeded, we need to refresh the Named Formula with new values\nIf (\n    Coalesce(\n        lvCRUDOrderDetail.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fOrderDetails,\n        Table(\n            CRUDOrderDetails.dboCRUDOrderDetail(\n                {\n                    CRUDType: fMagicNo.gvCRUDR,\n                    OrderDetailID: 0,\n                    OrderID: 0,\n                    ProductID: 0,\n                    Quantity: 0,\n                    UnitPrice: 0,\n                    Discount: 0,\n                    OrderDetailStatusID: 0\n                }\n            ).ResultSets.Table1;\n        )\n    );\n    \n);\n//2025_07_10 Test Not required \n//Set(gvCRUDOrderID,gvCRUDOrder.OrderID);\n//Explicitly clear the local variable because this screen remains in memory\n//Normally, the local variable would be cleared when this screen closes\nUpdateContext({lvCRUDOrderDetail: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete  Order Detail"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDOrders.Y+(tglCRUDOrders.Height*1.25)
+      - tglCRUDCompanies:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDCompany
+            FalseText: ="Add/Select/Edit/Delete Company"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: |-
+              =//*setting a variable to the returned output of the Stored Procedure says, 
+              //*"Hey,anybody who cares, there's a new value in the variable. Use it if you want."
+              UpdateContext(
+                  {
+                      lvCRUDCompany: CRUDCompanies.dboCRUDCompany(
+                          {
+                              CrudType: Coalesce(
+                                  gvCRUDType,
+                                  Value(fMagicNo.gvCRUDR)
+                              ),
+                              CompanyID: Coalesce(
+                                  gvCRUDCompanyID,
+                                  0
+                              ),
+                              Address: gvCompanyAddress,
+                              BusinessPhone: gvBusinessPhone,
+                              City: gvCity,
+                              CompanyName: gvCompanyName,
+                              CompanyTypeID: Coalesce(
+                                  gvCompanyTypeID,
+                                  fMagicNo.gvCustomer
+                              ),
+                              Notes: gvCompanyNotes,
+                              StandardTaxStatusID: Coalesce(
+                                  gvStandardTaxStatusID,
+                                  -1
+                              ),
+                              StateAbbrev: gvStateAbbrev,
+                              Zip: gvZip,
+                              Website: gvWebsite
+                          }
+                      )
+                  }
+              );
+              If(
+                  lvCRUDCompany.OutputParameters.ErrorCode <> 0,
+                  Notify(
+                      lvCRUDCompany.OutputParameters.ErrorCode & " " & lvCRUDCompany.OutputParameters.Message,
+                      NotificationType.Error,
+                      fMagicNo.gvNotifyTimeout
+                  )
+              );
+              //* If create, update or delete action succeeded , we need to refresh the resultset with new values
+              If(
+                  Coalesce(
+                      lvCRUDCompany.OutputParameters.ErrorCode,
+                      0
+                  ) = 0,
+                  Set(
+                      fCompanies,
+                      CRUDCompanies.dboCRUDCompany(
+                          {
+                              CrudType: fMagicNo.gvCRUDR,
+                              CompanyID: 0,
+                              CompanyTypeID: 0,
+                              StateAbbrev: Blank(),
+                              StandardTaxStatusID: -1
+                          }
+                      ).ResultSets.Table1
+                  );
+                  //* To-Do Verify whether we can replace gvCRUDCompany and gvCRUDCompanies with fCompanies.
+              If(
+                      Coalesce(
+                          lvCRUDCompany.OutputParameters.UnifiedID,
+                          0
+                      ) <> 0,
+                      Set(
+                          gvCRUDCompany,
+                          LookUp(
+                              fCompanies,
+                              CompanyID = lvCRUDCompany.OutputParameters.UnifiedID
+                          )
+                      )
+                  );
+                  Set(
+                      gvCRUDCompanies,
+                      lvCRUDCompany.ResultSets.Table1
+                  );
+                  //*Reset the display of orders for a company 
+              Set(
+                      gvCRUDOrder,
+                      LookUp(
+                          fOrders,
+                          CustomerID = lvCRUDCompany.OutputParameters.UnifiedID
+                      )
+                  )
+              );
+              UpdateContext({lvCRUDCompany: Blank()});
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete Company"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDPODetails.Y+ (tglCRUDPODetails.Height*1.25)
+      - compNWDevMenuAppCode:
+          Control: CanvasComponent
+          ComponentName: compNWDevMenu
+          Properties:
+            Height: =30
+            Width: =App.Width
+            Y: =compAppTitleAppCode.Y+compAppTitleAppCode.Height
+            cpiMenuText: |-
+              =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - compAppTitleAppCode:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - tglCRUDEmployees:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDEmployee
+            FalseText: ="Add/Select/Edit/Delete Employee"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDEmployee: CRUDEmployees.dboCRUDEmployee(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    Value(fMagicNo.gvCRUDR)\n                ),\n                EmployeeID: Coalesce(\n                    gvCRUDEmployeeID,\n                    0\n                ),\n                FirstName: Coalesce(\n                    gvFirstName,\n                    Blank()\n                ),\n                LastName: Coalesce(\n                    gvLastName,\n                    Blank()\n                ),\n                JobTitle: Coalesce(\n                    gvJobTitle,\n                    Blank()\n                ),\n                Notes: Coalesce(\n                    gvEmployeeNotes,\n                    Blank()\n                ),\n                PrimaryPhone: Coalesce(\n                    gvPrimaryPhone,\n                    Blank()\n                ),\n                SecondaryPhone: Coalesce(\n                    gvSecondaryPhone,\n                    Blank()\n                ),\n                EmailAddress: Coalesce(\n                    gvEmailAddress,\n                    Blank()\n                ),\n                SupervisorID: Coalesce(\n                    gvSupervisorID,\n                    0\n                ),\n                Title: Coalesce(\n                    gvTitle,\n                    Blank()\n                ),\n                WindowsUserName: Coalesce(\n                    gvWindowsUserName,\n                    Blank()\n                ),\n                EmployeeImageName: gvEmployeeImageName,\n                EmployeeImagePA: gvEmployeeImage\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDEmployee.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDEmployee.OutputParameters.ErrorCode & \" \" & lvCRUDEmployee.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    );\n    Set(\n        gvCanSave,\n        false\n    );\n    ,\n    Set(\n        gvCanSave,\n        true\n    );\n    \n);\n//* If create, update or delete action succeeded , we need to refresh the resultsets with new values\nIf(\n    Coalesce(\n        lvCRUDEmployee.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fEmployees,\n        CRUDEmployees.dboCRUDEmployee(\n            {\n                CrudType: fMagicNo.gvCRUDR,\n                EmployeeID: 0,\n                SupervisorID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    Set(\n        fEmployeesforList,\n        EmployeeList.dboSelectEmployeesforList().ResultSets.Table1;\n    );\n    Set(\n        fOrders,\n        CRUDOrders.dboCRUDOrder(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                CustomerID: 0,\n                OrderID: 0,\n                EmployeeID: 0,\n                OrderStatusID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    Set(\n        fEmployeeOrders,\n        EmployeeOrders.dboEmployeeOrders().ResultSets.Table1;\n    );\n    Set(\n        gvCRUDOrder,\n        LookUp(\n            fOrders,\n            EmployeeID = lvCRUDEmployee.OutputParameters.UnifiedID\n        )\n    )\n);\nUpdateContext({lvCRUDEmployee: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete Employee"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDCompanies.Y+(tglCRUDCompanies.Height*1.25)
+      - tglCRUDProducts:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDProduct
+            FalseText: ="Add/Select/Edit/Delete Product"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDProduct: CRUDProducts.dboCRUDProduct(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    Value(fMagicNo.gvCRUDR)\n                ),\n                ProductID: Coalesce (\n                    gvCRUDProductID,\n                    0\n                ),\n                ProductCode: Blank(),\n                ProductName: gvProductName,\n                ProductDescription: gvProductDescription,\n                ClearProductDescription: gvClearProductDescription,\n                StandardUnitCost: gvStandardUnitCost,\n                UnitPrice: gvUnitPrice,\n                ReorderLevel: gvReorderLevel,\n                TargetLevel: gvTargetLevel,\n                QuantityPerUnit: gvQuantityPerUnit,\n                Discontinued: Coalesce(\n                    gvDiscontinued,\n                    0\n                ),\n                MinimumReorderQuantity: gvMinimumReorderQuantity,\n                ProductCategoryID: Coalesce(\n                    gvProductCategoryID,\n                    0\n                )\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDProduct.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDProduct.OutputParameters.ErrorCode & \" \" & lvCRUDProduct.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\n//* If create, update or delete action succeeded , we need to refresh the resultsets with new values\nSet(\n    gvCRUDProductID,\n    lvCRUDProduct.OutputParameters.UnifiedID\n);\nIf(\n    Coalesce(\n        lvCRUDProduct.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fProductList,\n        ProductList.dboProductList().ResultSets.Table1\n    );\n    Set(\n        fProducts,\n        CRUDProducts.dboCRUDProduct(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                ProductID: 0,\n                StandardUnitCost: 0,\n                UnitPrice: 0,\n                ReorderLevel: 0,\n                TargetLevel: 0,\n                QuantityPerUnit: Blank(),\n                Discontinued: Blank(),\n                MinimumReorderQuantity: 0,\n                ProductCategoryID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    Set(\n        gvCRUDProduct,\n        LookUp(\n            fProducts,\n            ProductID = gvCRUDProductID\n        )\n    );\n    Set(\n        fStockTake,\n        CRUDStockTakes.dboCRUDStockTake(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                StockTakeID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    \n);\nUpdateContext({lvCRUDProduct: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete Product"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDEmployees.Y+(tglCRUDEmployees.Height*1.25)
+      - tglProductReorderQuantity:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLProductInventory
+            FalseText: =" Product ReorderQuantity"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=Set(\n    gvDefaultReorder,\n    InventoryActions.dboProductReorderQuantity(\n        {\n            ProductID: Coalesce(\n                gvCRUDProductID,\n                0\n            ) \n        }\n    )\n);\nIf(\n    Coalesce(\n        gvDefaultReorder.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        gvDefaultReorder.OutputParameters.ErrorCode & \" \" & gvDefaultReorder.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n); \n "
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: =" Product Reorder Quantity"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglCRUDProducts.Y+ (tglCRUDProducts.Height*1.25)
+      - tglUpdatePOStatus:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLPOStatus
+            FalseText: ="Update PO Status"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvPOStatusUpdate: UpdatePOStatus.dboUpdatePOStatus(\n            {\n                PurchaseOrderID: Coalesce(\n                    gvCRUDPOPurchaseOrderID,\n                    0\n                ),\n                StatusID: gvPOStatusID,\n                SubmittedByID: gvPOSubmittedByID,\n                ApprovedbyID: gvPOApprovedByID\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvPOStatusUpdate.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvPOStatusUpdate.OutputParameters.ErrorCode & \" \" & lvPOStatusUpdate.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\nIf(\n    Coalesce(\n        lvPOStatusUpdate.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fPurchaseOrders,\n        CRUDPurchaseOrders.dboCRUDPurchaseOrder(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                PurchaseOrderID: 0\n            }\n        ).ResultSets.Table1\n    );\n    Set(\n        fPurchaseOrderList,\n        PurchaseOrderList.dboPurchaseOrderList({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    Set(\n        fProductList,\n        ProductList.dboProductList().ResultSets.Table1\n    );\n    Set(\n        gvCRUDPO,\n        First(\n            Filter(\n                fPurchaseOrders,\n                PurchaseOrderID = gvCRUDPOPurchaseOrderID\n            )\n        )\n    );\n    \n);\nUpdateContext({lvPOStatusUpdate: Blank()});"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Update PO Status"
+            Width: =tglAvailableProduct.Width
+            X: =tglUpdateOrderStatus.X
+            Y: =tglUpdateOrderStatus.Y+ (tglUpdateOrderStatus.Height*1.25)
+      - tglUpdateOrderStatus:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLOrderStatus
+            FalseText: ="Update Order Status"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvOrderStatusUpdate: UpdateOrderStatus.dboUpdateOrderStatus(\n            {\n                OrderID: Coalesce(\n                    gvCRUDOrderID,\n                    0\n                ),\n                OrderStatusID: gvCRUDOrderOrderStatusID,\n                EmployeeID: gvCRUDOrderEmployeeID,\n                CustomerID: gvCRUDOrderCustomerID,\n                ShipperID: gvCRUDOrderShipperID,\n                ShippingFee: gvCRUDOrderShippingFee,\n                TaxRate: gvCRUDOrderTaxRate,\n                PaymentMethod: gvCRUDOrderPaymentMethod,\n                Notes: gvCRUDOrderNotes\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvOrderStatusUpdate.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvOrderStatusUpdate.OutputParameters.ErrorCode & \" \" & lvOrderStatusUpdate.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\nIf (\n    lvOrderStatusUpdate.OutputParameters.ErrorCode = 0,\n    If (\n        lvOrderStatusUpdate.OutputParameters.NewOrderStatusID = fMagicNo.gvOrderStatusINV,\n        Set(\n            gvInvoice,\n            InvoiceOrders.dboInvoiceOrders({OrderID: gvCRUDOrder.OrderID}).ResultSets.Table1\n        );\n        Set(\n            gvCanInvoice,\n            true\n        );\n        ,\n        Set(\n            gvCanInvoice,\n            false\n        );\n    ),\n    Set(\n        gvCanInvoice,\n        false\n    );\n    \n);\nIf(\n    Coalesce(\n        lvOrderStatusUpdate.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fOrders,\n        CRUDOrders.dboCRUDOrder(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                CustomerID: 0,\n                OrderID: 0,\n                EmployeeID: 0,\n                OrderDateStart: Blank(),\n                OrderDateEnd: Blank(),\n                OrderStatusID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    \n);\nSet(\n    gvCRUDOrder,\n    LookUp(\n        fOrders,\n        OrderID = gvCRUDOrderID\n    )\n);\nSet(\n    gvOrderShipFields,\n    If(\n        lvOrderStatusUpdate.OutputParameters.ErrorCode = 53260 || lvOrderStatusUpdate.OutputParameters.ErrorCode = 53270,\n        fAppColors.gvWarningFill,\n        Color.White\n    )\n);\nUpdateContext({lvOrderStatusUpdate: Blank()});\nIf(\n    gvCanInvoice = true,\n    Navigate(scrNWDevInvoice),\n    Navigate(scrOrderAdd);\n    \n);\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Update Order Status"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X+tglAvailableProduct.Width+20
+            Y: =compNWDevMenuAppCode.Y+compNWDevMenuAppCode.Height+12
+      - glryPOStatuses:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =2
+            Fill: =RGBA(166, 215, 153, 1)
+            Height: =247
+            Items: =Sort(Filter(fStatuses, TableName="PurchaseOrders"),SortOrder)
+            TemplateSize: =40
+            Width: =200
+            X: =Parent.Width-Self.Width
+            Y: =lblTestCode.Y+lblTestCode.Height
+          Children:
+            - lblPOStatusName:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =28
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.StatusName
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =100
+                  X: =lblPOStatusID.X+lblPOStatusID.Width
+                  Y: =lblPOStatusID.Y
+            - lblPOStatusID:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.StatusID
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =25
+                  X: =10
+                  Y: =2
+            - Rectangle1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =RGBA(0, 18, 107, 1)
+                  Height: '=Parent.TemplateHeight '
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+            - lblPOStatusSortOrder:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =27
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SortOrder
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =34
+                  X: =lblPOStatusName.X+lblPOStatusName.Width
+                  Y: =4
+      - glryOrderStatuses:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =2
+            Fill: =RGBA(214, 221, 224, 1)
+            Height: =247
+            Items: =Sort(Filter(fStatuses,TableName="Orders"),SortOrder)
+            TemplateSize: =40
+            Width: =200
+            X: =Parent.Width-Self.Width-glryPOStatuses.Width
+            Y: =glryPOStatuses.Y
+          Children:
+            - lblOrderStatusName:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =28
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.StatusName
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =100
+                  X: =lblOrderStatusID.X+lblOrderStatusID.Width
+                  Y: =lblOrderStatusID.Y
+            - lblOrderStatusID:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.StatusID
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =25
+                  X: =10
+                  Y: =2
+            - Rectangle1_1:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =RGBA(0, 18, 107, 1)
+                  Height: =Parent.TemplateHeight
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+            - lblOrderStatusSortOrder:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =27
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.SortOrder
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =34
+                  X: =lblOrderStatusName.X+lblOrderStatusName.Width
+                  Y: =4
+      - tglCRUDOrderList:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLCRUDOrderList
+            FalseText: ="Filtered Order List"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDOrder: SelectOrderList.dboSelectOrderList(\n            {\n                OrderID: 0,\n                EmployeeID: gvOrderEmployeeID,\n                CustomerID: 0,\n                OrderDate: Blank(),\n                OrderDateStart: Text(gvOrderFilterDate),\n                OrderDateEnd: Blank(),\n                OrderStatusID: gvOrderStatusID\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDOrder.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDOrder.OutputParameters.ErrorCode & \" \" & lvCRUDOrder.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    );\n    \n);\nSet(\n    gvCRUDOrderList,\n    lvCRUDOrder.ResultSets.Table1\n);\nUpdateContext({lvCRUDOrder: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Filtered Order List"
+            Width: =tglAvailableProduct.Width
+            X: =tglUpdateOrderStatus.X
+            Y: =tglUpdatePOStatus.Y+ (tglUpdatePOStatus.Height*1.25)
+      - glryErrorCodes:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Fill: =RGBA(174, 208, 221, 1)
+            Height: =350
+            Items: =fSSErrors
+            TemplateSize: =40
+            Width: =421
+            X: =942
+            Y: =418
+          Children:
+            - lblSSError:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =49
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: =ThisItem.SSError
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =Parent.Width-lblSSErrorID.Width
+                  X: =lblSSErrorID.X+lblSSErrorID.Width
+                  Y: =2
+            - lblSSErrorID:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =Self.Size * 1.8
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =10
+                  Text: =ThisItem.SSErrorID
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =60
+                  X: |+
+                    =0
+      - tglStockTakes:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLStockTake
+            FalseText: ="Add/Select/Edit/Delete Stocktakes"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=\nSet(\n    gvStockTake,\n    CRUDStockTakes.dboCRUDStockTake(\n        {\n            CrudType: Coalesce(\n                gvCRUDType,\n                Value(fMagicNo.gvCRUDR)\n            ),\n            StockTakeID: gvStockTakeID,\n            ProductID: Coalesce(\n                gvCRUDProductID,\n                0\n            ),\n            StockTakeDate: gvStockTakeDate,\n            ExpectedQuantity: gvStockTakeExpectedQty,\n            QuantityOnHand: gvStockTakeQOH\n        }\n    )\n);\nIf(\n    Coalesce(\n        gvStockTake.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        gvStockTake.OutputParameters.ErrorCode & \" \" & gvStockTake.OutputParameters.Message,\n        NotificationType.Error,\n        fMagicNo.gvNotifyTimeout\n    )\n);\n//* If create, update or delete action succeeded , we need to refresh the resultsets with new values\nIf(\n    Coalesce(\n        gvStockTake.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fStockTake,\n        CRUDStockTakes.dboCRUDStockTake(\n            {\n                CRUDType: fMagicNo.gvCRUDR,\n                StockTakeID: 0\n            }\n        ).ResultSets.Table1;\n    );\n    \n);\nSet(gvTGLProductInventory,!gvTGLProductInventory);\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete Stocktakes"
+            Width: =tglAvailableProduct.Width
+            X: =tglAvailableProduct.X
+            Y: =tglProductReorderQuantity.Y +(tglProductReorderQuantity.Height*1.25)
+      - tglCRUDUserSettings:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =//gvTGLCRUDUserSettings
+            FalseText: ="Add/Select/Edit/Delete User Settings"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDUserSettings: CRUDSettings.dboCRUDUserSettings(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    Value(fMagicNo.gvCRUDR)\n                ),\n                SettingID: gvUserSettingID,\n                SettingName: Text(gvUserSettingName),\n                SettingValue: Text(gvUserSettingValue)\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDUserSettings.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDUserSettings.OutputParameters.ErrorCode & \" \" & lvCRUDOrder.OutputParameters.Message,\n        NotificationType.Success,\n        fMagicNo.gvNotifyTimeout\n    );\n    \n);\nIf(\n    Coalesce(\n        lvCRUDUserSettings.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fUserSettings,\n        CRUDSettings.dboCRUDUserSettings({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    Set(\n        gvCRUDUserSettings,\n        lvCRUDUserSettings.ResultSets.Table1\n    )\n);\nUpdateContext({lvCRUDUserSettings: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete User Settings"
+            Width: =tglAvailableProduct.Width
+            X: =tglCRUDSystemSettings.X
+            Y: '=tglCRUDSystemSettings.Y+ (tglCRUDSystemSettings.Height*1.25) '
+      - tglCRUDSystemSettings:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =//gvTGLCRUDSystemSettings
+            FalseText: ="Add/Select/Edit/Delete System Settings"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDSystemSettings: CRUDSettings.dboCRUDSystemSettings(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    Value(fMagicNo.gvCRUDR)\n                ),\n                SettingID: gvSystemSettingID,\n                SettingName: Text(gvSystemSettingName),\n                SettingValue: Text(gvSystemSettingValue)\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDSystemSettings.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDSystemSettings.OutputParameters.ErrorCode & \" \" & lvCRUDOrder.OutputParameters.Message,\n        NotificationType.Success,\n        fMagicNo.gvNotifyTimeout\n    );\n    \n);\nIf(\n    Coalesce(\n        lvCRUDSystemSettings.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fSystemSettings,\n        CRUDSettings.dboCRUDSystemSettings({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    Set(\n        gvCRUDSystemSettings,\n        lvCRUDSystemSettings.ResultSets.Table1\n    )\n);\nUpdateContext({lvCRUDSystemSettings: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete System Settings"
+            Width: =tglAvailableProduct.Width
+            X: =tglCRUDMRU.X
+            Y: '=tglCRUDMRU.Y+ (tglCRUDMRU.Height*1.25)  '
+      - tglCRUDMRU:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =//gvTGLCRUDMRU
+            FalseText: ="Add/Select/Edit/Delete MRU"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: "=UpdateContext(\n    {\n        lvCRUDMRU: CRUDMRU.dboCRUDMRU(\n            {\n                CrudType: Coalesce(\n                    gvCRUDType,\n                    Value(fMagicNo.gvCRUDR)\n                ),\n                EmployeeID: gvMRUEmployeeID,\n                MRU_ID: gvMRUID,\n                PKValue: gvPKValue,\n                TableName: gvTableName\n            }\n        )\n    }\n);\nIf(\n    Coalesce(\n        lvCRUDMRU.OutputParameters.ErrorCode,\n        0\n    ) <> 0,\n    Notify(\n        lvCRUDMRU.OutputParameters.ErrorCode & \" \" & lvCRUDOrder.OutputParameters.Message,\n        NotificationType.Success,\n        fMagicNo.gvNotifyTimeout\n    );\n    \n);\n//* If create, update or delete action succeeded , we need to refresh the resultsets with new values\nIf(\n    Coalesce(\n        lvCRUDMRU.OutputParameters.ErrorCode,\n        0\n    ) = 0,\n    Set(\n        fMRU,\n        CRUDMRU.dboCRUDMRU({CRUDType: fMagicNo.gvCRUDR}).ResultSets.Table1;\n    );\n    Set(\n        gvCRUDMRU,\n        lvCRUDMRU.ResultSets.Table1\n    )\n);\nUpdateContext({lvCRUDMRU: Blank()});\n"
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Add/Select/Edit/Delete MRU"
+            Width: =tglAvailableProduct.Width
+            X: =tglStockTakes.X
+            Y: '=tglStockTakes.Y+ (tglStockTakes.Height*1.25)   '
+      - glryTest:
+          Control: Gallery@2.15.0
+          Variant: BrowseLayout_Vertical_TwoTextOneImageVariant_ver5.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Height: =350
+            Items: =Sort(fPurchaseOrders,PurchaseOrderID)
+            TemplateSize: =40
+            Width: =100
+            X: =842
+            Y: =418
+          Children:
+            - one:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Color: =RGBA(50, 49, 48, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =20
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =14
+                  Text: =ThisItem.VendorID
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =83
+            - two:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 0, 0, 1)
+                  Font: =Font.'Open Sans'
+                  FontWeight: =If(ThisItem.IsSelected, FontWeight.Semibold, FontWeight.Normal)
+                  Height: =20
+                  OnSelect: =Select(Parent)
+                  PaddingBottom: =0
+                  PaddingLeft: =0
+                  PaddingRight: =0
+                  PaddingTop: =0
+                  Size: =12
+                  Text: =ThisItem.PurchaseOrderID
+                  VerticalAlign: =VerticalAlign.Top
+                  Width: =one.Width
+                  X: =60
+            - Separator2:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =RGBA(255, 255, 255, 1)
+                  Height: =8
+                  OnSelect: =Select(Parent)
+                  Width: =Parent.TemplateWidth
+                  Y: =Parent.TemplateHeight - Self.Height
+            - Rectangle2:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =RGBA(0, 18, 107, 1)
+                  Height: =Parent.TemplateHeight - Separator2.Height
+                  OnSelect: =Select(Parent)
+                  Visible: =ThisItem.IsSelected
+                  Width: =4
+      - lblDebugger:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            BorderThickness: =2
+            Font: =Font.'Open Sans'
+            OnSelect: =CountRows(fProducts)
+            Text: =//lvCRUDOrderDetail.OutputParameters.ErrorCode//CountRows(fProducts)
+            Visible: =false
+            Width: =65
+            X: =1120
+            Y: =66
+      - tglCRUDPOByProduct:
+          Control: Classic/Toggle@2.1.0
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Default: =gvTGLPOByProduct
+            FalseText: ="Purchase Order by Product"
+            Font: =Font.'Open Sans'
+            Height: =30
+            OnChange: |
+              =UpdateContext ({lvPOByProduct: ProductDetails.dboPurchaseOrdersByProduct({ProductID: gvCRUDProductID})});
+              If(
+                  Coalesce(
+                      lvPOByProduct.OutputParameters.ErrorCode,
+                      0
+                  ) <> 0,
+                  Notify(
+                      lvPOByProduct.OutputParameters.ErrorCode & " " & lvPOByProduct.OutputParameters.Message,
+                      NotificationType.Error,
+                      fMagicNo.gvNotifyTimeout
+                  );
+                  ,
+              Set(fPOByProduct,lvPOByProduct.ResultSets.Table1)
+              );
+              UpdateContext({lvPOByProduct: Blank()});
+            TextPosition: =TextPosition.Left
+            TrueFill: =RGBA(56, 96, 178, 1)
+            TrueText: ="Purchase Order by Product"
+            Width: =tglAvailableProduct.Width
+            X: =tglUpdateOrderStatus.X
+            Y: |+
+              =tglCRUDOrderList.Y+ (tglCRUDOrderList.Height*1.25)

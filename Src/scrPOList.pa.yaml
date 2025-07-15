@@ -1,0 +1,398 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrPOList:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |+
+        =
+
+    Children:
+      - lblPOsDisplayed:
+          Control: Label@2.5.1
+          Properties:
+            AutoHeight: =true
+            BorderColor: =RGBA(0, 18, 107, 1)
+            DisplayMode: =DisplayMode.View
+            Font: =Font.'Open Sans'
+            Height: =lblPOIDList.Height
+            Text: =glryPOList.AllItemsCount & " Items"
+            Visible: =false
+            Width: =180
+            X: =Parent.Width-Self.Width-btnPOAddNew.Width-4
+            Y: =lblPOIDList.Y
+      - glryPOList:
+          Control: Gallery@2.15.0
+          Variant: Vertical
+          Properties:
+            BorderColor: =RGBA(0, 18, 107, 1)
+            Fill: |+
+              =fAppColors.gvlblColorFade
+            Height: =646
+            Items: |-
+              =SortByColumns(
+                  With(
+                      {records: 'fPurchaseOrderList'},
+                      ForAll(
+                          Sequence(CountRows(records)),
+                          Patch(
+                              Last(
+                                  FirstN(
+                                      records,
+                                      Value
+                                  )
+                              ),
+                              {rowNumber: Value}
+                          )
+                      )
+                  ),
+                  "rowNumber",
+                  SortOrder.Descending
+              )
+            OnSelect: =
+            TemplateFill: |-
+              =If(
+                  Mod(
+                      ThisItem.rowNumber,
+                      2
+                  ) = 0,
+                  fAppColors.gvBodyFill,
+                  fAppColors.gvlblFillFade
+              )
+            TemplatePadding: =1
+            TemplateSize: =30
+            Width: =compAppTitlePOList.Width
+            Y: |+
+              =conPOCaptionList.Y+conPOCaptionList.Height
+          Children:
+            - lblPOIDList:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  BorderThickness: =2
+                  Font: =Font.'Open Sans'
+                  FontWeight: =FontWeight.Semibold
+                  Height: =30
+                  OnSelect: |
+                    =Set(    gvCRUDPO,    ThisItem);
+                    Set(  gvCRUDPOPurchaseOrderID,    gvCRUDPO.PurchaseOrderID);
+                    Navigate(scrPOAdd);
+                  Size: =11
+                  Text: ="✏️ " & ThisItem.PurchaseOrderID
+                  Tooltip: ="Click to See Order Detail"
+                  Width: =lblPONoCaptionList.Width
+                  X: =lblPONoCaptionList.X
+            - lblPOSubmittedLisByt:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =30
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =ThisItem.SubmittedByFNLN
+                  Width: =lblPOSubmittedByCaptionList.Width
+                  X: =lblPOTotalList.X+lblPOTotalList.Width
+                  Y: =lblPOIDList.Y
+            - lblPOApprovedByList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblPOSubmittedLisByt.Height
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =ThisItem.ApprovedByFNLN
+                  Width: =lblPOApprovedByCaptionList.Width
+                  X: '=lblPOApprovedByCaptionList.X '
+                  Y: =lblPOSubmittedLisByt.Y
+            - lblPOApprovedDateList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblPOIDList.Height
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =DateValue(ThisItem.ApprovedDate)
+                  Width: =lblPOApprovedDateCaptionList.Width
+                  X: '=lblPOApprovedDateCaptionList.X '
+            - lblPOSubmittedDateList:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =30
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =DateValue(ThisItem.SubmittedDate)
+                  Width: =lblPoSubmittedCaptionList.Width
+                  X: '=lblPoSubmittedCaptionList.X '
+            - lblPOTotalList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Right
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =30
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =Text(ThisItem.PurchaseOrderTotal,"$#,###.00")
+                  Width: =lblPOTotalCaptionList.Width
+                  X: =inpPOVendorList.X+inpPOVendorList.Width
+                  Y: =inpPOVendorList.Y
+            - lblPOPaymentDateList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =lblPOIDList.Height
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =DateValue(ThisItem.PaymentDate)
+                  Width: =lblPOPaidDateCaptionList.Width
+                  X: '=lblPOPaidDateCaptionList.X '
+            - lblPOStatusList:
+                Control: Label@2.5.1
+                Properties:
+                  AutoHeight: =true
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =30
+                  OnSelect: =Select(Parent)
+                  Size: =11
+                  Text: =ThisItem.StatusName
+                  Width: =lblPOStatusCaptionList.Width
+                  X: =lblPOIDList.X+lblPOIDList.Width
+                  Y: =lblPOIDList.Y
+            - lblPORowNumberListhdn:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =29
+                  OnSelect: =Select(Parent)
+                  Text: =ThisItem.rowNumber
+                  Visible: =false
+                  Width: =2
+                  X: =1197
+            - inpPOVendorList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  DisplayMode: =DisplayMode.View
+                  Font: =Font.'Open Sans'
+                  Height: =30
+                  OnSelect: =Select(Parent)
+                  Text: =ThisItem.Vendor
+                  Width: =lblPOVendorCaptionList.Width
+                  X: =lblPOStatusList.X+lblPOStatusList.Width
+                  Y: =lblPOIDList.Y
+      - conMenuPOList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =30
+            LayoutDirection: =LayoutDirection.Horizontal
+            Width: =Parent.Width
+            Y: =compAppTitlePOList.Y+compAppTitlePOList.Height
+          Children:
+            - compNWDevMenuPOs:
+                Control: CanvasComponent
+                ComponentName: compNWDevMenu
+                Properties:
+                  AlignInContainer: =AlignInContainer.Start
+                  FillPortions: =1
+                  Height: =30
+                  Width: =App.Width
+                  cpiMenuText: |-
+                    =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+      - conPOCaptionList:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Height: =40
+            LayoutDirection: =LayoutDirection.Horizontal
+            Width: =Parent.Width
+            Y: '=conMenuPOList.Y+conMenuPOList.Height '
+          Children:
+            - lblPONoCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: |-
+                    ="PO #"
+                  Width: =100
+                  X: =compAppTitlePOList.X
+                  Y: =compAppTitlePOList.Y+compAppTitlePOList.Height+45
+            - lblPOStatusCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Status"
+                  Width: =90
+                  X: =lblPONoCaptionList.X+lblPONoCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPOVendorCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Vendor"
+                  Width: =200
+                  X: =lblPOStatusCaptionList.X+lblPOStatusCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPOTotalCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="PO Total"
+                  Width: =115
+                  X: =lblPOVendorCaptionList.X+lblPOVendorCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPOSubmittedByCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Submitted By"
+                  Width: =180
+                  X: =lblPOTotalCaptionList.X+lblPOTotalCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPoSubmittedCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Text: ="Submitted"
+                  X: =40
+                  Y: =40
+            - lblPOApprovedByCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Approved By"
+                  Width: =180
+                  X: =lblPOSubmittedByCaptionList.X+lblPOSubmittedByCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPOApprovedDateCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Approved Date"
+                  Width: =140
+                  X: =lblPOApprovedByCaptionList.X+lblPOApprovedByCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - lblPOPaidDateCaptionList:
+                Control: Label@2.5.1
+                Properties:
+                  Align: =Align.Center
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Color: =Color.White
+                  Fill: =fAppColors.gvlblFill
+                  Font: =Font.'Open Sans'
+                  Height: =lblPONoCaptionList.Height
+                  PaddingBottom: =0
+                  PaddingTop: =0
+                  Text: ="Paid"
+                  Width: |+
+                    =100
+                  X: =lblPOApprovedDateCaptionList.X+lblPOApprovedDateCaptionList.Width
+                  Y: =lblPONoCaptionList.Y
+            - recPOCaptionSpacerList:
+                Control: Rectangle@2.3.0
+                Properties:
+                  BorderColor: =RGBA(0, 18, 107, 1)
+                  Fill: =fAppColors.gvlblFill
+                  Width: =20
+            - btnPOAddNew:
+                Control: Classic/Button@2.2.0
+                Properties:
+                  BorderColor: =ColorFade(Self.Fill, -15%)
+                  Color: =RGBA(255, 255, 255, 1)
+                  DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                  Fill: =fAppColors.gvlblColorFade
+                  Font: =Font.'Open Sans'
+                  HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                  HoverColor: =RGBA(255, 255, 255, 1)
+                  HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                  OnSelect: |
+                    =Set(
+                        gvCRUDPO,
+                       Blank()
+                    );
+                    Set(gvCRUDPOPurchaseOrderID,0);
+                    Navigate(scrPOAdd);
+                  PressedBorderColor: =Self.Fill
+                  PressedColor: =Self.Fill
+                  PressedFill: =Self.Color
+                  Text: ="➕"
+                  Width: =40
+                  X: =lblPOsDisplayed.X+lblPOsDisplayed.Width+2
+                  Y: =71
+      - compAppTitlePOList:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"

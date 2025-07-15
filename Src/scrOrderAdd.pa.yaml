@@ -1,0 +1,2027 @@
+# ************************************************************************************************
+# Warning: YAML source code for Canvas Apps should only be used to review changes made within Power Apps Studio and for minor edits (Preview).
+# Use the maker portal to create and edit your Power Apps.
+# 
+# The schema file for Canvas Apps is available at https://go.microsoft.com/fwlink/?linkid=2304907
+# 
+# For more information, visit https://go.microsoft.com/fwlink/?linkid=2292623
+# ************************************************************************************************
+Screens:
+  scrOrderAdd:
+    Properties:
+      LoadingSpinnerColor: =RGBA(56, 96, 178, 1)
+      OnVisible: |+
+        =Set(gvCRUDType, fMagicNo.gvCRUDR);
+        Set(gvCRUDOrderID,Coalesce(gvCRUDOrder.OrderID, 0 ));
+        Set(gvCRUDOrderDetail,Blank());
+        Set(gvProductID,0);
+        Set(gvTGLCRUDOrderDetail,!gvTGLCRUDOrderDetail);
+
+    Children:
+      - conOrderDetailsAdd:
+          Control: GroupContainer@1.3.0
+          Variant: AutoLayout
+          Properties:
+            Fill: =RGBA(245, 245, 245, 1)
+            Height: =Parent.Height-compAppTitleOrdersAdd.Height
+            LayoutAlignItems: =LayoutAlignItems.Stretch
+            LayoutDirection: =LayoutDirection.Vertical
+            LayoutGap: =4
+            PaddingBottom: =4
+            PaddingLeft: =8
+            PaddingRight: =8
+            PaddingTop: =4
+            Width: =Parent.Width
+            Y: =compAppTitleOrdersAdd.Y+compAppTitleOrdersAdd.Height
+          Children:
+            - compNWDevMenuOrderAdd:
+                Control: CanvasComponent
+                ComponentName: compNWDevMenu
+                Properties:
+                  Fill: |-
+                    =RGBA(
+                        0,
+                        0,
+                        0,
+                        0
+                    )
+                  Height: =30
+                  Width: =App.Width
+                  cpiMenuText: |-
+                    =Table({SampleStringField: "SampleText", SampleNumberField: 10, SampleBooleanField: true})
+            - conOrderOrderHeaderAdd:
+                Control: GroupContainer@1.3.0
+                Variant: ManualLayout
+                Children:
+                  - lblOrderIDOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =36
+                        OnSelect: =
+                        Text: ="Order ID"
+                        Width: |+
+                          =120
+                        X: =btnStep1CreateInvoiceAdd.X
+                        Y: =btnStep1CreateInvoiceAdd.Y+btnStep1CreateInvoiceAdd.Height+10
+                  - btnStep1CreateInvoiceAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        DisplayMode: |-
+                          =If
+                          (
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusNEW || gvCRUDOrderID = 0,
+                              DisplayMode.Edit, 
+                              DisplayMode.Disabled
+                          )
+                        Fill: =RGBA(56, 96, 178, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =30
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |+
+                          =//*Apply business rules to determine whether an invoice can be created
+                          //*If so, change the status and status date
+                          //*This screen is for regular users.Saved values can't be changed by regular users, although Admins can override values previously set on their admin screen.
+                          Set(
+                              gvCRUDOrderOrderID,
+                              gvCRUDOrder.OrderID
+                          );
+                          Set(
+                              gvCRUDOrderOrderStatusID,
+                              fMagicNo.gvOrderStatusINV
+                          );
+                          Set(
+                              gvCRUDOrderEmployeeID,
+                              Value(cboemployeeOrdersAdd.Selected.EmployeeID)
+                          );
+                          Set(
+                              gvCRUDOrderCustomerID,
+                              Value(cboCustomerOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShipperID,
+                              Value(cboShippersOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShippingFee,
+                              Value(inpShippingFeeOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderTaxRate,
+                              Value(inpTaxRateOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderPaymentMethod,
+                              cboPayMethodOrdersAdd.Selected.Value
+                          );
+                          Set(
+                              gvCRUDOrderNotes,
+                              Coalesce(
+                                  inpNotesOrdersAdd.Text,
+                                  Blank()
+                              )
+                          );
+                          Set(
+                              gvTGLOrderStatus,
+                              !gvTGLOrderStatus
+                          );
+
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =12
+                        Text: ="1️⃣ Create Invoice"
+                        Width: =btnStep3OrderReceivePaymentAdd.Width
+                  - btnStep2ShipOrderAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        DisplayMode: |-
+                          =If(
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusNEW || 
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusINV|| 
+                              gvCRUDOrderID = 0,
+                              DisplayMode.Edit,
+                              DisplayMode.Disabled
+                          )
+                        Fill: =RGBA(56, 96, 178, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =btnStep1CreateInvoiceAdd.Height
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =//*Apply business rules to determine whether an invoice can be created
+                          //*If so, change the status and status date
+                          //*This screen is for regular users.Saved values can't be changed by regular users, although Admins can override values previously set on their admin screen.
+                          Set(
+                              gvCRUDOrderOrderID,
+                              gvCRUDOrder.OrderID
+                          );
+                          Set(
+                              gvCRUDOrderOrderStatusID,
+                              fMagicNo.gvOrderStatusSHP
+                          );
+                          Set(
+                              gvCRUDOrderEmployeeID,
+                              Value(cboemployeeOrdersAdd.Selected.EmployeeID)
+                          );
+                          Set(
+                              gvCRUDOrderCustomerID,
+                              Value(cboCustomerOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShipperID,
+                              Value(cboShippersOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShippingFee,
+                              Value(inpShippingFeeOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderTaxRate,
+                              Value(inpTaxRateOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderPaymentMethod,
+                              Text(cboPayMethodOrdersAdd.Selected.Value)
+                          );
+                          Set(
+                              gvCRUDOrderNotes,
+                              Coalesce(
+                                  inpNotesOrdersAdd.Text,
+                                  Blank()
+                              )
+                          );
+                          Set(
+                              gvTGLOrderStatus,
+                              !gvTGLOrderStatus
+                          );
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =12
+                        Text: ="2️⃣ Ship Order"
+                        X: =btnStep1CreateInvoiceAdd.X+btnStep1CreateInvoiceAdd.Width
+                        Y: =btnStep1CreateInvoiceAdd.Y
+                  - btnStep3OrderReceivePaymentAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        DisplayMode: |+
+                          =If(
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusNEW ||
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusINV ||
+                              Coalesce(gvCRUDOrder.OrderStatusID, fMagicNo.gvOrderStatusNEW) = fMagicNo.gvOrderStatusSHP|| 
+                              gvCRUDOrderID = 0,
+                              DisplayMode.Edit,
+                              DisplayMode.Disabled
+                          )
+
+                        Fill: =RGBA(56, 96, 178, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =btnStep1CreateInvoiceAdd.Height
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =//*Apply business rules to determine whether an invoice can be created
+                          //*If so, change the status and status date
+                          //*This screen is for regular users.Saved values can't be changed by regular users, although Admins can override values previously set on their admin screen.
+                          Set(
+                              gvCRUDOrderOrderID,
+                              gvCRUDOrder.OrderID
+                          );
+                          Set(
+                              gvCRUDOrderOrderStatusID,
+                              fMagicNo.gvOrderStatusPAY
+                          );
+                          Set(
+                              gvCRUDOrderEmployeeID,
+                              Value(cboemployeeOrdersAdd.Selected.EmployeeID)
+                          );
+                          Set(
+                              gvCRUDOrderCustomerID,
+                              Value(cboCustomerOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShipperID,
+                              Value(cboShippersOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShippingFee,
+                              Value(inpShippingFeeOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderTaxRate,
+                              Value(inpTaxRateOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderPaymentMethod,
+                              Text(cboPayMethodOrdersAdd.Selected.Value)
+                          );
+                          Set(
+                              gvCRUDOrderNotes,
+                              Coalesce(
+                                  inpNotesOrdersAdd.Text,
+                                  Blank()
+                              )
+                          );
+                          Set(
+                              gvTGLOrderStatus,
+                              !gvTGLOrderStatus
+                          );
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =12
+                        Text: ="3️⃣Receive Payment"
+                        Width: =190
+                        X: =btnStep2ShipOrderAdd.X+btnStep2ShipOrderAdd.Width
+                  - btnStep4CloseOrderAdd:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        DisplayMode: |-
+                          =If
+                          (
+                          gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                          DisplayMode.Disabled,
+                          DisplayMode.Edit
+                          )
+                        Fill: =RGBA(56, 96, 178, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =btnStep1CreateInvoiceAdd.Height
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =//*Apply business rules to determine whether an invoice can be created
+                          //*If so, change the status and status date
+                          //*This screen is for regular users.Saved values can't be changed by regular users, although Admins can override values previously set on their admin screen.
+                          Set(
+                              gvCRUDOrderOrderID,
+                              gvCRUDOrder.OrderID
+                          );
+                          Set(
+                              gvCRUDOrderOrderStatusID,
+                              fMagicNo.gvOrderStatusCLO
+                          );
+                          Set(
+                              gvCRUDOrderEmployeeID,
+                              Value(cboemployeeOrdersAdd.Selected.EmployeeID)
+                          );
+                          Set(
+                              gvCRUDOrderCustomerID,
+                              Value(cboCustomerOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShipperID,
+                              Value(cboShippersOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShippingFee,
+                              Value(inpShippingFeeOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderTaxRate,
+                              Value(inpTaxRateOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderPaymentMethod,
+                              cboPayMethodOrdersAdd.Selected.Value
+                          );
+                          Set(
+                              gvCRUDOrderNotes,
+                              inpNotesOrdersAdd.Text
+                          );
+                          Set(
+                              gvTGLOrderStatus,
+                              !gvTGLOrderStatus
+                          );
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Size: =12
+                        Text: ="4️⃣Close Order"
+                        Width: =190
+                        X: =btnStep3OrderReceivePaymentAdd.X+btnStep3OrderReceivePaymentAdd.Width
+                        Y: =btnStep3OrderReceivePaymentAdd.Y
+                  - lblTotalOrdersCountAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisabledColor: =RGBA(50, 86, 160, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Italic: =true
+                        OnSelect: =
+                        Text: =glryEditOrderLineItemsAdd.AllItemsCount & " Line Item" & If(glryEditOrderLineItemsAdd.AllItemsCount>1,"s","" )
+                        Width: =cboPayMethodOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                  - inpOrderIDOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =Coalesce(gvCRUDOrder.OrderID,0)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Format: =TextFormat.Number
+                        Height: =lblOrderIDOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        Width: =60
+                        X: =lblOrderIDOrdersAdd.X+lblOrderIDOrdersAdd.Width
+                        Y: =lblOrderIDOrdersAdd.Y
+                  - lblOrderStatusOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Order Status"
+                        X: =490
+                        Y: =lblOrderIDOrdersAdd.Y
+                  - inpOrderStatusOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Align: =Align.Center
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =If(gvCRUDOrder.OrderStatusID=fMagicNo.gvOrderStatusCLO,Color.Red, RGBA(0, 0, 0, 1))
+                        Default: "=LookUp(\n    Filter(\n        fStatuses,\n        TableName = \"Orders\"\n    ),\n   \n        StatusID =  Coalesce(gvCRUDOrder.OrderStatusID,\n        fMagicNo.gvDefaultOrderStatus\n    ),\n    StatusName\n)"
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.View
+                        Fill: =fAppColors.gvSelectedHighlight
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Height: =lblOrderStatusOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: '=190 '
+                        X: =lblOrderStatusOrdersAdd.X+lblOrderStatusOrdersAdd.Width
+                        Y: =lblOrderIDOrdersAdd.Y
+                  - lblPaymentMethodOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderStatusOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="3️⃣ Payment Method"
+                        Width: =200
+                        X: =890
+                        Y: =lblOrderIDOrdersAdd.Y
+                  - cboPayMethodOrdersAdd:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        ChevronBackground: =RGBA(56, 96, 178, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        DefaultSelectedItems: |-
+                          =Filter(
+                              [
+                                  "Cash",
+                                  "Check",
+                                  "Credit Card"
+                              ],
+                              LookUp(
+                                  fOrders,
+                                  OrderID = gvCRUDOrder.OrderID,
+                                  PaymentMethod
+                              )
+                          )
+                        DisplayFields: =["Value"]
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderStatusOrdersAdd.Height
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        InputTextPlaceholder: ="Select Payment Method"
+                        IsSearchable: =false
+                        Items: =["Cash","Check","Credit Card"]
+                        OnSelect: =
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 18, 107, 1)
+                        SearchFields: =["Value"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(56, 96, 178, 1)
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X+lblPaymentMethodOrdersAdd.Width
+                        Y: =lblOrderIDOrdersAdd.Y
+                  - lblCustomerOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Customer"
+                        Width: =lblOrderIDOrdersAdd.Width
+                        X: =lblOrderIDOrdersAdd.X
+                        Y: =lblOrderIDOrdersAdd.Y+lblOrderIDOrdersAdd.Height+4
+                  - cboCustomerOrdersAdd:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        ChevronBackground: =RGBA(56, 96, 178, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        DefaultSelectedItems: |-
+                          =Filter(
+                              fCompanies,
+                              CompanyID = LookUp(
+                                  fOrders,
+                                  OrderID = Coalesce(gvCRUDOrder.OrderID,0),
+                                  CustomerID
+                              )
+                          )
+                        DisplayFields: =["CompanyName"]
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        FocusedBorderColor: '=fAppColors.gvSelectedHighlight '
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        InputTextPlaceholder: ="Select Customer"
+                        Items: |-
+                          =SortByColumns(
+                              Filter(
+                                  fCompanies,
+                                  CompanyTypeID = fMagicNo.gvCustomer
+                              ),
+                              "CompanyName"
+                          )
+                        OnChange: |
+                          =UpdateContext(
+                              {
+                                  lvTaxStatusID: LookUp(
+                                      fCompanies,
+                                      CompanyID = cboCustomerOrdersAdd.Selected.CompanyID,
+                                      StandardTaxStatusID
+                                  )
+                              }
+                          );
+                        OnSelect: =
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 18, 107, 1)
+                        SearchFields: =["CompanyName"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(56, 96, 178, 1)
+                        Width: =250
+                        X: =inpOrderIDOrdersAdd.X
+                        Y: =inpOrderIDOrdersAdd.Y+inpOrderIDOrdersAdd.Height+4
+                  - lblOrderDateOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Order Date"
+                        X: =lblOrderStatusOrdersAdd.X
+                        Y: =lblCustomerOrdersAdd.Y+4
+                  - inpOrderDateOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =If(IsBlank(lvDefaultOrderDate),LookUp(fOrders,OrderID=gvCRUDOrder.OrderID,OrderDate),lvDefaultOrderDate)
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Fill: |+
+                          =RGBA(255, 255, 255, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =inpOrderStatusOrdersAdd.X
+                        Y: =lblCustomerOrdersAdd.Y+4
+                  - lblPaidDateOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderStatusOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="3️⃣ Paid Date"
+                        Width: =lblPaymentMethodOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X
+                        Y: =lblPaymentMethodOrdersAdd.Y+lblPaymentMethodOrdersAdd.Height+4
+                  - inpPaidDateOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =LookUp(fOrders,OrderID=gvCRUDOrder.OrderID,PaidDate)
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                        Y: =cboPayMethodOrdersAdd.Y+cboPayMethodOrdersAdd.Height+4
+                  - lblEmployeeOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Employee"
+                        Width: =lblOrderIDOrdersAdd.Width
+                        X: =lblOrderIDOrdersAdd.X
+                        Y: =lblCustomerOrdersAdd.Y+lblCustomerOrdersAdd.Height
+                  - cboemployeeOrdersAdd:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        ChevronBackground: =RGBA(56, 96, 178, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        DefaultSelectedItems: |-
+                          =Filter (
+                              fSubmitters,
+                              EmployeeID = Coalesce(
+                                  LookUp (
+                                      fOrders,
+                                      OrderID = gvCRUDOrder.OrderID,
+                                      EmployeeID
+                                  ),
+                                  10
+                              )
+                          )
+                        DisplayFields: =["NameFL"]
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        InputTextPlaceholder: ="Select Employee"
+                        Items: |-
+                          =SortByColumns(
+                              fSubmitters,
+                              "NameLF",
+                              SortOrder.Ascending 
+                          )
+                        OnSelect: =
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 18, 107, 1)
+                        SearchFields: =["NameFL"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(56, 96, 178, 1)
+                        Width: =250
+                        X: =inpOrderIDOrdersAdd.X
+                        Y: =cboCustomerOrdersAdd.Y+cboCustomerOrdersAdd.Height+4
+                  - lblInvoiceDateOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="1️⃣ Invoice Date"
+                        X: =lblOrderStatusOrdersAdd.X
+                        Y: =lblEmployeeOrdersAdd.Y+4
+                  - inpInvoiceDateOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =LookUp(fOrders,OrderID=gvCRUDOrder.OrderID,InvoiceDate)
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =inpOrderStatusOrdersAdd.X
+                        Y: =inpOrderDateOrdersAdd.Y+inpOrderDateOrdersAdd.Height+4
+                  - lblTaxRateOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderStatusOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Tax Rate"
+                        Width: =lblPaymentMethodOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X
+                        Y: =lblPaidDateOrdersAdd.Y+lblPaidDateOrdersAdd.Height+4
+                  - inpTaxRateOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: |+
+                          =Text(Value(LookUp(fSystemSettings,SettingID = fMagicNo.gvDefaultTaxRate,SettingValue))*100,"##.##0%")
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                        Y: =inpPaidDateOrdersAdd.Y+inpPaidDateOrdersAdd.Height+4
+                  - lblNotesOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        DisplayMode: =DisplayMode.View
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Overflow: =Overflow.Scroll
+                        Text: ="Notes"
+                        Width: =lblOrderIDOrdersAdd.Width
+                        X: =lblOrderIDOrdersAdd.X
+                        Y: =lblEmployeeOrdersAdd.Y+lblEmployeeOrdersAdd.Height
+                  - inpNotesOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =LookUp(fOrders,OrderID=gvCRUDOrder.OrderID,Notes)
+                        Font: =Font.'Open Sans'
+                        Height: =100
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        Mode: =TextMode.MultiLine
+                        OnSelect: =
+                        Width: =250
+                        X: =inpOrderIDOrdersAdd.X
+                        Y: =cboemployeeOrdersAdd.Y +cboemployeeOrdersAdd.Height+4
+                  - lblShippedDateOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="2️⃣ Shipped Date"
+                        X: =lblOrderStatusOrdersAdd.X
+                        Y: =lblNotesOrdersAdd.Y+8
+                  - inpShippedDateOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: =If(IsBlank(lvDefaultShipDate),LookUp(fOrders,OrderID=gvCRUDOrder.OrderID,ShippedDate),lvDefaultShipDate)
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Fill: =gvOrderShipFields
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =inpOrderStatusOrdersAdd.X
+                        Y: =inpInvoiceDateOrdersAdd.Y +inpInvoiceDateOrdersAdd.Height+ 4
+                  - lblTaxStatusOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Tax Status"
+                        Width: =lblPaymentMethodOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X
+                        Y: =lblTaxRateOrdersAdd.Y+lblTaxRateOrdersAdd.Height+4
+                  - cboTaxStatusOrdersAdd:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        ChevronBackground: =RGBA(56, 96, 178, 1)
+                        ChevronDisabledBackground: =RGBA(56, 96, 178, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        Default: '= '
+                        DefaultSelectedItems: = Filter(fTaxStatus,TaxStatusID=Coalesce(lvTaxStatusID,0))
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayFields: =["TaxStatus"]
+                        DisplayMode: |-
+                          =//If( gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO, DisplayMode.Disabled, DisplayMode.Edit)
+                          DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        InputTextPlaceholder: ="Select Customer"
+                        IsSearchable: =false
+                        Items: =Sort(fTaxStatus,TaxStatus)
+                        OnSelect: =
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 18, 107, 1)
+                        SearchFields: =["TaxStatus"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(56, 96, 178, 1)
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                        Y: =inpTaxRateOrdersAdd.Y+inpTaxRateOrdersAdd.Height+4
+                  - lblShipperOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="2️⃣ Shipper"
+                        X: =lblOrderStatusOrdersAdd.X
+                        Y: =lblShippedDateOrdersAdd.Y+lblShippedDateOrdersAdd.Height+8
+                  - cboShippersOrdersAdd:
+                      Control: Classic/ComboBox@2.4.0
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        ChevronBackground: =RGBA(56, 96, 178, 1)
+                        ChevronFill: =RGBA(255, 255, 255, 1)
+                        ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                        DefaultSelectedItems: |
+                          =Filter(
+                              fCompanies,
+                              CompanyID = LookUp(
+                                  fOrders,
+                                  OrderID = gvCRUDOrder.OrderID,
+                                  ShipperID
+                              )
+                          )
+                        DisplayFields: =["CompanyName"]
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Fill: =gvOrderShipFields
+                        Font: =Font.'Open Sans'
+                        Height: =lblOrderIDOrdersAdd.Height
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        InputTextPlaceholder: ="Select Shipper"
+                        Items: |-
+                          =SortByColumns(
+                              Filter(fCompanies,CompanyTypeID=fMagicNo.gvShipper),
+                              "CompanyName",
+                              SortOrder.Ascending 
+                          )
+                        OnChange: |-
+                          =Set(
+                              gvOrderShipFields,
+                              If(
+                                  Coalesce(
+                                      Self.Selected.CompanyID,
+                                      0
+                                  ) <> 0,
+                                  Color.White,
+                                  fAppColors.gvWarningFill
+                              )
+                          )
+                        OnSelect: =
+                        PressedColor: =RGBA(255, 255, 255, 1)
+                        PressedFill: =RGBA(0, 18, 107, 1)
+                        SearchFields: =["CompanyName"]
+                        SelectMultiple: =false
+                        SelectionColor: =RGBA(255, 255, 255, 1)
+                        SelectionFill: =RGBA(56, 96, 178, 1)
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =inpOrderStatusOrdersAdd.X
+                        Y: =inpShippedDateOrdersAdd.Y +inpShippedDateOrdersAdd.Height+4
+                  - lblTaxAmountOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Tax Amount"
+                        Width: =lblPaymentMethodOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X
+                        Y: =lblTaxStatusOrdersAdd.Y+lblTaxStatusOrdersAdd.Height+4
+                  - inpTaxAmountOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: |-
+                          =Text(
+                              Sum(
+                                  glryEditOrderLineItemsAdd.AllItems,
+                                  UnitPrice * (1 - Discount) * Quantity
+                              ) * LookUp(
+                                  fOrders,
+                                  OrderID = gvCRUDOrder.OrderID,
+                                  TaxRate
+                              ) * LookUp(
+                                  fCompanies,
+                                  CompanyID = cboCustomerOrdersAdd.Selected.CompanyID,
+                                  StandardTaxStatusID
+                              ),
+                              "$#,##0.00"
+                          )
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                        Y: =cboTaxStatusOrdersAdd.Y+cboTaxStatusOrdersAdd.Height+4
+                  - lblShippingFeeOrdersAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="1️⃣ Shipping Fee"
+                        X: =lblOrderStatusOrdersAdd.X
+                        Y: =lblShipperOrdersAdd.Y+lblShipperOrdersAdd.Height+4
+                  - inpShippingFeeOrdersAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: |+
+                          =Text(gvCRUDOrder.ShippingFee, "$##0.00")
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: |-
+                          =If(
+                                  (Coalesce(gvCRUDOrder.OrderStatusID,fMagicNo.gvOrderStatusNEW) <> fMagicNo.gvOrderStatusNEW),
+                                  DisplayMode.Disabled,
+                                  DisplayMode.Edit
+                              )
+                        Fill: =gvOrderShipFields
+                        Font: =Font.'Open Sans'
+                        Format: =TextFormat.Number
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnChange: |-
+                          =UpdateContext(
+                              {
+                                  lvShipFeeFormat: Text(
+                                      Value(Self.Text),
+                                      "$#,###.00",
+                                      "en-US"
+                                  )
+                              }
+                          );
+                          UpdateContext(
+                              {
+                                  lvNoShipFee: If(
+                                      IsBlank(inpShippingFeeOrdersAdd.Text),
+                                      true,
+                                      false
+                                  )
+                              }
+                          );
+                          Set(
+                              gvOrderShipFields,
+                              If(
+                                  Coalesce(
+                                      Value(Self.Text),
+                                      0
+                                  ) <> 0,
+                                  Color.White,
+                                  fAppColors.gvWarningFill
+                              )
+                          )
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =inpOrderStatusOrdersAdd.X
+                        Y: =cboShippersOrdersAdd.Y +cboShippersOrdersAdd.Height+4
+                  - lblOrderTotalAddOrderAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Font: =Font.'Open Sans'
+                        Height: =inpOrderIDOrdersAdd.Height
+                        OnSelect: =
+                        Text: ="Order Total"
+                        Width: =lblPaymentMethodOrdersAdd.Width
+                        X: =lblPaymentMethodOrdersAdd.X
+                        Y: =lblTaxAmountOrdersAdd.Y+lblTaxAmountOrdersAdd.Height+4
+                  - inpOrderTotalAdd:
+                      Control: Classic/TextInput@2.3.2
+                      Properties:
+                        Align: =Align.Right
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Default: |-
+                          =Text(
+                              Sum(
+                                  glryEditOrderLineItemsAdd.AllItems,
+                                  UnitPrice * (1 - Discount) * Quantity
+                              ),
+                              "$#,##0.00"
+                          )
+                        DisabledColor: =RGBA(0, 0, 0, 1)
+                        DisplayMode: =DisplayMode.Disabled
+                        Font: =Font.'Open Sans'
+                        Format: =TextFormat.Number
+                        Height: =lblCustomerOrdersAdd.Height
+                        HoverBorderColor: =RGBA(0, 18, 107, 1)
+                        HoverFill: =RGBA(186, 202, 226, 1)
+                        OnSelect: =
+                        Width: =inpOrderStatusOrdersAdd.Width
+                        X: =cboPayMethodOrdersAdd.X
+                        Y: =inpTaxAmountOrdersAdd.Y+inpTaxAmountOrdersAdd.Height+4
+                  - conOrderLineItemsAdd:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Height: =Min(290,(glryEditOrderLineItemsAdd.AllItemsCount * 40)+8)
+                        LayoutDirection: =LayoutDirection.Vertical
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Width: =Parent.Width
+                        Y: '=conAddOrderLineItemCaptionsAdd.Y+conAddOrderLineItemCaptionsAdd.Height '
+                      Children:
+                        - glryEditOrderLineItemsAdd:
+                            Control: Gallery@2.15.0
+                            Variant: BrowseLayout_Flexible_SocialFeed_ver5.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Height: =40
+                              Items: |-
+                                =Filter(
+                                    Sort(
+                                        fOrderDetails,
+                                        OrderDetailID,
+                                        SortOrder.Ascending
+                                    ),
+                                    OrderID = gvCRUDOrder.OrderID
+                                )
+                              LayoutMinHeight: =40
+                              TemplatePadding: =1
+                              TemplateSize: =Min(40, Self.Height - 60)
+                              Width: =Parent.Width
+                              Y: |+
+                                =0
+                            Children:
+                              - inpOrderDetailIDOrderLineItemsAdd:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Default: =ThisItem.OrderDetailID
+                                    DisplayMode: =DisplayMode.View
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =RGBA(0, 18, 107, 1)
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    Width: =80
+                                    X: |+
+                                      =0
+                              - cboProductCategoryOrderLineItemsAdd:
+                                  Control: Classic/ComboBox@2.4.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    ChevronBackground: =RGBA(56, 96, 178, 1)
+                                    ChevronFill: =RGBA(255, 255, 255, 1)
+                                    ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                                    DefaultSelectedItems: |-
+                                      =LookUp(
+                                          fProductCategories,
+                                          ProductCategoryID = LookUp(
+                                              fProducts,
+                                              ProductID = ThisItem.ProductID,
+                                              ProductCategoryID
+                                          )
+                                      )
+                                    DisplayFields: =["ProductCategoryCode"]
+                                    Font: =Font.'Open Sans'
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    InputTextPlaceholder: ="Select Product Category"
+                                    Items: |+
+                                      =Sort(fProductCategories,ProductCategoryName,SortOrder.Ascending)
+                                    OnSelect: =Select(Parent)
+                                    PressedColor: =RGBA(255, 255, 255, 1)
+                                    PressedFill: =RGBA(0, 18, 107, 1)
+                                    SearchFields: =["ProductCategoryCode"]
+                                    SelectMultiple: =false
+                                    SelectionColor: =RGBA(255, 255, 255, 1)
+                                    SelectionFill: =RGBA(56, 96, 178, 1)
+                                    Width: |+
+                                      =lblProductCategoryAddOrderLineItemsAdd.Width
+                                    X: =inpOrderDetailIDOrderLineItemsAdd.X+inpOrderDetailIDOrderLineItemsAdd.Width
+                                    Y: =inpOrderDetailIDOrderLineItemsAdd.Y
+                              - cboProductOrderLineItemsAdd:
+                                  Control: Classic/ComboBox@2.4.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    ChevronBackground: =RGBA(56, 96, 178, 1)
+                                    ChevronFill: =RGBA(255, 255, 255, 1)
+                                    ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                                    DefaultSelectedItems: |-
+                                      =Filter(
+                                          fProducts,
+                                          ProductID = ThisItem.ProductID
+                                      )
+                                    DisplayFields: =["ProductName","ProductCategoryCode"]
+                                    Font: =Font.'Open Sans'
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    InputTextPlaceholder: ="Select Product"
+                                    Items: |-
+                                      =Filter(
+                                          Sort(
+                                              fProducts,
+                                              ProductName,
+                                              SortOrder.Ascending
+                                          ),
+                                          ProductCategoryID = cboProductCategoryOrderLineItemsAdd.Selected.ProductCategoryID
+                                      )
+                                    OnSelect: =Select(Parent)
+                                    PressedColor: =RGBA(255, 255, 255, 1)
+                                    PressedFill: =RGBA(0, 18, 107, 1)
+                                    SearchFields: =["ProductName"]
+                                    SelectMultiple: =false
+                                    SelectionColor: =RGBA(255, 255, 255, 1)
+                                    SelectionFill: =RGBA(56, 96, 178, 1)
+                                    Width: =lblProductAddOrderLineItemsAdd.Width
+                                    X: =cboProductCategoryOrderLineItemsAdd.X+cboProductCategoryOrderLineItemsAdd.Width
+                                    Y: =inpOrderDetailIDOrderLineItemsAdd.Y
+                              - inpQuantityOrderLineItemsAdd:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    Align: =Align.Right
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Default: =ThisItem.Quantity
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =RGBA(0, 18, 107, 1)
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    OnSelect: =Select(Parent)
+                                    Width: |+
+                                      =60  
+                                    X: =cboProductOrderLineItemsAdd.X+cboProductOrderLineItemsAdd.Width
+                                    Y: =inpOrderDetailIDOrderLineItemsAdd.Y
+                              - inpUnitPriceOrderLineItemsAdd:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    Align: =Align.Right
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Default: =Text(ThisItem.UnitPrice, "$#,##0.00")
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =RGBA(0, 18, 107, 1)
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    OnSelect: =Select(Parent)
+                                    Width: |+
+                                      =lblUnitPriceAddOrderLineItemsAdd.Width
+                                    X: =inpQuantityOrderLineItemsAdd.X+inpQuantityOrderLineItemsAdd.Width
+                                    Y: =inpQuantityOrderLineItemsAdd.Y
+                              - inpDiscountOrderLineItemsAdd:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    Align: =Align.Right
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Default: =Text(ThisItem.Discount * 100, "#0.00%")
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =RGBA(0, 18, 107, 1)
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    OnSelect: =Select(Parent)
+                                    Width: |+
+                                      =100
+                                    X: =inpUnitPriceOrderLineItemsAdd.X+inpUnitPriceOrderLineItemsAdd.Width
+                                    Y: =inpOrderDetailIDOrderLineItemsAdd.Y
+                              - inpPriceOrderLineItemsAdd:
+                                  Control: Classic/TextInput@2.3.2
+                                  Properties:
+                                    Align: =Align.Right
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    Default: |-
+                                      =Text(
+                                          ThisItem.UnitPrice * (1 - ThisItem.Discount) * ThisItem.Quantity,
+                                          "$#,##0.00"
+                                      )
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =RGBA(0, 18, 107, 1)
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    OnSelect: =Select(Parent)
+                                    Width: |+
+                                      =lblPriceAddOrderLineItemsAdd.Width
+                                    X: =inpDiscountOrderLineItemsAdd.X+inpDiscountOrderLineItemsAdd.Width
+                              - cboLineItemStatusOrderLineItemsAdd:
+                                  Control: Classic/ComboBox@2.4.0
+                                  Properties:
+                                    BorderColor: =RGBA(0, 18, 107, 1)
+                                    ChevronBackground: =RGBA(56, 96, 178, 1)
+                                    ChevronFill: =RGBA(255, 255, 255, 1)
+                                    ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                                    DefaultSelectedItems: |-
+                                      =LookUp(
+                                          Filter(
+                                              fStatuses,
+                                              TableName = "OrderDetails"
+                                          ),
+                                          StatusID = ThisItem.OrderDetailStatusID
+                                      )
+                                    DisplayFields: =["StatusName"]
+                                    DisplayMode: =DisplayMode.View
+                                    Font: =Font.'Open Sans'
+                                    HoverFill: =RGBA(186, 202, 226, 1)
+                                    InputTextPlaceholder: ="Select Status"
+                                    IsSearchable: =false
+                                    Items: =Sort(Filter(fStatuses,TableName="OrderDetails"),SortOrder)
+                                    PressedColor: =RGBA(255, 255, 255, 1)
+                                    PressedFill: =RGBA(0, 18, 107, 1)
+                                    SearchFields: =["StatusName"]
+                                    SelectMultiple: =false
+                                    SelectionColor: =RGBA(255, 255, 255, 1)
+                                    SelectionFill: =RGBA(56, 96, 178, 1)
+                                    Width: |+
+                                      =lblStatusAddOrderLineItemsAdd.Width
+                                    X: '=inpPriceOrderLineItemsAdd.X+inpPriceOrderLineItemsAdd.Width '
+                              - btnAddLineItemOrderEditAdd:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    Fill: =RGBA(56, 96, 178, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =cboLineItemStatusOrderLineItemsAdd.Height
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    OnSelect: |
+                                      =Select(Parent);
+                                      Set(
+                                          gvCRUDType,
+                                          fMagicNo.gvCRUDU
+                                      );
+                                      Set(
+                                          gvCRUDOrderID,
+                                          Coalesce(
+                                              gvCRUDOrder.OrderID,
+                                              0
+                                          )
+                                      );
+                                      Set(
+                                          gvCRUDOrderDetail,
+                                          ThisItem
+                                      );
+                                      Set(
+                                          gvCRUDOrderDetailID,
+                                          ThisItem.OrderDetailID
+                                      );
+                                      Set(
+                                          gvDiscount,
+                                          Value(inpDiscountOrderLineItemsAdd.Text)
+                                      );
+                                      Set(
+                                          gvOrderDetailStatusID,
+                                          0//cboLineItemStatusOrderLineItemsAdd.Selected.StatusID
+                                      );
+                                      Set(
+                                          gvCRUDProductID,
+                                          cboProductOrderLineItemsAdd.Selected.ProductID
+                                      );
+                                      Set(
+                                          gvQuantity,
+                                          Value(inpQuantityOrderLineItemsAdd.Text)
+                                      );
+                                      Set(
+                                          gvUnitPrice,
+                                          Value(inpUnitPriceOrderLineItemsAdd.Text)
+                                      );
+                                      Set(gvTGLCRUDOrderDetail,!gvTGLCRUDOrderDetail);
+                                      Reset(cboLineItemStatusAddOrderLineItemsAdd);
+                                      Reset(cboProductCategoryAddOrderLineItemsAdd);
+                                      Reset(inpQuantityAddOrderLineItemsAdd);
+                                      Reset(inpUnitPriceAddOrderLineItemsAdd);
+                                      Reset(cboLineItemStatusAddOrderLineItemsAdd);
+                                      Reset(inpDiscountAddOrderLineItemsAdd);
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    Size: =12
+                                    Text: ="➕ Save"
+                                    Width: =90
+                                    X: =cboLineItemStatusOrderLineItemsAdd.X+cboLineItemStatusOrderLineItemsAdd.Width
+                                    Y: =cboLineItemStatusOrderLineItemsAdd.Y
+                              - btnAddLineItemEditAdd:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    DisplayMode: =DisplayMode.Disabled
+                                    Fill: =RGBA(56, 96, 178, 1)
+                                    Font: =Font.'Open Sans'
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    PaddingBottom: =0
+                                    PaddingLeft: =0
+                                    PaddingRight: =0
+                                    PaddingTop: =0
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    Size: =11
+                                    Text: ="✏️"
+                                    Width: =lblOrderIDAddOrderLineItemsAdd.Width
+                              - btnOrderLineItemDelete:
+                                  Control: Classic/Button@2.2.0
+                                  Properties:
+                                    BorderColor: =ColorFade(Self.Fill, -15%)
+                                    Color: =RGBA(255, 255, 255, 1)
+                                    DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                                    Fill: =RGBA(56, 96, 178, 1)
+                                    Font: =Font.'Open Sans'
+                                    Height: =btnAddLineItemOrderEditAdd.Height
+                                    HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                                    HoverColor: =RGBA(255, 255, 255, 1)
+                                    HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                                    OnSelect: |+
+                                      =Set(
+                                          gvCRUDType,
+                                          fMagicNo.gvCRUDD
+                                      );
+                                      Set(
+                                          gvOrderDetail,
+                                          ThisItem
+                                      );
+                                      Set(
+                                          gvCRUDOrderDetailID,
+                                          gvOrderDetail.OrderDetailID
+                                      );
+                                      Set(
+                                          gvTGLCRUDOrderDetail,
+                                          !gvTGLCRUDOrderDetail
+                                      );
+
+                                    PressedBorderColor: =Self.Fill
+                                    PressedColor: =Self.Fill
+                                    PressedFill: =Self.Color
+                                    Size: =12
+                                    Text: ="❌ Delete"
+                                    Width: |+
+                                      =100
+                                    X: =btnAddLineItemOrderEditAdd.X+btnAddLineItemOrderEditAdd.Width+4
+                                    Y: =inpPOLineItemPriceEditAdd.Y
+                        - lblFUAddOrderDetailAdd_hdn:
+                            Control: Label@2.5.1
+                            Properties:
+                              BorderColor: =RGBA(32, 54, 71, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =1
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              Text: =tglCRUDOrders.Value
+                              Visible: =false
+                              Width: '=0 '
+                              X: =60
+                              Y: =60
+                  - conAddOrderLineItemCaptionsAdd:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(39, 67, 125, 1)
+                        Height: =40
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        Width: '=Parent.Width    '
+                        Y: '=lblOrderItemsinOrderAdd.Y+lblOrderItemsinOrderAdd.Height '
+                      Children:
+                        - lblOrderIDAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="#"
+                              Width: =80
+                        - lblProductCategoryAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Product Category"
+                              Width: =280
+                        - lblProductAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: |-
+                                ="Product
+                                "
+                              Width: =240
+                        - lblQuantityAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Qty"
+                              Width: =60
+                        - lblUnitPriceAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Unit Price"
+                              Width: =120
+                        - lblDiscountAddOrderLineItems:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Discount"
+                              Width: =100
+                        - lblPriceAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Price"
+                              Width: =100
+                        - lblStatusAddOrderLineItemsAdd:
+                            Control: Label@2.5.1
+                            Properties:
+                              Align: =Align.Center
+                              BorderColor: =RGBA(180, 214, 250, 1)
+                              BorderThickness: =1
+                              Color: =Color.White
+                              Font: =Font.'Open Sans'
+                              Text: ="Status"
+                              Width: |+
+                                =160
+                  - conAddOrderLineItemMainAdd:
+                      Control: GroupContainer@1.3.0
+                      Variant: AutoLayout
+                      Properties:
+                        Fill: =RGBA(255, 255, 255, 1)
+                        Height: =40
+                        LayoutDirection: =LayoutDirection.Horizontal
+                        RadiusBottomLeft: =8
+                        RadiusBottomRight: =8
+                        RadiusTopLeft: =8
+                        RadiusTopRight: =8
+                        Width: '=Parent.Width    '
+                        Y: '=conOrderLineItemsAdd.Y+conOrderLineItemsAdd.Height '
+                      Children:
+                        - btnAddLineItemAdd:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              AlignInContainer: =AlignInContainer.Center
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =DisplayMode.Disabled
+                              Fill: =RGBA(56, 96, 178, 1)
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              PaddingBottom: =0
+                              PaddingLeft: =0
+                              PaddingRight: =0
+                              PaddingTop: =0
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              Size: =11
+                              Text: ="➕"
+                              Width: =lblOrderIDAddOrderLineItemsAdd.Width
+                        - inpOrderDetailIDAddOrderLineItemsAdd:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: = //Text(gvNewOrderDetail.OutputParameters.NewPK)
+                              DisplayMode: =DisplayMode.Disabled
+                              Font: =Font.'Open Sans'
+                              HoverBorderColor: =RGBA(0, 18, 107, 1)
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              Width: =2
+                              X: |+
+                                =0
+                              Y: =60
+                        - cboProductCategoryAddOrderLineItemsAdd:
+                            Control: Classic/ComboBox@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              ChevronBackground: =RGBA(56, 96, 178, 1)
+                              ChevronFill: =RGBA(255, 255, 255, 1)
+                              ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                              DisplayFields: =["ProductCategoryName","ProductCategoryCode"]
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Font: =Font.'Open Sans'
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              InputTextPlaceholder: ="Select Product Category"
+                              Items: |-
+                                =Sort(
+                                    fProductCategories,
+                                    ProductCategoryName,
+                                    SortOrder.Ascending
+                                )
+                              OnChange: |
+                                =Reset(cboProductAddOrderLineItemsAdd);
+                                Reset(cboLineItemStatusAddOrderLineItemsAdd);
+                                Reset(inpQuantityAddOrderLineItemsAdd);
+                                Reset(cboLineItemStatusAddOrderLineItemsAdd);
+                                Reset(inpDiscountAddOrderLineItemsAdd);
+                                UpdateContext({lvDefaultUnitPrice: Blank()});
+                              OnSelect: |-
+                                =If(IsBlank(gvCRUDOrder),Notify("Create an order before Adding Products",NotificationType.Error,
+                                    fMagicNo.gvNotifyTimeout))
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 18, 107, 1)
+                              SearchFields: =["ProductCategoryName"]
+                              SelectMultiple: =false
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                              SelectionFill: =RGBA(56, 96, 178, 1)
+                              Width: =lblProductCategoryAddOrderLineItemsAdd.Width
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - cboProductAddOrderLineItemsAdd:
+                            Control: Classic/ComboBox@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              ChevronBackground: =RGBA(56, 96, 178, 1)
+                              ChevronFill: =RGBA(255, 255, 255, 1)
+                              ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                              DefaultSelectedItems: '= '
+                              DisplayFields: =["ProductName"]
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Fill: =If(gvRequiredOrderFields, fAppColors.gvWarningFill ,RGBA(255, 255, 255, 1))
+                              Font: =Font.'Open Sans'
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              InputTextPlaceholder: ="Select Product "
+                              Items: |-
+                                =Sort(
+                                    Filter(
+                                        fProducts,
+                                        ProductCategoryID = cboProductCategoryAddOrderLineItemsAdd.Selected.ProductCategoryID,
+                                        Discontinued = false
+                                    ),
+                                    ProductName
+                                )
+                              OnChange: |
+                                =Set(
+                                    gvCRUDProductID,
+                                    cboProductAddOrderLineItemsAdd.Selected.ProductID
+                                );
+                                Set(
+                                    gvCurrentOrderQty,
+                                    Coalesce(
+                                        Value(inpQuantityOrderLineItemsAdd.Text),
+                                        0
+                                    )
+                                );
+                                UpdateContext(
+                                    {
+                                        lvDefaultUnitPrice: LookUp(
+                                            fProducts,
+                                            ProductID = gvCRUDProductID,
+                                            UnitPrice
+                                        )
+                                    }
+                                );
+                                Set(
+                                    gvTGLCheckProductAvailable,
+                                    !gvTGLCheckProductAvailable
+                                );
+                              OnSelect: =
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 18, 107, 1)
+                              SearchFields: =["ProductName"]
+                              SelectMultiple: =false
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                              SelectionFill: =RGBA(56, 96, 178, 1)
+                              Width: =lblProductAddOrderLineItemsAdd.Width
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - inpQuantityAddOrderLineItemsAdd:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: =
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Fill: =If(gvRequiredOrderFields, fAppColors.gvWarningFill ,RGBA(255, 255, 255, 1))
+                              Font: =Font.'Open Sans'
+                              Format: =TextFormat.Number
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverBorderColor: =RGBA(0, 18, 107, 1)
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              OnChange: |-
+                                =Set(
+                                    gvCurrentOrderQty,
+                                    Coalesce(
+                                        Value(inpQuantityOrderLineItemsAdd.Text),
+                                        0
+                                    )
+                                );
+                                Set(gvCRUDProductID,Value(cboProductAddOrderLineItemsAdd.Selected.ProductID));
+                                Set(
+                                    gvTGLCheckProductAvailable,
+                                    !gvTGLCheckProductAvailable
+                                );
+                                Notify(
+                                    If(
+                                        gvProductAvailable.OutputParameters.LocalProductAvailableToSell >= Coalesce(Value(inpQuantityAddOrderLineItemsAdd.Text),0),
+                                        gvProductAvailable.OutputParameters.LocalProductAvailableToSell & " Available for this order",
+                                        "No stock available for this order"
+                                    )
+                                )
+                              OnSelect: =
+                              Width: =60
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - inpUnitPriceAddOrderLineItemsAdd:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: =Text(lvDefaultUnitPrice, "$#,##0.00")
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Fill: =If(gvRequiredOrderFields, fAppColors.gvWarningFill ,RGBA(255, 255, 255, 1))
+                              Font: =Font.'Open Sans'
+                              Format: =TextFormat.Number
+                              Height: =cboProductAddOrderLineItemsAdd.Height
+                              HoverBorderColor: =RGBA(0, 18, 107, 1)
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              OnSelect: =
+                              PaddingLeft: =5
+                              Tooltip: ="Default Unit Price can be overridden"
+                              Width: =lblUnitPriceAddOrderLineItemsAdd.Width
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - inpDiscountAddOrderLineItemsAdd:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: =Text(0*100,"#0.00%")
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Font: =Font.'Open Sans'
+                              Format: =TextFormat.Number
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverBorderColor: =RGBA(0, 18, 107, 1)
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              OnSelect: =
+                              Width: =100
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - inpPriceAddOrderLineItemsAdd:
+                            Control: Classic/TextInput@2.3.2
+                            Properties:
+                              Align: =Align.Right
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              Default: |-
+                                =Text(
+                                    Value(inpUnitPriceAddOrderLineItemsAdd.Text) * (1 - Value(inpDiscountAddOrderLineItemsAdd.Text)) * (Value(inpQuantityAddOrderLineItemsAdd.Text)),
+                                    "$#,##0.00"
+                                )
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Font: =Font.'Open Sans'
+                              Format: =TextFormat.Number
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverBorderColor: =RGBA(0, 18, 107, 1)
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              OnSelect: =
+                              Width: =lblPriceAddOrderLineItemsAdd.Width
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - cboLineItemStatusAddOrderLineItemsAdd:
+                            Control: Classic/ComboBox@2.4.0
+                            Properties:
+                              BorderColor: =RGBA(0, 18, 107, 1)
+                              ChevronBackground: =RGBA(56, 96, 178, 1)
+                              ChevronFill: =RGBA(255, 255, 255, 1)
+                              ChevronHoverBackground: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              ChevronHoverFill: =RGBA(255, 255, 255, 1)
+                              DefaultSelectedItems: "=   \r\n\r\n \r\n "
+                              DisplayFields: =["StatusName"]
+                              DisplayMode: =DisplayMode.View
+                              Font: =Font.'Open Sans'
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverFill: =RGBA(186, 202, 226, 1)
+                              InputTextPlaceholder: ="Select Status"
+                              IsSearchable: =false
+                              Items: =Sort(Filter(fStatuses,TableName="OrderDetails"),SortOrder)
+                              PressedColor: =RGBA(255, 255, 255, 1)
+                              PressedFill: =RGBA(0, 18, 107, 1)
+                              SearchFields: =["StatusName"]
+                              SelectMultiple: =false
+                              SelectionColor: =RGBA(255, 255, 255, 1)
+                              SelectionFill: =RGBA(56, 96, 178, 1)
+                              Width: =cboLineItemStatusOrderLineItemsAdd.Width
+                              X: =
+                              Y: =inpOrderDetailIDAddOrderLineItemsAdd.Y
+                        - btnAddLineItemtoOrderLineItemsAdd:
+                            Control: Classic/Button@2.2.0
+                            Properties:
+                              BorderColor: =ColorFade(Self.Fill, -15%)
+                              Color: =RGBA(255, 255, 255, 1)
+                              DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                              DisplayMode: =If(IsBlank(gvCRUDOrder)||gvCRUDOrder.OrderStatusID<>fMagicNo.gvOrderStatusNEW,DisplayMode.Disabled,DisplayMode.Edit)
+                              Fill: =RGBA(56, 96, 178, 1)
+                              Font: =Font.'Open Sans'
+                              Height: =inpOrderDetailIDAddOrderLineItemsAdd.Height
+                              HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                              HoverColor: =RGBA(255, 255, 255, 1)
+                              HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                              OnSelect: |
+                                =Set(
+                                    gvCRUDType,
+                                    fMagicNo.gvCRUDC
+                                );
+                                Set(
+                                    gvCRUDOrderID,
+                                    Coalesce(
+                                        gvCRUDOrder.OrderID,
+                                        0
+                                    )
+                                );
+                                Set(
+                                    gvDiscount,
+                                    Coalesce(
+                                        Value(inpDiscountAddOrderLineItemsAdd.Text),
+                                        0
+                                    )
+                                );
+                                Set(
+                                    gvOrderDetailStatusID,
+                                    Coalesce(
+                                        Value(cboLineItemStatusAddOrderLineItemsAdd.Selected.StatusID),
+                                        fMagicNo.gvDefaultOrderDetailStatus
+                                    )
+                                );
+                                Set(
+                                    gvCRUDProductID,
+                                    Coalesce(
+                                        Value(cboProductAddOrderLineItemsAdd.Selected.ProductID),
+                                        0
+                                    )
+                                );
+                                Set(
+                                    gvQuantity,
+                                    Coalesce(
+                                        Value(inpQuantityAddOrderLineItemsAdd.Text),
+                                        0
+                                    )
+                                );
+                                Set(
+                                    gvUnitPrice,
+                                    Coalesce(
+                                        Value(inpUnitPriceAddOrderLineItemsAdd.Text),
+                                        0
+                                    )
+                                );
+                                Set(
+                                    gvTGLCRUDOrderDetail,
+                                    !gvTGLCRUDOrderDetail
+                                ); 
+                                Select(inpOrderIDOrdersAdd);
+                              PressedBorderColor: =Self.Fill
+                              PressedColor: =Self.Fill
+                              PressedFill: =Self.Color
+                              Size: =12
+                              Text: ="➕ Add"
+                              Width: =90
+                              X: =Parent.Width-Self.Width
+                              Y: =cboLineItemStatusAddOrderLineItemsAdd.Y
+                  - btnSaveNewOrder:
+                      Control: Classic/Button@2.2.0
+                      Properties:
+                        BorderColor: =ColorFade(Self.Fill, -15%)
+                        Color: =RGBA(255, 255, 255, 1)
+                        DisabledBorderColor: =RGBA(166, 166, 166, 1)
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Fill: =RGBA(56, 96, 178, 1)
+                        Font: =Font.'Open Sans'
+                        HoverBorderColor: =ColorFade(Self.BorderColor, 20%)
+                        HoverColor: =RGBA(255, 255, 255, 1)
+                        HoverFill: =ColorFade(RGBA(56, 96, 178, 1), -20%)
+                        OnSelect: |
+                          =Set(
+                              gvCRUDOrderOrderID,
+                              Coalesce(
+                                  Value(inpOrderIDOrdersAdd.Text),
+                                  0
+                              )
+                          );
+                          Set(
+                              gvOrderStatusID,
+                              If(
+                                  gvCRUDOrderOrderID <> 0,
+                                  gvCRUDOrder.OrderStatusID,
+                                  fMagicNo.gvOrderStatusNEW
+                              )
+                          );
+                          Set(
+                              gvCRUDOrderCustomerID,
+                              Coalesce(
+                                  Value(cboCustomerOrdersAdd.Selected.CompanyID),
+                                  0
+                              )
+                          );
+                          Set(
+                              gvCRUDType,
+                              If(
+                                  Coalesce(
+                                      gvCRUDOrderOrderID,
+                                      0
+                                  ) = 0,
+                                  fMagicNo.gvCRUDC,
+                                  fMagicNo.gvCRUDU
+                              )
+                          );
+                          Set(
+                              gvCRUDOrderEmployeeID,
+                              Coalesce(
+                                  Value(cboemployeeOrdersAdd.Selected.EmployeeID),
+                                  0
+                              )
+                          );
+                          Set(
+                              gvCRUDOrderNotes,
+                              Coalesce(
+                                  inpNotesOrdersAdd.Text,
+                                  Blank()
+                              )
+                          );
+                          Set(
+                              gvCRUDOrderTaxRate,
+                              Value(inpTaxRateOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderTaxStatusID,
+                              Value(cboTaxStatusOrdersAdd.Selected.TaxStatusID)
+                          );
+                          Set(
+                              gvCRUDOrderShipperID,
+                              Value(cboShippersOrdersAdd.Selected.CompanyID)
+                          );
+                          Set(
+                              gvCRUDOrderShippingFee,
+                              Value(inpShippingFeeOrdersAdd.Text)
+                          );
+                          Set(
+                              gvCRUDOrderPaymentMethod,
+                              Text(cboPayMethodOrdersAdd.Selected.Value)
+                          );
+                          Set(
+                              gvTGLCRUDOrder,
+                              !gvTGLCRUDOrder
+                          );
+                        PressedBorderColor: =Self.Fill
+                        PressedColor: =Self.Fill
+                        PressedFill: =Self.Color
+                        Text: =If(Value(inpOrderIDOrdersAdd.Text)=0, "➕ Add","✏️ Save")
+                        Width: =inpOrderTotalAdd.Width
+                        X: =inpOrderTotalAdd.X
+                        Y: =inpOrderTotalAdd.Y+inpOrderTotalAdd.Height+4
+                  - lblOrderItemsinOrderAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        Color: =Color.White
+                        Fill: =fAppColors.gvlblFill
+                        Font: =Font.'Open Sans'
+                        FontWeight: =FontWeight.Semibold
+                        Text: ="Items In Order"
+                        X: =inpOrderDetailIDOrderLineItemsAdd.X
+                        Y: =281
+                  - LabeltestAdd:
+                      Control: Label@2.5.1
+                      Properties:
+                        BorderColor: =RGBA(0, 18, 107, 1)
+                        BorderThickness: =1
+                        Font: =Font.'Open Sans'
+                        Text: "= lblDebugger.Text //gvCanInvoice //inpOrderDateOrdersAdd.Text\r\n \r\n "
+                        Visible: =false
+                        X: =285
+                        Y: =266
+                  - btnOrdersOrderDateAdd:
+                      Control: Button@0.0.45
+                      Properties:
+                        DisplayMode: |-
+                          =If(
+                              gvCRUDOrder.OrderStatusID = fMagicNo.gvOrderStatusCLO,
+                              DisplayMode.Disabled,
+                              DisplayMode.Edit
+                          )
+                        Height: =inpOrderDateOrdersAdd.Height
+                        Icon: ="Calendar"
+                        Layout: ='ButtonCanvas.Layout'.IconOnly
+                        OnSelect: =UpdateContext({lvDefaultOrderDate:Now()});
+                        Width: =inpOrderDateOrdersAdd.Height
+                        X: =inpOrderDateOrdersAdd.X+inpOrderDateOrdersAdd.Width
+                        Y: =76
+                  - btnOrdersShipDateAdd:
+                      Control: Button@0.0.45
+                      Properties:
+                        Height: =inpOrderDateOrdersAdd.Height
+                        Icon: ="Calendar"
+                        Layout: ='ButtonCanvas.Layout'.IconOnly
+                        OnSelect: =UpdateContext({lvDefaultShipDate:Now()});
+                        Visible: =false
+                        Width: =inpOrderDateOrdersAdd.Height
+                        X: =inpShippedDateOrdersAdd.X+inpShippedDateOrdersAdd.Width
+                        Y: =inpShippedDateOrdersAdd.Y
+      - compAppTitleOrdersAdd:
+          Control: CanvasComponent
+          ComponentName: compAppTitle
+          Properties:
+            Height: =36
+            Width: =App.Width
+            ciAppTitle: ="Text"
+      - lblFUProductAvailableAddEdit_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =10
+      - lblFUOrderStatusAddEdit_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =10
+            X: =80
+            Y: =80
+      - lblFUOrderAddEdit_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =10
+      - lblFUOrderDetailAddEdit_hdn:
+          Control: Label@2.5.1
+          Properties:
+            BorderColor: =RGBA(32, 54, 71, 1)
+            Font: =Font.'Open Sans'
+            Height: =10
+            PaddingBottom: =0
+            PaddingLeft: =0
+            PaddingRight: =0
+            PaddingTop: =0
+            Text: =tglCRUDOrders.Value
+            Visible: =false
+            Width: =10
+            X: =20
+            Y: =20
